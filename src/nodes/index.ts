@@ -38,9 +38,6 @@ import { registerGlossaryNodes } from './glossary'
  */
 export function registerAllNodes() {
   // Configure LiteGraph defaults
-  LiteGraph.NODE_TITLE_HEIGHT = 30
-  LiteGraph.NODE_SLOT_HEIGHT = 20
-  LiteGraph.NODE_WIDGET_HEIGHT = 20
   LiteGraph.clearRegisteredTypes()
 
   // Register node categories (按 viem 官网顺序)
