@@ -34,7 +34,9 @@ export class ButtonNode extends LGraphNode {
     // Add a text widget to change the label
     this.addWidget('text', 'Label', this.properties.label, (v: string) => {
       this.properties.label = v
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((this as any).widgets && (this as any).widgets[0]) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this as any).widgets[0].name = v
       }
     })
@@ -51,7 +53,9 @@ export class ButtonNode extends LGraphNode {
     const inputVal = this.getInputData(0)
     if (inputVal !== undefined && inputVal !== null) {
       this.properties.label = String(inputVal)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((this as any).widgets && (this as any).widgets[0]) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this as any).widgets[0].name = String(inputVal)
       }
     }
