@@ -19,6 +19,7 @@ function App() {
 
   // 追踪鼠标在画布上的位置
   const mousePositionRef = useRef<{ x: number; y: number }>({ x: 400, y: 300 })
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleGraphReady = useCallback((g: LGraph) => {
     setGraph(g)
@@ -43,33 +44,70 @@ function App() {
   // 获取鼠标位置的函数（传递给子组件）
   const getMousePosition = useCallback(() => mousePositionRef.current, [])
 
-  // Save graph to localStorage
+  // Save graph to localStorage and download as file
   const saveGraph = useCallback(() => {
     if (graph) {
-      const data = JSON.stringify(graph.serialize())
-      localStorage.setItem('viemplay-graph', data)
-      console.log('[ViemPlay] Graph saved')
+      const graphData = graph.serialize()
+      const dataStr = JSON.stringify(graphData, null, 2)
+      
+      // Save to localStorage
+      localStorage.setItem('viemplay-graph', dataStr)
+      console.log('[ViemPlay] Graph saved to localStorage')
+
+      // Download as file
+      const blob = new Blob([dataStr], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
+      link.href = url
+      link.download = `viem-play-design-${timestamp}.json`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
     }
   }, [graph])
 
-  // Load graph from localStorage
-  const loadGraph = useCallback(() => {
-    const data = localStorage.getItem('viemplay-graph')
-    if (data && graph) {
+  // Handle file upload
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !graph) return
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
       try {
-        graph.configure(JSON.parse(data))
-        console.log('[ViemPlay] Graph loaded')
-      } catch (e) {
-        console.error('Failed to load graph:', e)
+        const content = event.target?.result as string
+        const data = JSON.parse(content)
+        graph.clear() // Clear existing graph before configuring
+        graph.configure(data)
+        
+        // Also save to localStorage for persistence
+        localStorage.setItem('viemplay-graph', content)
+        console.log('[ViemPlay] Graph loaded from file')
+      } catch (err) {
+        console.error('Failed to load file:', err)
+        alert('加载文件失败，请检查文件格式是否正确。')
       }
     }
+    reader.readAsText(file)
+    // Reset input value to allow uploading the same file again
+    e.target.value = ''
   }, [graph])
+
+  // Trigger file input for loading
+  const loadGraph = useCallback(() => {
+    fileInputRef.current?.click()
+  }, [])
 
   // Clear graph
   const clearGraph = useCallback(() => {
     if (graph) {
-      graph.clear()
-      console.log('[ViemPlay] Graph cleared')
+      const confirmed = window.confirm('确定要清除当前所有节点吗？')
+      if (confirmed) {
+        graph.clear()
+        localStorage.removeItem('viemplay-graph')
+        console.log('[ViemPlay] Graph cleared')
+      }
     }
   }, [graph])
 
@@ -86,6 +124,15 @@ function App() {
 
   return (
     <div className="app">
+      {/* Hidden file input for loading */}
+      <input 
+        type="file" 
+        ref={fileInputRef} 
+        style={{ display: 'none' }} 
+        accept=".json" 
+        onChange={handleFileChange} 
+      />
+
       {/* Header */}
       <header className="app-header">
         <div className="logo">
@@ -115,13 +162,13 @@ function App() {
         </div>
 
         <div className="header-actions">
-          <button onClick={saveGraph} className="toolbar-btn">
+          <button onClick={saveGraph} className="toolbar-btn" title="保存设计并下载 JSON 文件">
             💾 Save
           </button>
-          <button onClick={loadGraph} className="toolbar-btn">
+          <button onClick={loadGraph} className="toolbar-btn" title="从 JSON 文件加载设计">
             📂 Load
           </button>
-          <button onClick={clearGraph} className="toolbar-btn danger">
+          <button onClick={clearGraph} className="toolbar-btn danger" title="清空工作区">
             🗑️ Clear
           </button>
         </div>
