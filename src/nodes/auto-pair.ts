@@ -10,6 +10,7 @@ const AUTO_PAIR_FLAG = '__viemplayAutoPairing__'
 const NODE_TYPES = {
   text: 'Utilities/UI/Text',
   number: 'Utilities/UI/Number',
+  trigger: 'Utilities/UI/Trigger',
   address: 'Utilities/UI/Address',
   bytes32: 'Utilities/UI/Bytes32',
   display: 'Utilities/UI/Display',
@@ -62,6 +63,12 @@ function attachInputAutoPairing(nodeType: typeof LGraphNode) {
     const leftX2 = x - GAP_X * 2
 
     switch (input.type) {
+      case LiteGraph.ACTION:
+      case -1: {
+        const triggerNode = createNode(this.graph, NODE_TYPES.trigger, leftX, y + OFFSET_Y)
+        if (triggerNode) triggerNode.connect(0, this, index)
+        break
+      }
       case 'string': {
         const textNode = createNode(this.graph, NODE_TYPES.text, leftX, y + OFFSET_Y)
         if (textNode) textNode.connect(0, this, index)

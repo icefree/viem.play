@@ -49,6 +49,28 @@ class NumberInputNode extends LGraphNode {
 }
 
 /**
+ * 触发节点 - 手动触发动作输出
+ */
+class TriggerNode extends LGraphNode {
+  static title = 'Trigger'
+  static desc = 'Manual action trigger'
+
+  color = '#4a5568'
+  bgcolor = '#2d3748'
+
+  constructor() {
+    super()
+    this.title = 'Trigger'
+    this.addOutput('trigger', -1)
+    this.size = [140, 50]
+
+    this.addWidget('button', 'Fire', '', () => {
+      this.triggerSlot(0)
+    })
+  }
+}
+
+/**
  * 地址输入节点 - 专门用于输入以太坊地址
  */
 class AddressInputNode extends LGraphNode {
@@ -320,6 +342,7 @@ export function registerUtilityNodes() {
   // --- UI Items (Internal) ---
   LiteGraph.registerNodeType('Utilities/UI/Text', TextInputNode)
   LiteGraph.registerNodeType('Utilities/UI/Number', NumberInputNode)
+  LiteGraph.registerNodeType('Utilities/UI/Trigger', TriggerNode)
   LiteGraph.registerNodeType('Utilities/UI/Address', AddressInputNode)
   LiteGraph.registerNodeType('Utilities/UI/Bytes32', Bytes32InputNode)
   LiteGraph.registerNodeType('Utilities/UI/Display', DisplayNode)
@@ -367,6 +390,7 @@ export function registerUtilityNodes() {
 export {
   TextInputNode,
   NumberInputNode,
+  TriggerNode,
   AddressInputNode,
   Bytes32InputNode,
   DisplayNode,
