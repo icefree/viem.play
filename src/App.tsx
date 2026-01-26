@@ -1,7 +1,17 @@
+import { useState, useCallback } from 'react'
+import { LGraph } from 'litegraph.js'
 import { Canvas } from './components/Canvas'
+import { NodeToolbar } from './components/NodeToolbar'
+import { NodeSearch } from './components/NodeSearch'
 import './App.css'
 
 function App() {
+  const [graph, setGraph] = useState<LGraph | null>(null)
+
+  const handleGraphReady = useCallback((g: LGraph) => {
+    setGraph(g)
+  }, [])
+
   return (
     <div className="app">
       {/* Header */}
@@ -11,7 +21,6 @@ function App() {
           <span className="logo-text">Viem Playground</span>
         </div>
         <div className="header-info">
-          <span className="info-text">可视化区块链交互工具</span>
           <a
             href="https://viem.sh"
             target="_blank"
@@ -23,27 +32,20 @@ function App() {
         </div>
       </header>
 
+      {/* Node Toolbar - eth.build style */}
+      <NodeToolbar graph={graph} />
+
       {/* Main Canvas */}
       <main className="app-main">
-        <Canvas />
+        <Canvas onGraphReady={handleGraphReady} />
       </main>
 
-      {/* Help Panel */}
-      <aside className="help-panel">
-        <h3>🚀 快速开始</h3>
-        <ol>
-          <li>右键点击画布添加节点</li>
-          <li>连接 <code>Chains/Chain</code> → <code>Clients/PublicClient</code></li>
-          <li>添加 <code>Utilities/Address</code> 输入地址</li>
-          <li>连接到 <code>Public Actions/getBalance</code></li>
-        </ol>
-        <h4>📦 节点分组</h4>
-        <ul>
-          <li><strong>Clients</strong> PublicClient, WalletClient</li>
-          <li><strong>Public Actions</strong> getBalance, getBlockNumber, getGasPrice</li>
-          <li><strong>Chains</strong> Chain, ChainId, ChainInfo</li>
-          <li><strong>Utilities</strong> Address, Display, formatEther</li>
-        </ul>
+      {/* Node Search Modal (Space key) */}
+      <NodeSearch graph={graph} />
+
+      {/* Compact Help */}
+      <aside className="help-panel compact">
+        <p>💡 鼠标悬停顶部分类查看节点 · 按 <kbd>Space</kbd> 快速搜索</p>
       </aside>
     </div>
   )

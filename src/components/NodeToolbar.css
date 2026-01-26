@@ -1,0 +1,101 @@
+/* Node Toolbar Styles */
+.node-toolbar {
+  position: relative;
+  background: #1a1a2e;
+  border-bottom: 1px solid #30363d;
+}
+
+.node-toolbar-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px 8px;
+}
+
+.category-btn {
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Rubik', 'Inter', sans-serif;
+  letter-spacing: 0.5px;
+  color: #fff;
+  background: var(--category-color, #4a5568);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.category-btn:hover,
+.category-btn.active {
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Dropdown */
+.node-dropdown {
+  position: fixed;
+  top: 90px; /* Below header + toolbar */
+  z-index: 1000;
+  min-width: 200px;
+  background: #16213e;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-header {
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.dropdown-nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+.node-btn {
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Rubik', 'Inter', sans-serif;
+  color: #fff;
+  background: linear-gradient(135deg, var(--node-color, #4a5568) 0%, color-mix(in srgb, var(--node-color, #4a5568) 70%, #000) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.node-btn:hover {
+  transform: scale(1.02);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.node-btn:active {
+  transform: scale(0.98);
+}

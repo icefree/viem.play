@@ -1,16 +1,25 @@
-import { useRef, useEffect, useCallback } from 'react'
+import { useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react'
 import { LGraph, LGraphCanvas } from 'litegraph.js'
 import 'litegraph.js/css/litegraph.css'
 import { registerAllNodes } from '../nodes'
 
-interface CanvasProps {
-  onGraphChange?: (graph: LGraph) => void
+export interface CanvasHandle {
+  getGraph: () => LGraph | null
 }
 
-export function Canvas({ onGraphChange }: CanvasProps) {
+interface CanvasProps {
+  onGraphReady?: (graph: LGraph) => void
+}
+
+export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady }, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const graphRef = useRef<LGraph | null>(null)
   const canvasInstanceRef = useRef<LGraphCanvas | null>(null)
+
+  // Expose graph via ref
+  useImperativeHandle(ref, () => ({
+    getGraph: () => graphRef.current
+  }), [])
 
   // Initialize graph and canvas
   useEffect(() => {
@@ -27,8 +36,12 @@ export function Canvas({ onGraphChange }: CanvasProps) {
     const canvas = new LGraphCanvas(canvasRef.current, graph)
     canvasInstanceRef.current = canvas
 
+    // Store canvas reference in graph for external access
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(graph as any).canvas = canvas
+
     // Configure canvas appearance
-    canvas.background_image = undefined
+    canvas.background_image = ''
     canvas.render_shadows = false
     canvas.clear_background = true
     canvas.render_curved_connections = true
@@ -38,13 +51,13 @@ export function Canvas({ onGraphChange }: CanvasProps) {
     graph.start()
 
     // Notify parent
-    onGraphChange?.(graph)
+    onGraphReady?.(graph)
 
     // Cleanup
     return () => {
       graph.stop()
     }
-  }, [onGraphChange])
+  }, [onGraphReady])
 
   // Handle window resize
   useEffect(() => {
@@ -92,9 +105,8 @@ export function Canvas({ onGraphChange }: CanvasProps) {
     }
   }, [])
 
-  // Expose methods to parent via ref
+  // Auto-load saved graph on mount
   useEffect(() => {
-    // Auto-load saved graph on mount
     const data = localStorage.getItem('viemplay-graph')
     if (data && graphRef.current) {
       try {
@@ -124,4 +136,6 @@ export function Canvas({ onGraphChange }: CanvasProps) {
       <canvas ref={canvasRef} className="litegraph-canvas" />
     </div>
   )
-}
+})
+
+Canvas.displayName = 'Canvas'
