@@ -95,8 +95,33 @@ class GetBlockNumberNode extends LGraphNode {
     super()
     this.title = 'getBlockNumber'
     this.addInput('client', 'publicClient')
+    this.addInput('trigger', -1)
     this.addOutput('blockNumber', 'bigint')
-    this.size = [180, 60]
+    this.size = [180, 80]
+
+    this.addWidget('button', 'Fetch Block', '', () => {
+      this.triggerFetch()
+    })
+  }
+
+  async triggerFetch() {
+    const client = this.getInputData(0) as PublicClient | undefined
+    if (!client || this.isLoading) return
+
+    this.isLoading = true
+    try {
+      this.blockNumber = await client.getBlockNumber()
+      this.lastFetch = Date.now()
+      this.setDirtyCanvas(true, true)
+    } catch (e) {
+      console.error('GetBlockNumber error:', e)
+    } finally {
+      this.isLoading = false
+    }
+  }
+
+  onAction() {
+    this.triggerFetch()
   }
 
   async onExecute() {
@@ -107,19 +132,10 @@ class GetBlockNumberNode extends LGraphNode {
       return
     }
 
-    // Refresh every 5 seconds
+    // Still auto-refresh if it's been a while (optional, but keep it useful)
     const now = Date.now()
-    if (now - this.lastFetch > 5000 && !this.isLoading) {
-      this.isLoading = true
-      this.lastFetch = now
-
-      try {
-        this.blockNumber = await client.getBlockNumber()
-      } catch (e) {
-        console.error('GetBlockNumber error:', e)
-      } finally {
-        this.isLoading = false
-      }
+    if (this.blockNumber === null || (now - this.lastFetch > 15000 && !this.isLoading)) {
+      this.triggerFetch()
     }
 
     this.setOutputData(0, this.blockNumber)
@@ -129,12 +145,14 @@ class GetBlockNumberNode extends LGraphNode {
     if (this.flags.collapsed) return
 
     ctx.font = '12px monospace'
-    ctx.fillStyle = '#e2e8f0'
+    ctx.fillStyle = this.isLoading ? '#ffd700' : '#e2e8f0'
 
-    if (this.blockNumber !== null) {
-      ctx.fillText(`#${this.blockNumber.toString()}`, 10, 40)
+    if (this.isLoading) {
+      ctx.fillText('Fetching...', 10, 65)
+    } else if (this.blockNumber !== null) {
+      ctx.fillText(`#${this.blockNumber.toString()}`, 10, 65)
     } else {
-      ctx.fillText('No data', 10, 40)
+      ctx.fillText('No data', 10, 65)
     }
   }
 }
@@ -243,7 +261,7 @@ class GetBlockNode extends LGraphNode {
           blockNumber ? { blockNumber } : {}
         )
         this.block = block
-        this.setOutputData(0, block)
+        this.setOutputData(0, this.block)
         this.setOutputData(1, block.timestamp)
         this.setOutputData(2, block.hash)
       } catch (e) {
