@@ -66,6 +66,24 @@ body {
   background-clip: text;
 }
 
+.scale-badge {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  background: var(--bg-tertiary);
+  color: var(--accent-success);
+  border: 1px solid var(--border-color);
+  border-radius: 99px;
+  margin-left: 0.5rem;
+  font-family: monospace;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.scale-badge:hover {
+  border-color: var(--accent-success);
+  transform: translateY(-1px);
+}
+
 .header-info {
   display: flex;
   align-items: center;

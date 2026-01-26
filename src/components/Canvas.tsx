@@ -75,12 +75,14 @@ export interface CanvasHandle {
 
 interface CanvasProps {
   onGraphReady?: (graph: LGraph) => void
+  onScaleChange?: (scale: number) => void
 }
 
-export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady }, ref) => {
+export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onScaleChange }, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const graphRef = useRef<LGraph | null>(null)
   const canvasInstanceRef = useRef<LGraphCanvas | null>(null)
+  const scaleRef = useRef(1.2)
 
   // Expose graph via ref
   useImperativeHandle(ref, () => ({
@@ -114,12 +116,23 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady }, r
     canvas.render_connection_arrows = true
     canvas.allow_searchbox = false // Disable default search, use our custom one
 
-    //add 2px fontsize
-    canvas.title_text_font = "bold 16px Arial"
-    canvas.inner_text_font = "normal 14px Arial"
-
     // Start running the graph
     graph.start()
+
+    // Default zoom level (1.2x)
+    canvas.ds.scale = 1.2
+    onScaleChange?.(1.2)
+
+    // Track scale changes by hooking into the draw method
+    const originalRender = canvas.draw;
+    canvas.draw = function() {
+      // eslint-disable-next-line prefer-rest-params
+      originalRender.apply(this, arguments as any);
+      if (this.ds.scale !== scaleRef.current) {
+        scaleRef.current = this.ds.scale;
+        onScaleChange?.(this.ds.scale);
+      }
+    };
 
     // Notify parent
     onGraphReady?.(graph)
@@ -128,7 +141,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady }, r
     return () => {
       graph.stop()
     }
-  }, [onGraphReady])
+  }, [onGraphReady, onScaleChange])
 
   // Handle window resize
   useEffect(() => {

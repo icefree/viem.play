@@ -7,6 +7,7 @@ import './App.css'
 
 function App() {
   const [graph, setGraph] = useState<LGraph | null>(null)
+  const [scale, setScale] = useState(1)
   // 追踪鼠标在画布上的位置
   const mousePositionRef = useRef<{ x: number; y: number }>({ x: 400, y: 300 })
 
@@ -64,6 +65,7 @@ function App() {
         <div className="logo">
           <span className="logo-icon">⚡</span>
           <span className="logo-text">Viem Playground</span>
+          <span className="scale-badge">{(scale * 100).toFixed(0)}%</span>
         </div>
 
         <div className="header-actions">
@@ -95,7 +97,7 @@ function App() {
 
       {/* Main Canvas */}
       <main className="app-main">
-        <Canvas onGraphReady={handleGraphReady} />
+        <Canvas onGraphReady={handleGraphReady} onScaleChange={setScale} />
       </main>
 
       {/* Node Search Modal (Space key) */}
