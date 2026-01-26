@@ -106,7 +106,7 @@ class GetBlockNumberNode extends LGraphNode {
   }
 
   async onExecute() {
-    const client = this.getInputData(1) as PublicClient | undefined
+    const client = this.getInputData(0) as PublicClient | undefined
 
     if (!client) {
       this.setOutputData(0, null)
