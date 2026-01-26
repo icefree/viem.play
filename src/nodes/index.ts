@@ -1,6 +1,7 @@
 // Node registration entry point
 // 按照 viem 官网分组组织节点 (完整版)
 import { LiteGraph } from 'litegraph.js'
+import { applyDoubleClickHandlersToAll } from '../utils/nodeHelpers'
 
 // 导入所有分组
 import { registerClientNodes } from './clients'
@@ -54,7 +55,10 @@ export function registerAllNodes() {
   registerUtilityNodes()         // 12. Utilities
   registerGlossaryNodes()        // 13. Glossary
 
-  console.log('[ViemPlay] All 13 node categories registered')
+  // 为所有节点应用双击处理功能
+  applyDoubleClickHandlersToAll()
+
+  console.log('[ViemPlay] All 13 node categories registered with double-click support')
 }
 
 // Re-export for convenience
