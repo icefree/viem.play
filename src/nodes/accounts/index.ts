@@ -12,6 +12,7 @@ class PrivateKeyToAccountNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'privateKeyToAccount'
     this.addInput('privateKey', 'string')
     this.addOutput('account', 'account')
     this.addOutput('address', 'address')
@@ -37,6 +38,7 @@ class MnemonicToAccountNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'mnemonicToAccount'
     this.addInput('mnemonic', 'string')
     this.addInput('index', 'number')
     this.addOutput('account', 'account')
@@ -62,6 +64,7 @@ class GeneratePrivateKeyNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'generatePrivateKey'
     this.addOutput('privateKey', 'string')
     this.size = [180, 50]
   }
@@ -84,6 +87,7 @@ class GenerateMnemonicNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'generateMnemonic'
     this.addOutput('mnemonic', 'string')
     this.size = [180, 50]
   }
@@ -105,6 +109,7 @@ class ToAccountNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'toAccount'
     this.addInput('address', 'address')
     this.addOutput('account', 'account')
     this.size = [160, 50]

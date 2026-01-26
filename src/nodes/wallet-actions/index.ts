@@ -12,6 +12,7 @@ class SendTransactionNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'sendTransaction'
     this.addInput('client', 'walletClient')
     this.addInput('to', 'address')
     this.addInput('value', 'bigint')
@@ -38,6 +39,7 @@ class SignMessageNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'signMessage'
     this.addInput('client', 'walletClient')
     this.addInput('message', 'string')
     this.addOutput('signature', 'string')
@@ -62,6 +64,7 @@ class SignTypedDataNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'signTypedData'
     this.addInput('client', 'walletClient')
     this.addInput('typedData', 'object')
     this.addOutput('signature', 'string')
@@ -85,6 +88,7 @@ class SwitchChainNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'switchChain'
     this.addInput('client', 'walletClient')
     this.addInput('chainId', 'number')
     this.addOutput('success', 'boolean')
@@ -108,6 +112,7 @@ class GetAddressesNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'getAddresses'
     this.addInput('client', 'walletClient')
     this.addOutput('addresses', 'array')
     this.size = [160, 50]

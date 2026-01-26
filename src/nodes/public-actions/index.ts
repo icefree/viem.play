@@ -18,6 +18,7 @@ class GetBalanceNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'getBalance'
     this.addInput('client', 'publicClient')
     this.addInput('address', 'address')
     this.addOutput('balance', 'bigint')
@@ -92,6 +93,7 @@ class GetBlockNumberNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'getBlockNumber'
     this.addInput('client', 'publicClient')
     this.addOutput('blockNumber', 'bigint')
     this.size = [180, 60]
@@ -153,6 +155,7 @@ class GetGasPriceNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'getGasPrice'
     this.addInput('client', 'publicClient')
     this.addOutput('gasPrice', 'bigint')
     this.addOutput('gwei', 'string')
@@ -215,6 +218,7 @@ class GetBlockNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'getBlock'
     this.addInput('client', 'publicClient')
     this.addInput('blockNumber', 'bigint')
     this.addOutput('block', 'object')
@@ -267,6 +271,7 @@ class GetTransactionCountNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'getTransactionCount'
     this.addInput('client', 'publicClient')
     this.addInput('address', 'address')
     this.addOutput('count', 'number')

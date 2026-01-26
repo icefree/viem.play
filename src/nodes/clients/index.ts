@@ -20,6 +20,7 @@ class PublicClientNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'PublicClient'
     this.addInput('chain', 'chain')
     this.addOutput('client', 'publicClient')
     this.size = [180, 50]
@@ -74,6 +75,7 @@ class WalletClientNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'WalletClient'
     this.addInput('chain', 'chain')
     this.addInput('account', 'account')
     this.addOutput('client', 'walletClient')
@@ -109,6 +111,7 @@ class TestClientNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'TestClient'
     this.addInput('chain', 'chain')
     this.addOutput('client', 'testClient')
     this.size = [180, 50]

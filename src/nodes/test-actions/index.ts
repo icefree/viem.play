@@ -12,6 +12,7 @@ class SetBalanceNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'setBalance'
     this.addInput('client', 'testClient')
     this.addInput('address', 'address')
     this.addInput('value', 'bigint')
@@ -36,6 +37,7 @@ class MineNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'mine'
     this.addInput('client', 'testClient')
     this.addInput('blocks', 'number')
     this.addOutput('success', 'boolean')
@@ -59,6 +61,7 @@ class ImpersonateAccountNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'impersonateAccount'
     this.addInput('client', 'testClient')
     this.addInput('address', 'address')
     this.addOutput('success', 'boolean')
@@ -82,6 +85,7 @@ class SetNextBlockTimestampNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'setNextBlockTimestamp'
     this.addInput('client', 'testClient')
     this.addInput('timestamp', 'bigint')
     this.addOutput('success', 'boolean')
@@ -105,6 +109,7 @@ class SnapshotNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'snapshot'
     this.addInput('client', 'testClient')
     this.addOutput('snapshotId', 'string')
     this.size = [160, 50]
@@ -127,6 +132,7 @@ class RevertNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'revert'
     this.addInput('client', 'testClient')
     this.addInput('snapshotId', 'string')
     this.addOutput('success', 'boolean')

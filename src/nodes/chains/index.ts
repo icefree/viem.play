@@ -62,6 +62,7 @@ class ChainNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'Chain'
     this.addOutput('chain', 'chain')
     this.addProperty('chainName', 'mainnet')
     this.size = [180, 60]
@@ -97,6 +98,7 @@ class ChainIdNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'Chain ID'
     this.addInput('chain', 'chain')
     this.addOutput('chainId', 'number')
     this.size = [140, 50]
@@ -134,6 +136,7 @@ class ChainInfoNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'Chain Info'
     this.addInput('chain', 'chain')
     this.addOutput('name', 'string')
     this.addOutput('nativeCurrency', 'object')
