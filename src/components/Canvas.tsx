@@ -111,6 +111,9 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady }, r
     // Start running the graph
     graph.start()
 
+    // Default zoom level (1.2x)
+    canvas.ds.scale = 1.2
+    
     // Notify parent
     onGraphReady?.(graph)
 
