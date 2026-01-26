@@ -122,11 +122,17 @@ export function NodeSearch({ graph }: NodeSearchProps) {
   // 键盘事件处理
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // 空格键打开搜索（当不在输入框中时）
-      if (e.code === 'Space' && !isOpen && document.activeElement?.tagName !== 'INPUT') {
-        e.preventDefault()
-        setIsOpen(true)
-        return
+      // 空格键打开搜索（当不在输入框中且不是在节点输入时）
+      // 使用 capture 阶段拦截事件，防止被 LiteGraph 消费
+      if (e.code === 'Space' && !isOpen) {
+        const target = e.target as HTMLElement
+        const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable
+        if (!isInput) {
+          e.preventDefault()
+          e.stopPropagation()
+          setIsOpen(true)
+          return
+        }
       }
 
       if (!isOpen) return
@@ -154,8 +160,9 @@ export function NodeSearch({ graph }: NodeSearchProps) {
       }
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    // 使用 capture 模式，在事件到达 LiteGraph 之前捕获
+    window.addEventListener('keydown', handleKeyDown, true)
+    return () => window.removeEventListener('keydown', handleKeyDown, true)
   }, [isOpen, filteredNodes, selectedIndex, addNode])
 
   // 打开时聚焦输入框

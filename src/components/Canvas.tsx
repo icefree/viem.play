@@ -46,6 +46,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady }, r
     canvas.clear_background = true
     canvas.render_curved_connections = true
     canvas.render_connection_arrows = true
+    canvas.allow_searchbox = false // Disable default search, use our custom one
 
     // Start running the graph
     graph.start()
@@ -73,6 +74,37 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady }, r
     handleResize()
 
     return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Handle keyboard shortcuts (Backspace/Delete for node deletion)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement
+      const isInputActive = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable
+      
+      if (isInputActive) return
+
+      // Delete selected nodes with Backspace or Delete key
+      if (e.key === 'Backspace' || e.key === 'Delete') {
+        const canvas = canvasInstanceRef.current
+        if (canvas && canvas.selected_nodes) {
+          const selectedNodes = Object.values(canvas.selected_nodes)
+          if (selectedNodes.length > 0 && graphRef.current) {
+            for (const node of selectedNodes) {
+              graphRef.current.remove(node)
+            }
+            canvas.selected_nodes = {}
+            canvas.setDirty(true, true)
+            e.preventDefault()
+            e.stopPropagation()
+          }
+        }
+      }
+    }
+
+    // Use capture to handle event before LiteGraph
+    window.addEventListener('keydown', handleKeyDown, true)
+    return () => window.removeEventListener('keydown', handleKeyDown, true)
   }, [])
 
   // Save graph to localStorage
