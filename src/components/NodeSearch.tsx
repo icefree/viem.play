@@ -78,17 +78,12 @@ export function NodeSearch({ graph, getMousePosition }: NodeSearchProps) {
   // 键盘事件处理
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // 空格键打开搜索（当不在输入框中且不是在节点输入时）
-      // 使用 capture 阶段拦截事件，防止被 LiteGraph 消费
-      if (e.code === 'Space' && !isOpen) {
-        const target = e.target as HTMLElement
-        const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable
-        if (!isInput) {
-          e.preventDefault()
-          e.stopPropagation()
-          setIsOpen(true)
-          return
-        }
+      // Command+K 或 Ctrl+K 打开搜索
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k' && !isOpen) {
+        e.preventDefault()
+        e.stopPropagation()
+        setIsOpen(true)
+        return
       }
 
       if (!isOpen) return
@@ -163,7 +158,7 @@ export function NodeSearch({ graph, getMousePosition }: NodeSearchProps) {
           )}
         </div>
         <div className="search-hint">
-          按 <kbd>Space</kbd> 打开 · <kbd>↑</kbd><kbd>↓</kbd> 选择 · <kbd>Enter</kbd> 添加 · <kbd>Esc</kbd> 关闭
+          按 <kbd>{navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}</kbd> + <kbd>K</kbd> 打开 · <kbd>↑</kbd><kbd>↓</kbd> 选择 · <kbd>Enter</kbd> 添加 · <kbd>Esc</kbd> 关闭
         </div>
       </div>
     </div>
