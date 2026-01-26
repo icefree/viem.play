@@ -161,6 +161,10 @@ export function NodeToolbar({ graph, getMousePosition }: NodeToolbarProps) {
 
     const node = LiteGraph.createNode(nodeType)
     if (node) {
+      // 设置节点标题为组件名
+      const componentName = nodeType.split('/').pop() || nodeType
+      node.title = componentName
+      
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const canvas = (graph as any).canvas
       const mousePos = getMousePosition()
@@ -256,7 +260,7 @@ export function NodeToolbar({ graph, getMousePosition }: NodeToolbarProps) {
                 style={{ '--node-color': activeColor } as React.CSSProperties}
                 onClick={() => addNode(node.type)}
               >
-                {node.label.toUpperCase()}
+                {node.label}
               </button>
             ))}
           </div>

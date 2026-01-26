@@ -104,6 +104,10 @@ export function NodeSearch({ graph, getMousePosition }: NodeSearchProps) {
 
     const node = LiteGraph.createNode(nodeType)
     if (node) {
+      // 设置节点标题为组件名（从 type 中提取）
+      const componentName = nodeType.split('/').pop() || nodeType
+      node.title = componentName
+      
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const canvas = (graph as any).canvas
       const mousePos = getMousePosition()
