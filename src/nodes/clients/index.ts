@@ -20,32 +20,13 @@ class PublicClientNode extends LGraphNode {
     this.title = 'PublicClient'
     this.addInput('chain', 'chain')
     this.addInput('transport', 'transport')
-    this.addInput('batch', 'object')
-    
-    // Properties for widgets
-    this.properties = {
-      name: 'Public Client',
-      key: 'public',
-      cacheTime: 4000,
-      pollingInterval: 4000,
-      ccipRead: false
-    }
-
-    // Widgets for all parameters
-    this.addWidget('text', 'Name', this.properties.name, (v: string) => { this.properties.name = v })
-    this.addWidget('text', 'Key', this.properties.key, (v: string) => { this.properties.key = v })
-    this.addWidget('number', 'Cache Time', this.properties.cacheTime, (v: number) => { this.properties.cacheTime = v }, { precision: 0 })
-    this.addWidget('number', 'Polling Interval', this.properties.pollingInterval, (v: number) => { this.properties.pollingInterval = v }, { precision: 0 })
-    this.addWidget('toggle', 'CCIP Read', this.properties.ccipRead, (v: boolean) => { this.properties.ccipRead = v })
-
     this.addOutput('client', 'publicClient')
-    this.size = [220, 200]
+    this.size = [180, 60]
   }
 
   onExecute() {
     const chain = this.getInputData(0) as Chain | undefined
     const transport = this.getInputData(1)
-    const batch = this.getInputData(2)
 
     if (!chain) {
       this.setOutputData(0, null)
@@ -55,13 +36,7 @@ class PublicClientNode extends LGraphNode {
     // Create a config object to detect changes
     const config = {
       chainId: chain.id,
-      transport: transport ? 'custom' : 'default',
-      batch: !!batch,
-      name: this.properties.name,
-      key: this.properties.key,
-      cacheTime: this.properties.cacheTime,
-      pollingInterval: this.properties.pollingInterval,
-      ccipRead: this.properties.ccipRead
+      transport: transport ? 'custom' : 'default'
     }
     const configHash = JSON.stringify(config)
 
@@ -70,13 +45,7 @@ class PublicClientNode extends LGraphNode {
       
       this.currentClient = createPublicClient({
         chain,
-        transport: transport || http(),
-        batch: batch || undefined,
-        name: this.properties.name,
-        key: this.properties.key,
-        cacheTime: this.properties.cacheTime,
-        pollingInterval: this.properties.pollingInterval,
-        ccipRead: this.properties.ccipRead
+        transport: transport || http()
       })
     }
 
@@ -88,7 +57,7 @@ class PublicClientNode extends LGraphNode {
     if (chain) {
       return `PublicClient (${chain.name})`
     }
-    return this.properties.name || 'PublicClient'
+    return 'PublicClient'
   }
 }
 
