@@ -89,7 +89,6 @@ class GetBlockNumberNode extends LGraphNode {
 
   private blockNumber: bigint | null = null
   private isLoading = false
-  private lastFetch = 0
 
   constructor() {
     super()
@@ -107,7 +106,6 @@ class GetBlockNumberNode extends LGraphNode {
     this.isLoading = true
     try {
       this.blockNumber = await client.getBlockNumber()
-      this.lastFetch = Date.now()
       this.setDirtyCanvas(true, true)
     } catch (e) {
       console.error('GetBlockNumber error:', e)
@@ -126,12 +124,6 @@ class GetBlockNumberNode extends LGraphNode {
     if (!client) {
       this.setOutputData(0, null)
       return
-    }
-
-    // Still auto-refresh if it's been a while (optional, but keep it useful)
-    const now = Date.now()
-    if (this.blockNumber === null || (now - this.lastFetch > 15000 && !this.isLoading)) {
-      this.triggerFetch()
     }
 
     this.setOutputData(0, this.blockNumber)
