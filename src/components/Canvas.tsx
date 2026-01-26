@@ -10,6 +10,7 @@ const SLOT_TYPE_TO_NODE: Record<string, string> = {
   'publicClient': 'Public Actions/Account/getBalance', // 修正路径
   'account': 'Accounts/privateKeyToAccount',
   'address': 'Utilities/Display/Address',
+  '-1': 'Control/Button', // 触发器自动生成按钮
 }
 
 // 增强 LiteGraph 原型以支持双击插槽自动连接
