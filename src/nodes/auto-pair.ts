@@ -1,0 +1,171 @@
+import { LiteGraph, LGraphNode } from 'litegraph.js'
+
+type CanvasMouseEvent = MouseEvent & {
+  canvasX?: number
+  canvasY?: number
+}
+
+const AUTO_PAIR_FLAG = '__viemplayAutoPairing__'
+
+const NODE_TYPES = {
+  text: 'Utilities/UI/Text',
+  number: 'Utilities/UI/Number',
+  address: 'Utilities/UI/Address',
+  bytes32: 'Utilities/UI/Bytes32',
+  display: 'Utilities/UI/Display',
+  toBigInt: 'Utilities/Helpers/toBigInt',
+  parseAbi: 'ABI/Parsing/parseAbi',
+  chain: 'Chains/Chain',
+  publicClient: 'Clients & Transports/Clients/PublicClient',
+  walletClient: 'Clients & Transports/Clients/WalletClient',
+  testClient: 'Clients & Transports/Clients/TestClient',
+  toAccount: 'Accounts/JSON-RPC/toAccount'
+} as const
+
+const GAP_X = 240
+const OUTPUT_OFFSET_X = 80
+const OFFSET_Y = -20
+
+function getBasePos(node: LGraphNode, e?: CanvasMouseEvent) {
+  const fallbackX = Array.isArray(node.pos) ? node.pos[0] : 0
+  const fallbackY = Array.isArray(node.pos) ? node.pos[1] : 0
+  const x = typeof e?.canvasX === 'number' ? e.canvasX : fallbackX
+  const y = typeof e?.canvasY === 'number' ? e.canvasY : fallbackY
+  return { x, y }
+}
+
+function createNode(graph: LGraphNode['graph'], type: string, x: number, y: number) {
+  if (!graph) return null
+  const node = LiteGraph.createNode(type)
+  if (!node) return null
+  node.pos = [x, y]
+  graph.add(node)
+  return node
+}
+
+function attachInputAutoPairing(nodeType: typeof LGraphNode) {
+  const proto = nodeType.prototype as LGraphNode & { [AUTO_PAIR_FLAG]?: boolean }
+  if (proto[AUTO_PAIR_FLAG]) return
+  proto[AUTO_PAIR_FLAG] = true
+
+  const originalOnInputDblClick = proto.onInputDblClick
+  proto.onInputDblClick = function (index: number, e: CanvasMouseEvent) {
+    if (typeof originalOnInputDblClick === 'function') {
+      originalOnInputDblClick.call(this, index, e)
+    }
+
+    const input = this.inputs?.[index]
+    if (!input || !this.graph) return
+
+    const { x, y } = getBasePos(this, e)
+    const leftX = x - GAP_X
+    const leftX2 = x - GAP_X * 2
+
+    switch (input.type) {
+      case 'string': {
+        const textNode = createNode(this.graph, NODE_TYPES.text, leftX, y + OFFSET_Y)
+        if (textNode) textNode.connect(0, this, index)
+        break
+      }
+      case 'number': {
+        const numberNode = createNode(this.graph, NODE_TYPES.number, leftX, y + OFFSET_Y)
+        if (numberNode) numberNode.connect(0, this, index)
+        break
+      }
+      case 'address': {
+        const addressNode = createNode(this.graph, NODE_TYPES.address, leftX, y + OFFSET_Y)
+        if (addressNode) addressNode.connect(0, this, index)
+        break
+      }
+      case 'bytes32': {
+        const bytes32Node = createNode(this.graph, NODE_TYPES.bytes32, leftX, y + OFFSET_Y)
+        if (bytes32Node) bytes32Node.connect(0, this, index)
+        break
+      }
+      case 'bigint': {
+        const textNode = createNode(this.graph, NODE_TYPES.text, leftX2, y + OFFSET_Y)
+        const toBigIntNode = createNode(this.graph, NODE_TYPES.toBigInt, leftX, y + OFFSET_Y)
+        if (textNode && toBigIntNode) {
+          textNode.connect(0, toBigIntNode, 0)
+          toBigIntNode.connect(0, this, index)
+        }
+        break
+      }
+      case 'abi': {
+        const textNode = createNode(this.graph, NODE_TYPES.text, leftX2, y + OFFSET_Y)
+        const parseAbiNode = createNode(this.graph, NODE_TYPES.parseAbi, leftX, y + OFFSET_Y)
+        if (textNode && parseAbiNode) {
+          textNode.connect(0, parseAbiNode, 0)
+          parseAbiNode.connect(0, this, index)
+        }
+        break
+      }
+      case 'chain': {
+        const chainNode = createNode(this.graph, NODE_TYPES.chain, leftX, y + OFFSET_Y)
+        if (chainNode) chainNode.connect(0, this, index)
+        break
+      }
+      case 'publicClient': {
+        const chainNode = createNode(this.graph, NODE_TYPES.chain, leftX2, y + OFFSET_Y)
+        const clientNode = createNode(this.graph, NODE_TYPES.publicClient, leftX, y + OFFSET_Y)
+        if (chainNode && clientNode) {
+          chainNode.connect(0, clientNode, 0)
+          clientNode.connect(0, this, index)
+        }
+        break
+      }
+      case 'testClient': {
+        const chainNode = createNode(this.graph, NODE_TYPES.chain, leftX2, y + OFFSET_Y)
+        const clientNode = createNode(this.graph, NODE_TYPES.testClient, leftX, y + OFFSET_Y)
+        if (chainNode && clientNode) {
+          chainNode.connect(0, clientNode, 0)
+          clientNode.connect(0, this, index)
+        }
+        break
+      }
+      case 'walletClient': {
+        const chainNode = createNode(this.graph, NODE_TYPES.chain, leftX2, y + OFFSET_Y)
+        const clientNode = createNode(this.graph, NODE_TYPES.walletClient, leftX, y + OFFSET_Y)
+        if (chainNode && clientNode) {
+          chainNode.connect(0, clientNode, 0)
+          clientNode.connect(0, this, index)
+        }
+        break
+      }
+      case 'account': {
+        const addressNode = createNode(this.graph, NODE_TYPES.address, leftX2, y + OFFSET_Y)
+        const accountNode = createNode(this.graph, NODE_TYPES.toAccount, leftX, y + OFFSET_Y)
+        if (addressNode && accountNode) {
+          addressNode.connect(0, accountNode, 0)
+          accountNode.connect(0, this, index)
+        }
+        break
+      }
+      default:
+        console.log('[ViemPlay] No auto input pairing for type:', input.type)
+    }
+  }
+
+  const originalOnOutputDblClick = proto.onOutputDblClick
+  proto.onOutputDblClick = function (index: number, e: CanvasMouseEvent) {
+    if (typeof originalOnOutputDblClick === 'function') {
+      originalOnOutputDblClick.call(this, index, e)
+    }
+
+    if (!this.graph || !this.outputs?.[index]) return
+
+    const { x, y } = getBasePos(this, e)
+    const displayNode = createNode(this.graph, NODE_TYPES.display, x + OUTPUT_OFFSET_X, y + OFFSET_Y)
+    if (displayNode) {
+      this.connect(index, displayNode, 0)
+    }
+  }
+}
+
+export function installAutoNodePairing() {
+  const nodeTypes = Object.values(LiteGraph.registered_node_types)
+  nodeTypes.forEach((nodeType) => {
+    if (!nodeType || typeof nodeType !== 'function') return
+    attachInputAutoPairing(nodeType as typeof LGraphNode)
+  })
+}
