@@ -86,6 +86,30 @@ export function NodeSearch({ graph, getMousePosition }: NodeSearchProps) {
         return
       }
 
+      // 空格键打开搜索（仅当不在输入框中，且没有选中节点时）
+      if (e.key === ' ' && !isOpen) {
+        const target = e.target as HTMLElement
+        const isInputActive = target.tagName === 'INPUT' || 
+                              target.tagName === 'TEXTAREA' || 
+                              target.isContentEditable
+        
+        // 如果在输入框中，不处理
+        if (isInputActive) return
+
+        // 检查是否有选中的节点
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const canvas = (graph as any)?.canvas
+        if (canvas && canvas.selected_nodes && Object.keys(canvas.selected_nodes).length > 0) {
+          // 有选中的节点时不触发搜索
+          return
+        }
+
+        e.preventDefault()
+        e.stopPropagation()
+        setIsOpen(true)
+        return
+      }
+
       if (!isOpen) return
 
       switch (e.key) {
@@ -114,7 +138,7 @@ export function NodeSearch({ graph, getMousePosition }: NodeSearchProps) {
     // 使用 capture 模式，在事件到达 LiteGraph 之前捕获
     window.addEventListener('keydown', handleKeyDown, true)
     return () => window.removeEventListener('keydown', handleKeyDown, true)
-  }, [isOpen, filteredNodes, selectedIndex, addNode])
+  }, [isOpen, filteredNodes, selectedIndex, addNode, graph])
 
   // 打开时聚焦输入框
   useEffect(() => {
@@ -158,7 +182,7 @@ export function NodeSearch({ graph, getMousePosition }: NodeSearchProps) {
           )}
         </div>
         <div className="search-hint">
-          Press <kbd>{navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}</kbd> + <kbd>K</kbd> to open · <kbd>↑</kbd><kbd>↓</kbd> to select · <kbd>Enter</kbd> to add · <kbd>Esc</kbd> to close
+          <kbd>{navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}+K</kbd> or <kbd>Space</kbd> to open · <kbd>↑</kbd><kbd>↓</kbd> select · <kbd>Enter</kbd> add · <kbd>Esc</kbd> close
         </div>
       </div>
     </div>
