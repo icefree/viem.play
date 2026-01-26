@@ -1,62 +1,61 @@
 .shortcuts-panel {
   position: fixed;
   right: 20px;
-  bottom: 100px; /* Above minimap if it exists, or just bottom right */
-  width: 200px;
-  background: rgba(26, 32, 44, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  bottom: 220px; /* High enough to clear minimap */
+  width: 260px;
+  background: rgba(26, 32, 44, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 16px;
   color: #e2e8f0;
-  box-shadow:
-    0 10px 25px -5px rgba(0, 0, 0, 0.3),
-    0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
   z-index: 1000;
-  pointer-events: none; /* Allow clicks through to canvas if needed, but we can make it interactive if we want */
-  transition:
-    transform 0.2s ease,
-    opacity 0.2s ease;
+  pointer-events: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .shortcuts-panel:hover {
-  opacity: 0.1; /* Fade out when hovering to see graph underneath */
+  opacity: 0.1;
 }
 
 .shortcuts-title {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 14px;
   color: #a0aec0;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 8px;
+  padding-bottom: 10px;
 }
 
 .shortcuts-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .shortcut-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
+  white-space: nowrap;
 }
 
 .shortcut-label {
   font-size: 11px;
   color: #cbd5e0;
   text-align: right;
+  flex-shrink: 0;
 }
 
 .shortcut-keys {
   display: flex;
   align-items: center;
   gap: 2px;
+  flex-shrink: 0;
 }
 
 kbd {
@@ -65,11 +64,10 @@ kbd {
   border-radius: 4px;
   padding: 2px 5px;
   font-size: 10px;
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
   color: #fff;
+  white-space: nowrap;
 }
 
 .key-plus {
