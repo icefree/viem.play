@@ -12,6 +12,7 @@ class GetEnsAddressNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'getEnsAddress'
     this.addInput('client', 'publicClient')
     this.addInput('name', 'string')
     this.addOutput('address', 'address')
@@ -36,6 +37,7 @@ class GetEnsNameNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'getEnsName'
     this.addInput('client', 'publicClient')
     this.addInput('address', 'address')
     this.addOutput('name', 'string')
@@ -59,6 +61,7 @@ class GetEnsAvatarNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'getEnsAvatar'
     this.addInput('client', 'publicClient')
     this.addInput('name', 'string')
     this.addOutput('avatar', 'string')
@@ -82,6 +85,7 @@ class GetEnsTextNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'getEnsText'
     this.addInput('client', 'publicClient')
     this.addInput('name', 'string')
     this.addInput('key', 'string')

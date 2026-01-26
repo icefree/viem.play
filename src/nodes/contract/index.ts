@@ -12,6 +12,7 @@ class ReadContractNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'readContract'
     this.addInput('client', 'publicClient')
     this.addInput('address', 'address')
     this.addInput('abi', 'abi')
@@ -39,6 +40,7 @@ class WriteContractNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'writeContract'
     this.addInput('client', 'walletClient')
     this.addInput('address', 'address')
     this.addInput('abi', 'abi')
@@ -65,6 +67,7 @@ class SimulateContractNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'simulateContract'
     this.addInput('client', 'publicClient')
     this.addInput('address', 'address')
     this.addInput('abi', 'abi')
@@ -93,6 +96,7 @@ class GetContractEventsNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'getContractEvents'
     this.addInput('client', 'publicClient')
     this.addInput('address', 'address')
     this.addInput('abi', 'abi')
@@ -118,6 +122,7 @@ class DeployContractNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'deployContract'
     this.addInput('client', 'walletClient')
     this.addInput('abi', 'abi')
     this.addInput('bytecode', 'bytes')

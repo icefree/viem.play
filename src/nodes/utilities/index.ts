@@ -9,6 +9,7 @@ class TextInputNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'Text'
     this.addOutput('text', 'string')
     this.addProperty('value', '')
     this.size = [180, 60]
@@ -32,6 +33,7 @@ class NumberInputNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'Number'
     this.addOutput('number', 'number')
     this.addProperty('value', 0)
     this.size = [180, 60]
@@ -58,6 +60,7 @@ class AddressInputNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'Address'
     this.addOutput('address', 'address')
     this.addProperty('value', '')
     this.size = [260, 60]
@@ -99,6 +102,7 @@ class Bytes32InputNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'Bytes32'
     this.addOutput('bytes32', 'bytes32')
     this.addProperty('value', '')
     this.size = [260, 60]
@@ -132,6 +136,7 @@ class DisplayNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'Display'
     this.addInput('value', 0) // 0 means any type
     this.size = [200, 80]
   }
@@ -179,6 +184,7 @@ class ConsoleLogNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'Console'
     this.addInput('value', 0)
     this.addInput('trigger', -1)
     this.size = [140, 50]
@@ -206,6 +212,7 @@ class ToBigIntNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'toBigInt'
     this.addInput('value', 0)
     this.addOutput('bigint', 'bigint')
     this.size = [140, 50]
@@ -237,6 +244,7 @@ class FormatEtherNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'formatEther'
     this.addInput('wei', 'bigint')
     this.addOutput('ether', 'string')
     this.size = [160, 50]
@@ -266,6 +274,7 @@ class ParseEtherNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'parseEther'
     this.addInput('ether', 'string')
     this.addOutput('wei', 'bigint')
     this.size = [160, 50]

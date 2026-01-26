@@ -12,6 +12,7 @@ class ParseAbiNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'parseAbi'
     this.addInput('abiJson', 'string')
     this.addOutput('abi', 'abi')
     this.size = [160, 50]
@@ -44,6 +45,7 @@ class EncodeAbiParametersNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'encodeAbiParameters'
     this.addInput('types', 'array')
     this.addInput('values', 'array')
     this.addOutput('encoded', 'bytes')
@@ -68,6 +70,7 @@ class DecodeAbiParametersNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'decodeAbiParameters'
     this.addInput('types', 'array')
     this.addInput('data', 'bytes')
     this.addOutput('decoded', 'array')
@@ -91,6 +94,7 @@ class EncodeFunctionDataNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'encodeFunctionData'
     this.addInput('abi', 'abi')
     this.addInput('functionName', 'string')
     this.addInput('args', 'array')
@@ -115,6 +119,7 @@ class DecodeFunctionResultNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'decodeFunctionResult'
     this.addInput('abi', 'abi')
     this.addInput('functionName', 'string')
     this.addInput('data', 'bytes')
@@ -139,6 +144,7 @@ class DecodeEventLogNode extends LGraphNode {
 
   constructor() {
     super()
+    this.title = 'decodeEventLog'
     this.addInput('abi', 'abi')
     this.addInput('topics', 'array')
     this.addInput('data', 'bytes')
