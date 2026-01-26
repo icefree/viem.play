@@ -1,0 +1,79 @@
+.shortcuts-panel {
+  position: fixed;
+  right: 20px;
+  bottom: 100px; /* Above minimap if it exists, or just bottom right */
+  width: 200px;
+  background: rgba(26, 32, 44, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  color: #e2e8f0;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.3),
+    0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  pointer-events: none; /* Allow clicks through to canvas if needed, but we can make it interactive if we want */
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.shortcuts-panel:hover {
+  opacity: 0.1; /* Fade out when hovering to see graph underneath */
+}
+
+.shortcuts-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
+}
+
+.shortcuts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.shortcut-label {
+  font-size: 11px;
+  color: #cbd5e0;
+  text-align: right;
+}
+
+.shortcut-keys {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+kbd {
+  background: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-size: 10px;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+.key-plus {
+  font-size: 10px;
+  color: #718096;
+  margin: 0 1px;
+}

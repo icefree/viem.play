@@ -5,6 +5,7 @@ import type { CanvasHandle } from './components/Canvas'
 import { NodeToolbar } from './components/NodeToolbar'
 import { NodeSearch } from './components/NodeSearch'
 import { Minimap } from './components/Minimap'
+import { ShortcutsPanel } from './components/ShortcutsPanel'
 import './App.css'
 
 function App() {
@@ -200,6 +201,9 @@ function App() {
 
       {/* Node Search Modal (Space key) */}
       <NodeSearch graph={graph} getMousePosition={getMousePosition} />
+      
+      {/* Floating Shortcuts Panel */}
+      <ShortcutsPanel />
     </div>
   )
 }
