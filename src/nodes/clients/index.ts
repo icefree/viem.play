@@ -1,5 +1,5 @@
 import { LGraphNode, LiteGraph } from 'litegraph.js'
-import { createPublicClient, http, type PublicClient, type Chain } from 'viem'
+import { createPublicClient, http, webSocket, type PublicClient, type Chain } from 'viem'
 
 /**
  * PublicClient 节点 - 创建 viem 的 PublicClient
@@ -146,6 +146,54 @@ class ClientPlaceholderNode extends LGraphNode {
   }
 }
 
+/**
+ * HttpTransport 节点
+ */
+class HttpTransportNode extends LGraphNode {
+  static title = 'http'
+  static desc = 'HTTP transport'
+  
+  color = '#2d3748'
+  bgcolor = '#1a202c'
+
+  constructor() {
+    super()
+    this.title = 'http'
+    this.addInput('url', 'string')
+    this.addOutput('transport', 'transport')
+    this.size = [140, 40]
+  }
+
+  onExecute() {
+    const url = this.getInputData(0) as string | undefined
+    this.setOutputData(0, http(url))
+  }
+}
+
+/**
+ * WebSocketTransport 节点
+ */
+class WebSocketTransportNode extends LGraphNode {
+  static title = 'webSocket'
+  static desc = 'WebSocket transport'
+  
+  color = '#2d3748'
+  bgcolor = '#1a202c'
+
+  constructor() {
+    super()
+    this.title = 'webSocket'
+    this.addInput('url', 'string')
+    this.addOutput('transport', 'transport')
+    this.size = [140, 40]
+  }
+
+  onExecute() {
+    const url = this.getInputData(0) as string | undefined
+    this.setOutputData(0, webSocket(url)) 
+  }
+}
+
 export function registerClientNodes() {
   // --- Clients ---
   LiteGraph.registerNodeType('Clients & Transports/Clients/PublicClient', PublicClientNode)
@@ -154,11 +202,11 @@ export function registerClientNodes() {
   LiteGraph.registerNodeType('Clients & Transports/Clients/CustomClient', class extends ClientPlaceholderNode { constructor() { super('Custom Client', 'Create a custom client', '#276749', '#1c4532') } })
 
   // --- Transports ---
-  LiteGraph.registerNodeType('Clients & Transports/Transports/http', class extends ClientPlaceholderNode { constructor() { super('http', 'HTTP transport', '#2d3748', '#1a202c') } })
-  LiteGraph.registerNodeType('Clients & Transports/Transports/webSocket', class extends ClientPlaceholderNode { constructor() { super('webSocket', 'WebSocket transport', '#2d3748', '#1a202c') } })
+  LiteGraph.registerNodeType('Clients & Transports/Transports/http', HttpTransportNode)
+  LiteGraph.registerNodeType('Clients & Transports/Transports/webSocket', WebSocketTransportNode)
   LiteGraph.registerNodeType('Clients & Transports/Transports/custom', class extends ClientPlaceholderNode { constructor() { super('custom', 'Custom (EIP-1193) transport', '#2d3748', '#1a202c') } })
   LiteGraph.registerNodeType('Clients & Transports/Transports/ipc', class extends ClientPlaceholderNode { constructor() { super('ipc', 'IPC transport', '#2d3748', '#1a202c') } })
   LiteGraph.registerNodeType('Clients & Transports/Transports/fallback', class extends ClientPlaceholderNode { constructor() { super('fallback', 'Fallback transport', '#2d3748', '#1a202c') } })
 }
 
-export { PublicClientNode, WalletClientNode, TestClientNode }
+export { PublicClientNode, WalletClientNode, TestClientNode, HttpTransportNode, WebSocketTransportNode }
