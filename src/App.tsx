@@ -27,6 +27,36 @@ function App() {
   // 获取鼠标位置的函数（传递给子组件）
   const getMousePosition = useCallback(() => mousePositionRef.current, [])
 
+  // Save graph to localStorage
+  const saveGraph = useCallback(() => {
+    if (graph) {
+      const data = JSON.stringify(graph.serialize())
+      localStorage.setItem('viemplay-graph', data)
+      console.log('[ViemPlay] Graph saved')
+    }
+  }, [graph])
+
+  // Load graph from localStorage
+  const loadGraph = useCallback(() => {
+    const data = localStorage.getItem('viemplay-graph')
+    if (data && graph) {
+      try {
+        graph.configure(JSON.parse(data))
+        console.log('[ViemPlay] Graph loaded')
+      } catch (e) {
+        console.error('Failed to load graph:', e)
+      }
+    }
+  }, [graph])
+
+  // Clear graph
+  const clearGraph = useCallback(() => {
+    if (graph) {
+      graph.clear()
+      console.log('[ViemPlay] Graph cleared')
+    }
+  }, [graph])
+
   return (
     <div className="app">
       {/* Header */}
@@ -35,6 +65,19 @@ function App() {
           <span className="logo-icon">⚡</span>
           <span className="logo-text">Viem Playground</span>
         </div>
+
+        <div className="header-actions">
+          <button onClick={saveGraph} className="toolbar-btn">
+            💾 Save
+          </button>
+          <button onClick={loadGraph} className="toolbar-btn">
+            📂 Load
+          </button>
+          <button onClick={clearGraph} className="toolbar-btn danger">
+            🗑️ Clear
+          </button>
+        </div>
+
         <div className="header-info">
           <a
             href="https://viem.sh"

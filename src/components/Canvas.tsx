@@ -107,36 +107,6 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady }, r
     return () => window.removeEventListener('keydown', handleKeyDown, true)
   }, [])
 
-  // Save graph to localStorage
-  const saveGraph = useCallback(() => {
-    if (graphRef.current) {
-      const data = JSON.stringify(graphRef.current.serialize())
-      localStorage.setItem('viemplay-graph', data)
-      console.log('[ViemPlay] Graph saved')
-    }
-  }, [])
-
-  // Load graph from localStorage
-  const loadGraph = useCallback(() => {
-    const data = localStorage.getItem('viemplay-graph')
-    if (data && graphRef.current) {
-      try {
-        graphRef.current.configure(JSON.parse(data))
-        console.log('[ViemPlay] Graph loaded')
-      } catch (e) {
-        console.error('Failed to load graph:', e)
-      }
-    }
-  }, [])
-
-  // Clear graph
-  const clearGraph = useCallback(() => {
-    if (graphRef.current) {
-      graphRef.current.clear()
-      console.log('[ViemPlay] Graph cleared')
-    }
-  }, [])
-
   // Auto-load saved graph on mount
   useEffect(() => {
     const data = localStorage.getItem('viemplay-graph')
@@ -151,19 +121,6 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady }, r
 
   return (
     <div className="canvas-container">
-      {/* Toolbar */}
-      <div className="canvas-toolbar">
-        <button onClick={saveGraph} className="toolbar-btn">
-          💾 Save
-        </button>
-        <button onClick={loadGraph} className="toolbar-btn">
-          📂 Load
-        </button>
-        <button onClick={clearGraph} className="toolbar-btn danger">
-          🗑️ Clear
-        </button>
-      </div>
-
       {/* Canvas */}
       <canvas ref={canvasRef} className="litegraph-canvas" />
     </div>
