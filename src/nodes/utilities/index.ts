@@ -49,6 +49,73 @@ class NumberInputNode extends LGraphNode {
 }
 
 /**
+ * Bytes 输入节点 - 允许用户输入十六进制 bytes 值
+ */
+class BytesInputNode extends LGraphNode {
+  static title = 'Bytes'
+  static desc = 'Input bytes value (hex string)'
+
+  constructor() {
+    super()
+    this.title = 'Bytes'
+    this.addOutput('bytes', 'bytes')
+    this.addProperty('value', '')
+    this.size = [220, 60]
+
+    this.addWidget('text', 'Bytes', '', (v: string) => {
+      this.properties.value = v
+    })
+  }
+
+  onExecute() {
+    const value = this.properties.value as string
+    if (value && value.startsWith('0x') && value.length % 2 === 0) {
+      this.setOutputData(0, value)
+    } else {
+      this.setOutputData(0, null)
+    }
+  }
+}
+
+/**
+ * JSON 输入节点 - 允许用户输入 object/array
+ */
+class JsonInputNode extends LGraphNode {
+  static title = 'JSON'
+  static desc = 'Input JSON object/array'
+
+  constructor() {
+    super()
+    this.title = 'JSON'
+    this.addOutput('value', 'object,array')
+    this.addProperty('value', '')
+    this.size = [220, 60]
+
+    this.addWidget('text', 'JSON', '', (v: string) => {
+      this.properties.value = v
+    })
+  }
+
+  onExecute() {
+    const value = this.properties.value as string
+    if (!value) {
+      this.setOutputData(0, null)
+      return
+    }
+    try {
+      const parsed = JSON.parse(value)
+      if (parsed !== null && (Array.isArray(parsed) || typeof parsed === 'object')) {
+        this.setOutputData(0, parsed)
+      } else {
+        this.setOutputData(0, null)
+      }
+    } catch {
+      this.setOutputData(0, null)
+    }
+  }
+}
+
+/**
  * 触发节点 - 手动触发动作输出
  */
 class TriggerNode extends LGraphNode {
@@ -342,6 +409,8 @@ export function registerUtilityNodes() {
   // --- UI Items (Internal) ---
   LiteGraph.registerNodeType('Utilities/UI/Text', TextInputNode)
   LiteGraph.registerNodeType('Utilities/UI/Number', NumberInputNode)
+  LiteGraph.registerNodeType('Utilities/UI/Bytes', BytesInputNode)
+  LiteGraph.registerNodeType('Utilities/UI/JSON', JsonInputNode)
   LiteGraph.registerNodeType('Utilities/UI/Trigger', TriggerNode)
   LiteGraph.registerNodeType('Utilities/UI/Address', AddressInputNode)
   LiteGraph.registerNodeType('Utilities/UI/Bytes32', Bytes32InputNode)
@@ -390,6 +459,8 @@ export function registerUtilityNodes() {
 export {
   TextInputNode,
   NumberInputNode,
+  BytesInputNode,
+  JsonInputNode,
   TriggerNode,
   AddressInputNode,
   Bytes32InputNode,

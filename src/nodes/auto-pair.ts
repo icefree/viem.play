@@ -10,10 +10,13 @@ const AUTO_PAIR_FLAG = '__viemplayAutoPairing__'
 const NODE_TYPES = {
   text: 'Utilities/UI/Text',
   number: 'Utilities/UI/Number',
+  bytes: 'Utilities/UI/Bytes',
+  json: 'Utilities/UI/JSON',
   trigger: 'Utilities/UI/Trigger',
   address: 'Utilities/UI/Address',
   bytes32: 'Utilities/UI/Bytes32',
   display: 'Utilities/UI/Display',
+  console: 'Utilities/UI/Console',
   toBigInt: 'Utilities/Helpers/toBigInt',
   parseAbi: 'ABI/Parsing/parseAbi',
   chain: 'Chains/Chain',
@@ -42,6 +45,14 @@ function createNode(graph: LGraphNode['graph'], type: string, x: number, y: numb
   node.pos = [x, y]
   graph.add(node)
   return node
+}
+
+function findFirstInputIndexByType(node: LGraphNode, type: unknown) {
+  if (!node.inputs) return -1
+  for (let i = 0; i < node.inputs.length; i += 1) {
+    if (node.inputs[i]?.type === type) return i
+  }
+  return -1
 }
 
 function attachInputAutoPairing(nodeType: typeof LGraphNode) {
@@ -87,6 +98,17 @@ function attachInputAutoPairing(nodeType: typeof LGraphNode) {
       case 'bytes32': {
         const bytes32Node = createNode(this.graph, NODE_TYPES.bytes32, leftX, y + OFFSET_Y)
         if (bytes32Node) bytes32Node.connect(0, this, index)
+        break
+      }
+      case 'bytes': {
+        const bytesNode = createNode(this.graph, NODE_TYPES.bytes, leftX, y + OFFSET_Y)
+        if (bytesNode) bytesNode.connect(0, this, index)
+        break
+      }
+      case 'object':
+      case 'array': {
+        const jsonNode = createNode(this.graph, NODE_TYPES.json, leftX, y + OFFSET_Y)
+        if (jsonNode) jsonNode.connect(0, this, index)
         break
       }
       case 'bigint': {
@@ -161,11 +183,22 @@ function attachInputAutoPairing(nodeType: typeof LGraphNode) {
 
     if (!this.graph || !this.outputs?.[index]) return
 
+    const output = this.outputs?.[index]
     const { x, y } = getBasePos(this, e)
-    const displayNode = createNode(this.graph, NODE_TYPES.display, x + OUTPUT_OFFSET_X, y + OFFSET_Y)
-    if (displayNode) {
-      this.connect(index, displayNode, 0)
+
+    if (output?.type === LiteGraph.EVENT || output?.type === -1) {
+      const consoleNode = createNode(this.graph, NODE_TYPES.console, x + OUTPUT_OFFSET_X, y + OFFSET_Y)
+      if (consoleNode) {
+        const triggerIndex = findFirstInputIndexByType(consoleNode, LiteGraph.ACTION)
+        if (triggerIndex >= 0) {
+          this.connect(index, consoleNode, triggerIndex)
+        }
+      }
+      return
     }
+
+    const displayNode = createNode(this.graph, NODE_TYPES.display, x + OUTPUT_OFFSET_X, y + OFFSET_Y)
+    if (displayNode) this.connect(index, displayNode, 0)
   }
 }
 
