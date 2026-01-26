@@ -186,9 +186,6 @@ export function NodeToolbar({ graph, getMousePosition }: NodeToolbarProps) {
           onMouseEnter={handleDropdownEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <div className="dropdown-header" style={{ backgroundColor: activeCategory.color }}>
-            {activeCategory.name.toUpperCase()}
-          </div>
           <div className="dropdown-content">
             {/* Direct Nodes */}
             {activeCategory.directNodes.length > 0 && (
