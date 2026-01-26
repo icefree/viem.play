@@ -133,12 +133,41 @@ class DeployContractNode extends LGraphNode {
   }
 }
 
+/**
+ * Base Placeholder Node for missing actions
+ */
+class ContractPlaceholderNode extends LGraphNode {
+  constructor(title: string, desc: string) {
+    super()
+    this.title = title
+    this.addInput('client', 'publicClient')
+    this.properties = { description: desc }
+    this.color = '#3182ce'
+    this.bgcolor = '#2a4365'
+    this.size = [180, 40]
+  }
+}
+
 export function registerContractNodes() {
-  LiteGraph.registerNodeType('Contract/readContract', ReadContractNode)
-  LiteGraph.registerNodeType('Contract/writeContract', WriteContractNode)
-  LiteGraph.registerNodeType('Contract/simulateContract', SimulateContractNode)
-  LiteGraph.registerNodeType('Contract/getContractEvents', GetContractEventsNode)
-  LiteGraph.registerNodeType('Contract/deployContract', DeployContractNode)
+  // --- Actions ---
+  LiteGraph.registerNodeType('Contract/Actions/readContract', ReadContractNode)
+  LiteGraph.registerNodeType('Contract/Actions/writeContract', WriteContractNode)
+  LiteGraph.registerNodeType('Contract/Actions/simulateContract', SimulateContractNode)
+  LiteGraph.registerNodeType('Contract/Actions/deployContract', DeployContractNode)
+  LiteGraph.registerNodeType('Contract/Actions/multicall', class extends ContractPlaceholderNode { constructor() { super('multicall', 'Execute multiple calls') } })
+
+  // --- Event ---
+  LiteGraph.registerNodeType('Contract/Event/getContractEvents', GetContractEventsNode)
+  LiteGraph.registerNodeType('Contract/Event/createContractEventFilter', class extends ContractPlaceholderNode { constructor() { super('createContractEventFilter', 'Create filter for contract events') } })
+  LiteGraph.registerNodeType('Contract/Event/watchContractEvent', class extends ContractPlaceholderNode { constructor() { super('watchContractEvent', 'Watch for contract events') } })
+
+  // --- Utils ---
+  LiteGraph.registerNodeType('Contract/Utils/decodeFunctionData', class extends ContractPlaceholderNode { constructor() { super('decodeFunctionData', 'Decode function data') } })
+  LiteGraph.registerNodeType('Contract/Utils/decodeFunctionResult', class extends ContractPlaceholderNode { constructor() { super('decodeFunctionResult', 'Decode function result') } })
+  LiteGraph.registerNodeType('Contract/Utils/encodeDeployData', class extends ContractPlaceholderNode { constructor() { super('encodeDeployData', 'Encode deployment data') } })
+  LiteGraph.registerNodeType('Contract/Utils/encodeErrorResult', class extends ContractPlaceholderNode { constructor() { super('encodeErrorResult', 'Encode error result') } })
+  LiteGraph.registerNodeType('Contract/Utils/encodeFunctionData', class extends ContractPlaceholderNode { constructor() { super('encodeFunctionData', 'Encode function data') } })
+  LiteGraph.registerNodeType('Contract/Utils/encodeFunctionResult', class extends ContractPlaceholderNode { constructor() { super('encodeFunctionResult', 'Encode function result') } })
 }
 
 export {

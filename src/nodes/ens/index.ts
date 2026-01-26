@@ -94,11 +94,33 @@ class GetEnsTextNode extends LGraphNode {
   }
 }
 
+/**
+ * Base Placeholder Node for missing actions
+ */
+class EnsPlaceholderNode extends LGraphNode {
+  constructor(title: string, desc: string) {
+    super()
+    this.title = title
+    this.addInput('client', 'publicClient')
+    this.properties = { description: desc }
+    this.color = '#319795'
+    this.bgcolor = '#234e52'
+    this.size = [180, 40]
+  }
+}
+
 export function registerEnsNodes() {
-  LiteGraph.registerNodeType('ENS/getEnsAddress', GetEnsAddressNode)
-  LiteGraph.registerNodeType('ENS/getEnsName', GetEnsNameNode)
-  LiteGraph.registerNodeType('ENS/getEnsAvatar', GetEnsAvatarNode)
-  LiteGraph.registerNodeType('ENS/getEnsText', GetEnsTextNode)
+  // --- Actions ---
+  LiteGraph.registerNodeType('ENS/Actions/getEnsAddress', GetEnsAddressNode)
+  LiteGraph.registerNodeType('ENS/Actions/getEnsName', GetEnsNameNode)
+  LiteGraph.registerNodeType('ENS/Actions/getEnsAvatar', GetEnsAvatarNode)
+  LiteGraph.registerNodeType('ENS/Actions/getEnsText', GetEnsTextNode)
+  LiteGraph.registerNodeType('ENS/Actions/getEnsResolver', class extends EnsPlaceholderNode { constructor() { super('getEnsResolver', 'Get ENS resolver') } })
+
+  // --- Utils ---
+  LiteGraph.registerNodeType('ENS/Utils/labelhash', class extends EnsPlaceholderNode { constructor() { super('labelhash', 'Hash an ENS label') } })
+  LiteGraph.registerNodeType('ENS/Utils/namehash', class extends EnsPlaceholderNode { constructor() { super('namehash', 'Hash an ENS name') } })
+  LiteGraph.registerNodeType('ENS/Utils/normalize', class extends EnsPlaceholderNode { constructor() { super('normalize', 'Normalize an ENS name') } })
 }
 
 export {
