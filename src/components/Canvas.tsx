@@ -85,6 +85,65 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
   const canvasInstanceRef = useRef<LGraphCanvas | null>(null)
   const scaleRef = useRef(1.0)
 
+  // Undo/Redo 历史记录
+  const historyRef = useRef<string[]>([])
+  const historyIndexRef = useRef(-1)
+  const isUndoRedoRef = useRef(false)
+  const MAX_HISTORY = 50
+
+  // 保存当前状态到历史记录
+  const saveHistory = () => {
+    if (isUndoRedoRef.current || !graphRef.current) return
+    
+    const state = JSON.stringify(graphRef.current.serialize())
+    const history = historyRef.current
+    const index = historyIndexRef.current
+
+    // 如果在历史中间位置做了新操作，删除后面的历史
+    if (index < history.length - 1) {
+      history.splice(index + 1)
+    }
+
+    // 避免保存重复状态
+    if (history.length > 0 && history[history.length - 1] === state) return
+
+    history.push(state)
+    if (history.length > MAX_HISTORY) {
+      history.shift()
+    }
+    historyIndexRef.current = history.length - 1
+  }
+
+  // 撤销
+  const undo = () => {
+    const history = historyRef.current
+    const index = historyIndexRef.current
+
+    if (index <= 0 || !graphRef.current) return
+
+    isUndoRedoRef.current = true
+    historyIndexRef.current = index - 1
+    const state = JSON.parse(history[historyIndexRef.current])
+    graphRef.current.configure(state)
+    canvasInstanceRef.current?.setDirty(true, true)
+    isUndoRedoRef.current = false
+  }
+
+  // 重做
+  const redo = () => {
+    const history = historyRef.current
+    const index = historyIndexRef.current
+
+    if (index >= history.length - 1 || !graphRef.current) return
+
+    isUndoRedoRef.current = true
+    historyIndexRef.current = index + 1
+    const state = JSON.parse(history[historyIndexRef.current])
+    graphRef.current.configure(state)
+    canvasInstanceRef.current?.setDirty(true, true)
+    isUndoRedoRef.current = false
+  }
+
   // Expose graph via ref
   useImperativeHandle(ref, () => ({
     getGraph: () => graphRef.current,
@@ -139,6 +198,27 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     // Notify parent
     onGraphReady?.(graph)
 
+    // 保存初始状态
+    setTimeout(saveHistory, 100);
+
+    // 监听图表变更以自动保存历史
+    const debouncedSave = () => {
+      // 简单的防抖，避免连续触发
+      if ((graph as any)._save_timer) clearTimeout((graph as any)._save_timer);
+      (graph as any)._save_timer = setTimeout(saveHistory, 200);
+    };
+
+    (graph as any).onNodeAdded = debouncedSave;
+    (graph as any).onNodeRemoved = debouncedSave;
+    (graph as any).onConnectionChange = debouncedSave;
+    
+    // Hook 节点移动结束
+    const originalOnNodeMoved = canvas.onNodeMoved;
+    canvas.onNodeMoved = function(node: any) {
+      if (originalOnNodeMoved) originalOnNodeMoved.apply(this, [node]);
+      debouncedSave();
+    };
+
     // Cleanup
     return () => {
       graph.stop()
@@ -169,6 +249,20 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
       const isInputActive = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable
       
       if (isInputActive) return
+
+      // Undo: Ctrl+Z
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+        return;
+      }
+
+      // Redo: Ctrl+Shift+Z or Ctrl+Y
+      if (((e.ctrlKey || e.metaKey) && e.key === 'z' && e.shiftKey) || ((e.ctrlKey || e.metaKey) && e.key === 'y')) {
+        e.preventDefault();
+        redo();
+        return;
+      }
 
       // Delete selected nodes with Backspace or Delete key
       if (e.key === 'Backspace' || e.key === 'Delete') {
