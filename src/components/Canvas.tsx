@@ -71,6 +71,7 @@ LGraphCanvasAny.prototype.onMouseDoubleClick = function(this: any, e: MouseEvent
 
 export interface CanvasHandle {
   getGraph: () => LGraph | null
+  getCanvas: () => LGraphCanvas | null
 }
 
 interface CanvasProps {
@@ -86,7 +87,8 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
 
   // Expose graph via ref
   useImperativeHandle(ref, () => ({
-    getGraph: () => graphRef.current
+    getGraph: () => graphRef.current,
+    getCanvas: () => canvasInstanceRef.current
   }), [])
 
   // Initialize graph and canvas

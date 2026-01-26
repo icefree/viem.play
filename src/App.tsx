@@ -1,15 +1,20 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { LGraph } from 'litegraph.js'
 import { Canvas } from './components/Canvas'
+import type { CanvasHandle } from './components/Canvas'
 import { NodeToolbar } from './components/NodeToolbar'
 import { NodeSearch } from './components/NodeSearch'
+import { Minimap } from './components/Minimap'
 import './App.css'
 
 function App() {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const [graph, setGraph] = useState<LGraph | null>(null)
+  const [canvasInstance, setCanvasInstance] = useState<any>(null)
   const [scale, setScale] = useState(1)
   const [isScaleMenuOpen, setIsScaleMenuOpen] = useState(false)
   
+  const canvasRef = useRef<CanvasHandle>(null)
   const zoomLevels = [0.5, 0.75, 0.9, 1.0, 1.1, 1.25, 1.5, 2.0]
 
   // 追踪鼠标在画布上的位置
@@ -17,6 +22,12 @@ function App() {
 
   const handleGraphReady = useCallback((g: LGraph) => {
     setGraph(g)
+    // Get canvas instance after a short delay to ensure it's fully initialized
+    setTimeout(() => {
+      if (canvasRef.current) {
+        setCanvasInstance(canvasRef.current.getCanvas())
+      }
+    }, 100)
   }, [])
 
   // 监听鼠标移动，记录最后位置
@@ -63,15 +74,15 @@ function App() {
   }, [graph])
 
   const handleScaleSelect = useCallback((newScale: number) => {
-    if (graph && (graph as any).canvas) {
-      const canvas = (graph as any).canvas;
-      canvas.ds.scale = newScale;
+    if (graph && canvasInstance) {
+      // @ts-expect-error: Internal LiteGraph scale modification
+      canvasInstance.ds.scale = newScale;
       // Center the view slightly or just refresh
-      canvas.setDirty(true, true);
+      canvasInstance.setDirty(true, true);
       setScale(newScale);
       setIsScaleMenuOpen(false);
     }
-  }, [graph])
+  }, [graph, canvasInstance])
 
   return (
     <div className="app">
@@ -132,7 +143,8 @@ function App() {
 
       {/* Main Canvas */}
       <main className="app-main">
-        <Canvas onGraphReady={handleGraphReady} onScaleChange={setScale} />
+        <Canvas ref={canvasRef} onGraphReady={handleGraphReady} onScaleChange={setScale} />
+        <Minimap graph={graph} canvas={canvasInstance} />
       </main>
 
       {/* Node Search Modal (Space key) */}
