@@ -16,47 +16,64 @@ class PublicClientNode extends LGraphNode {
   bgcolor = '#1c4532'
 
   private currentClient: PublicClient | null = null
-  private lastChainId: number | null = null
+  private lastConfigHash: string | null = null
 
   constructor() {
     super()
     this.title = 'PublicClient'
     this.addInput('chain', 'chain')
+    this.addInput('transport', 'transport')
+    this.addInput('batch', 'object')
+    this.addInput('cacheTime', 'number')
+    this.addInput('pollingInterval', 'number')
     this.addOutput('client', 'publicClient')
-    this.size = [180, 50]
+    this.size = [180, 110]
   }
 
   onExecute() {
     const chain = this.getInputData(0) as Chain | undefined
+    const transport = this.getInputData(1)
+    const batch = this.getInputData(2)
+    const cacheTime = this.getInputData(3)
+    const pollingInterval = this.getInputData(4)
 
     if (!chain) {
       this.setOutputData(0, null)
       return
     }
 
-    // Only recreate client if chain changed
-    if (this.lastChainId !== chain.id) {
-      const cacheKey = `public-${chain.id}`
+    // Create a config object to detect changes
+    const config = {
+      chainId: chain.id,
+      transport: transport ? 'custom' : 'default',
+      batch: !!batch,
+      cacheTime,
+      pollingInterval
+    }
+    const configHash = JSON.stringify(config)
 
-      if (clientCache.has(cacheKey)) {
-        this.currentClient = clientCache.get(cacheKey) as PublicClient
-      } else {
-        this.currentClient = createPublicClient({
-          chain,
-          transport: http(),
-        })
-        clientCache.set(cacheKey, this.currentClient)
-      }
-
-      this.lastChainId = chain.id
+    if (this.lastConfigHash !== configHash) {
+      this.lastConfigHash = configHash
+      
+      // We recreate the client when config changes
+      // In a real app we might want a global cache but for a playground 
+      // per-node instance is often enough for reactivity
+      this.currentClient = createPublicClient({
+        chain,
+        transport: transport || http(),
+        batch: batch || undefined,
+        cacheTime: cacheTime || undefined,
+        pollingInterval: pollingInterval || undefined,
+      })
     }
 
     this.setOutputData(0, this.currentClient)
   }
 
   getTitle(): string {
-    if (this.lastChainId) {
-      return `PublicClient (${this.lastChainId})`
+    const chain = this.getInputData(0) as Chain | undefined
+    if (chain) {
+      return `PublicClient (${chain.name})`
     }
     return 'Public Client'
   }
