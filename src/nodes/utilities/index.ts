@@ -286,16 +286,73 @@ class ParseEtherNode extends LGraphNode {
   }
 }
 
+/**
+ * Base Placeholder Node for missing actions
+ */
+class UtilityPlaceholderNode extends LGraphNode {
+  constructor(title: string, desc: string) {
+    super()
+    this.title = title
+    this.properties = { description: desc }
+    this.color = '#4a5568'
+    this.bgcolor = '#2d3748'
+    this.size = [180, 40]
+  }
+
+  onDrawForeground(ctx: CanvasRenderingContext2D) {
+    if (this.flags.collapsed) return
+    ctx.font = '10px Arial'
+    ctx.fillStyle = '#666'
+    ctx.fillText('Placeholder', 10, 30)
+  }
+}
+
 export function registerUtilityNodes() {
-  LiteGraph.registerNodeType('Utilities/Text', TextInputNode)
-  LiteGraph.registerNodeType('Utilities/Number', NumberInputNode)
-  LiteGraph.registerNodeType('Utilities/Address', AddressInputNode)
-  LiteGraph.registerNodeType('Utilities/Bytes32', Bytes32InputNode)
-  LiteGraph.registerNodeType('Utilities/Display', DisplayNode)
-  LiteGraph.registerNodeType('Utilities/Console', ConsoleLogNode)
-  LiteGraph.registerNodeType('Utilities/toBigInt', ToBigIntNode)
-  LiteGraph.registerNodeType('Utilities/formatEther', FormatEtherNode)
-  LiteGraph.registerNodeType('Utilities/parseEther', ParseEtherNode)
+  // --- UI Items (Internal) ---
+  LiteGraph.registerNodeType('Utilities/UI/Text', TextInputNode)
+  LiteGraph.registerNodeType('Utilities/UI/Number', NumberInputNode)
+  LiteGraph.registerNodeType('Utilities/UI/Address', AddressInputNode)
+  LiteGraph.registerNodeType('Utilities/UI/Bytes32', Bytes32InputNode)
+  LiteGraph.registerNodeType('Utilities/UI/Display', DisplayNode)
+  LiteGraph.registerNodeType('Utilities/UI/Console', ConsoleLogNode)
+
+  // --- Address ---
+  LiteGraph.registerNodeType('Utilities/Address/getAddress', class extends UtilityPlaceholderNode { constructor() { super('getAddress', 'Checksum an address') } })
+  LiteGraph.registerNodeType('Utilities/Address/isAddress', class extends UtilityPlaceholderNode { constructor() { super('isAddress', 'Check if address is valid') } })
+  LiteGraph.registerNodeType('Utilities/Address/isAddressEqual', class extends UtilityPlaceholderNode { constructor() { super('isAddressEqual', 'Check if addresses are equal') } })
+
+  // --- Data ---
+  LiteGraph.registerNodeType('Utilities/Data/concat', class extends UtilityPlaceholderNode { constructor() { super('concat', 'Concatenate hex/byte data') } })
+  LiteGraph.registerNodeType('Utilities/Data/isHex', class extends UtilityPlaceholderNode { constructor() { super('isHex', 'Check if value is hex') } })
+  LiteGraph.registerNodeType('Utilities/Data/pad', class extends UtilityPlaceholderNode { constructor() { super('pad', 'Pad hex/byte data') } })
+  LiteGraph.registerNodeType('Utilities/Data/size', class extends UtilityPlaceholderNode { constructor() { super('size', 'Get size of hex/byte data') } })
+  LiteGraph.registerNodeType('Utilities/Data/slice', class extends UtilityPlaceholderNode { constructor() { super('slice', 'Slice hex/byte data') } })
+
+  // --- Encoding / Parsing ---
+  LiteGraph.registerNodeType('Utilities/Encoding/toHex', class extends UtilityPlaceholderNode { constructor() { super('toHex', 'Convert to hex') } })
+  LiteGraph.registerNodeType('Utilities/Encoding/fromHex', class extends UtilityPlaceholderNode { constructor() { super('fromHex', 'Parse from hex') } })
+  LiteGraph.registerNodeType('Utilities/Encoding/toRlp', class extends UtilityPlaceholderNode { constructor() { super('toRlp', 'Encode to RLP') } })
+  LiteGraph.registerNodeType('Utilities/Encoding/fromRlp', class extends UtilityPlaceholderNode { constructor() { super('fromRlp', 'Decode from RLP') } })
+
+  // --- Units ---
+  LiteGraph.registerNodeType('Utilities/Units/formatEther', FormatEtherNode)
+  LiteGraph.registerNodeType('Utilities/Units/parseEther', ParseEtherNode)
+  LiteGraph.registerNodeType('Utilities/Units/formatUnits', class extends UtilityPlaceholderNode { constructor() { super('formatUnits', 'Format units') } })
+  LiteGraph.registerNodeType('Utilities/Units/parseUnits', class extends UtilityPlaceholderNode { constructor() { super('parseUnits', 'Parse units') } })
+
+  // --- Hash ---
+  LiteGraph.registerNodeType('Utilities/Hash/keccak256', class extends UtilityPlaceholderNode { constructor() { super('keccak256', 'Keccak-256 hash') } })
+  LiteGraph.registerNodeType('Utilities/Hash/hashMessage', class extends UtilityPlaceholderNode { constructor() { super('hashMessage', 'Hash a message') } })
+  
+  // --- Chains ---
+  LiteGraph.registerNodeType('Utilities/Chains/extractChain', class extends UtilityPlaceholderNode { constructor() { super('extractChain', 'Extract chain from client') } })
+
+  // --- Signature ---
+  LiteGraph.registerNodeType('Utilities/Signature/recoverAddress', class extends UtilityPlaceholderNode { constructor() { super('recoverAddress', 'Recover address from signature') } })
+  LiteGraph.registerNodeType('Utilities/Signature/verifyMessage', class extends UtilityPlaceholderNode { constructor() { super('verifyMessage', 'Verify a message signature') } })
+
+  // --- Helpers ---
+  LiteGraph.registerNodeType('Utilities/Helpers/toBigInt', ToBigIntNode)
 }
 
 export {

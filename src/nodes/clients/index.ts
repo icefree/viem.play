@@ -121,10 +121,42 @@ class TestClientNode extends LGraphNode {
   }
 }
 
+/**
+ * Base Placeholder Node for missing actions
+ */
+class ClientPlaceholderNode extends LGraphNode {
+  constructor(title: string, desc: string, color: string, bgcolor: string) {
+    super()
+    this.title = title
+    this.addInput('chain', 'chain')
+    this.addOutput('client', 'publicClient')
+    this.properties = { description: desc }
+    this.color = color
+    this.bgcolor = bgcolor
+    this.size = [180, 40]
+  }
+
+  onDrawForeground(ctx: CanvasRenderingContext2D) {
+    if (this.flags.collapsed) return
+    ctx.font = '10px Arial'
+    ctx.fillStyle = '#666'
+    ctx.fillText('Placeholder', 10, 30)
+  }
+}
+
 export function registerClientNodes() {
-  LiteGraph.registerNodeType('Clients/PublicClient', PublicClientNode)
-  LiteGraph.registerNodeType('Clients/WalletClient', WalletClientNode)
-  LiteGraph.registerNodeType('Clients/TestClient', TestClientNode)
+  // --- Clients ---
+  LiteGraph.registerNodeType('Clients & Transports/Clients/PublicClient', PublicClientNode)
+  LiteGraph.registerNodeType('Clients & Transports/Clients/WalletClient', WalletClientNode)
+  LiteGraph.registerNodeType('Clients & Transports/Clients/TestClient', TestClientNode)
+  LiteGraph.registerNodeType('Clients & Transports/Clients/CustomClient', class extends ClientPlaceholderNode { constructor() { super('Custom Client', 'Create a custom client', '#276749', '#1c4532') } })
+
+  // --- Transports ---
+  LiteGraph.registerNodeType('Clients & Transports/Transports/http', class extends ClientPlaceholderNode { constructor() { super('http', 'HTTP transport', '#2d3748', '#1a202c') } })
+  LiteGraph.registerNodeType('Clients & Transports/Transports/webSocket', class extends ClientPlaceholderNode { constructor() { super('webSocket', 'WebSocket transport', '#2d3748', '#1a202c') } })
+  LiteGraph.registerNodeType('Clients & Transports/Transports/custom', class extends ClientPlaceholderNode { constructor() { super('custom', 'Custom (EIP-1193) transport', '#2d3748', '#1a202c') } })
+  LiteGraph.registerNodeType('Clients & Transports/Transports/ipc', class extends ClientPlaceholderNode { constructor() { super('ipc', 'IPC transport', '#2d3748', '#1a202c') } })
+  LiteGraph.registerNodeType('Clients & Transports/Transports/fallback', class extends ClientPlaceholderNode { constructor() { super('fallback', 'Fallback transport', '#2d3748', '#1a202c') } })
 }
 
 export { PublicClientNode, WalletClientNode, TestClientNode }

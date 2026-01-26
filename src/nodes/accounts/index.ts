@@ -115,12 +115,42 @@ class ToAccountNode extends LGraphNode {
   }
 }
 
+/**
+ * Base Placeholder Node for missing actions
+ */
+class AccountPlaceholderNode extends LGraphNode {
+  constructor(title: string, desc: string) {
+    super()
+    this.title = title
+    this.addOutput('account', 'account')
+    this.properties = { description: desc }
+    this.color = '#d69e2e'
+    this.bgcolor = '#975a16'
+    this.size = [180, 40]
+  }
+
+  onDrawForeground(ctx: CanvasRenderingContext2D) {
+    if (this.flags.collapsed) return
+    ctx.font = '10px Arial'
+    ctx.fillStyle = '#666'
+    ctx.fillText('Placeholder', 10, 30)
+  }
+}
+
 export function registerAccountNodes() {
-  LiteGraph.registerNodeType('Accounts/privateKeyToAccount', PrivateKeyToAccountNode)
-  LiteGraph.registerNodeType('Accounts/mnemonicToAccount', MnemonicToAccountNode)
-  LiteGraph.registerNodeType('Accounts/generatePrivateKey', GeneratePrivateKeyNode)
-  LiteGraph.registerNodeType('Accounts/generateMnemonic', GenerateMnemonicNode)
-  LiteGraph.registerNodeType('Accounts/toAccount', ToAccountNode)
+  // --- JSON-RPC Account ---
+  LiteGraph.registerNodeType('Accounts/JSON-RPC/toAccount', ToAccountNode)
+
+  // --- Local Account ---
+  LiteGraph.registerNodeType('Accounts/Local/privateKeyToAccount', PrivateKeyToAccountNode)
+  LiteGraph.registerNodeType('Accounts/Local/mnemonicToAccount', MnemonicToAccountNode)
+  LiteGraph.registerNodeType('Accounts/Local/hdKeyToAccount', class extends AccountPlaceholderNode { constructor() { super('hdKeyToAccount', 'Create account from HD Key') } })
+  LiteGraph.registerNodeType('Accounts/Local/toAccount', class extends AccountPlaceholderNode { constructor() { super('toAccount', 'Create a custom Local Account') } })
+
+  // --- Utils ---
+  LiteGraph.registerNodeType('Accounts/Utils/generatePrivateKey', GeneratePrivateKeyNode)
+  LiteGraph.registerNodeType('Accounts/Utils/generateMnemonic', GenerateMnemonicNode)
+  LiteGraph.registerNodeType('Accounts/Utils/parseAccount', class extends AccountPlaceholderNode { constructor() { super('parseAccount', 'Parse an account') } })
 }
 
 export {
