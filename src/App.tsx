@@ -33,15 +33,16 @@ function App() {
         <h3>🚀 快速开始</h3>
         <ol>
           <li>右键点击画布添加节点</li>
-          <li>连接 <code>Chain</code> → <code>PublicClient</code></li>
-          <li>连接 <code>Address</code> + <code>Client</code> → <code>GetBalance</code></li>
-          <li>连接 <code>GetBalance</code> → <code>Display</code></li>
+          <li>连接 <code>Chains/Chain</code> → <code>Clients/PublicClient</code></li>
+          <li>添加 <code>Utilities/Address</code> 输入地址</li>
+          <li>连接到 <code>Public Actions/getBalance</code></li>
         </ol>
-        <h4>📦 可用节点</h4>
+        <h4>📦 节点分组</h4>
         <ul>
-          <li><strong>core/</strong> TextInput, Address, Display</li>
-          <li><strong>viem/</strong> Chain, PublicClient</li>
-          <li><strong>viem/</strong> GetBalance, GetBlockNumber, GetGasPrice</li>
+          <li><strong>Clients</strong> PublicClient, WalletClient</li>
+          <li><strong>Public Actions</strong> getBalance, getBlockNumber, getGasPrice</li>
+          <li><strong>Chains</strong> Chain, ChainId, ChainInfo</li>
+          <li><strong>Utilities</strong> Address, Display, formatEther</li>
         </ul>
       </aside>
     </div>

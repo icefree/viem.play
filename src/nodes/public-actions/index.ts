@@ -1,11 +1,11 @@
 import { LGraphNode, LiteGraph } from 'litegraph.js'
-import { type PublicClient, type Address, formatEther } from 'viem'
+import { type PublicClient, type Address, formatEther, formatGwei } from 'viem'
 
 /**
  * GetBalance 节点 - 获取地址余额
  */
 class GetBalanceNode extends LGraphNode {
-  static title = 'Get Balance'
+  static title = 'getBalance'
   static desc = 'Get the balance of an address'
 
   color = '#6b46c1'
@@ -80,7 +80,7 @@ class GetBalanceNode extends LGraphNode {
  * GetBlockNumber 节点 - 获取当前区块号
  */
 class GetBlockNumberNode extends LGraphNode {
-  static title = 'Get Block Number'
+  static title = 'getBlockNumber'
   static desc = 'Get the current block number'
 
   color = '#6b46c1'
@@ -141,7 +141,7 @@ class GetBlockNumberNode extends LGraphNode {
  * GetGasPrice 节点 - 获取当前 Gas 价格
  */
 class GetGasPriceNode extends LGraphNode {
-  static title = 'Get Gas Price'
+  static title = 'getGasPrice'
   static desc = 'Get the current gas price'
 
   color = '#6b46c1'
@@ -184,9 +184,7 @@ class GetGasPriceNode extends LGraphNode {
 
     if (this.gasPrice !== null) {
       this.setOutputData(0, this.gasPrice)
-      // Convert to Gwei (1 Gwei = 10^9 Wei)
-      const gwei = Number(this.gasPrice) / 1e9
-      this.setOutputData(1, gwei.toFixed(2))
+      this.setOutputData(1, formatGwei(this.gasPrice))
     }
   }
 
@@ -197,16 +195,134 @@ class GetGasPriceNode extends LGraphNode {
     ctx.fillStyle = '#e2e8f0'
 
     if (this.gasPrice !== null) {
-      const gwei = Number(this.gasPrice) / 1e9
-      ctx.fillText(`${gwei.toFixed(2)} Gwei`, 10, 40)
+      ctx.fillText(`${formatGwei(this.gasPrice)} Gwei`, 10, 40)
     }
   }
 }
 
-export function registerActionNodes() {
-  LiteGraph.registerNodeType('viem/GetBalance', GetBalanceNode)
-  LiteGraph.registerNodeType('viem/GetBlockNumber', GetBlockNumberNode)
-  LiteGraph.registerNodeType('viem/GetGasPrice', GetGasPriceNode)
+/**
+ * GetBlock 节点 - 获取区块信息
+ */
+class GetBlockNode extends LGraphNode {
+  static title = 'getBlock'
+  static desc = 'Get block information'
+
+  color = '#6b46c1'
+  bgcolor = '#44337a'
+
+  private block: object | null = null
+  private isLoading = false
+
+  constructor() {
+    super()
+    this.addInput('client', 'publicClient')
+    this.addInput('blockNumber', 'bigint')
+    this.addOutput('block', 'object')
+    this.addOutput('timestamp', 'bigint')
+    this.addOutput('hash', 'string')
+    this.size = [180, 90]
+  }
+
+  async onExecute() {
+    const client = this.getInputData(0) as PublicClient | undefined
+    const blockNumber = this.getInputData(1) as bigint | undefined
+
+    if (!client) {
+      this.setOutputData(0, null)
+      return
+    }
+
+    if (!this.isLoading) {
+      this.isLoading = true
+      try {
+        const block = await client.getBlock(
+          blockNumber ? { blockNumber } : {}
+        )
+        this.block = block
+        this.setOutputData(0, block)
+        this.setOutputData(1, block.timestamp)
+        this.setOutputData(2, block.hash)
+      } catch (e) {
+        console.error('GetBlock error:', e)
+      } finally {
+        this.isLoading = false
+      }
+    }
+  }
 }
 
-export { GetBalanceNode, GetBlockNumberNode, GetGasPriceNode }
+/**
+ * GetTransactionCount 节点 - 获取地址的交易数量 (nonce)
+ */
+class GetTransactionCountNode extends LGraphNode {
+  static title = 'getTransactionCount'
+  static desc = 'Get the number of transactions sent from an address (nonce)'
+
+  color = '#6b46c1'
+  bgcolor = '#44337a'
+
+  private count: number | null = null
+  private isLoading = false
+  private lastAddress: string | null = null
+
+  constructor() {
+    super()
+    this.addInput('client', 'publicClient')
+    this.addInput('address', 'address')
+    this.addOutput('count', 'number')
+    this.size = [200, 60]
+  }
+
+  async onExecute() {
+    const client = this.getInputData(0) as PublicClient | undefined
+    const address = this.getInputData(1) as Address | undefined
+
+    if (!client || !address) {
+      this.setOutputData(0, null)
+      return
+    }
+
+    if (address !== this.lastAddress && !this.isLoading) {
+      this.lastAddress = address
+      this.isLoading = true
+
+      try {
+        this.count = await client.getTransactionCount({ address })
+        this.setOutputData(0, this.count)
+      } catch (e) {
+        console.error('GetTransactionCount error:', e)
+      } finally {
+        this.isLoading = false
+      }
+    } else if (this.count !== null) {
+      this.setOutputData(0, this.count)
+    }
+  }
+
+  onDrawForeground(ctx: CanvasRenderingContext2D) {
+    if (this.flags.collapsed) return
+
+    ctx.font = '12px monospace'
+    ctx.fillStyle = '#e2e8f0'
+
+    if (this.count !== null) {
+      ctx.fillText(`Nonce: ${this.count}`, 10, 40)
+    }
+  }
+}
+
+export function registerPublicActionNodes() {
+  LiteGraph.registerNodeType('Public Actions/getBalance', GetBalanceNode)
+  LiteGraph.registerNodeType('Public Actions/getBlockNumber', GetBlockNumberNode)
+  LiteGraph.registerNodeType('Public Actions/getGasPrice', GetGasPriceNode)
+  LiteGraph.registerNodeType('Public Actions/getBlock', GetBlockNode)
+  LiteGraph.registerNodeType('Public Actions/getTransactionCount', GetTransactionCountNode)
+}
+
+export {
+  GetBalanceNode,
+  GetBlockNumberNode,
+  GetGasPriceNode,
+  GetBlockNode,
+  GetTransactionCountNode
+}
