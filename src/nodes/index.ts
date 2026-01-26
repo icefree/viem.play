@@ -16,6 +16,7 @@ import { registerSiweNodes } from './siwe'
 import { registerAbiNodes } from './abi'
 import { registerEip7702Nodes } from './eip-7702'
 import { registerUtilityNodes } from './utilities'
+import { registerControlNodes } from './control'
 import { registerGlossaryNodes } from './glossary'
 
 /**
@@ -53,7 +54,8 @@ export function registerAllNodes() {
   registerAbiNodes()             // 10. ABI
   registerEip7702Nodes()         // 11. EIP-7702
   registerUtilityNodes()         // 12. Utilities
-  registerGlossaryNodes()        // 13. Glossary
+  registerControlNodes()         // 13. Control
+  registerGlossaryNodes()        // 14. Glossary
 
   // Install auto node pairing after all nodes are registered
   installAutoNodePairing()
@@ -74,4 +76,5 @@ export * from './siwe'
 export * from './abi'
 export * from './eip-7702'
 export * from './utilities'
+export * from './control'
 export * from './glossary'
