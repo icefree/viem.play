@@ -96,7 +96,7 @@ class GetBlockNumberNode extends LGraphNode {
     this.addInput('client', 'publicClient')
     this.addInput('trigger', -1)
     this.addOutput('blockNumber', 'bigint')
-    this.size = [180, 60]
+    this.size = [180, 75]
   }
 
   async triggerFetch() {
@@ -136,11 +136,11 @@ class GetBlockNumberNode extends LGraphNode {
     ctx.fillStyle = this.isLoading ? '#ffd700' : '#e2e8f0'
 
     if (this.isLoading) {
-      ctx.fillText('Fetching...', 10, 40)
+      ctx.fillText('Fetching...', 10, 65)
     } else if (this.blockNumber !== null) {
-      ctx.fillText(`#${this.blockNumber.toString()}`, 10, 40)
+      ctx.fillText(`#${this.blockNumber.toString()}`, 10, 65)
     } else {
-      ctx.fillText('No data', 10, 40)
+      ctx.fillText('No data', 10, 65)
     }
   }
 }
