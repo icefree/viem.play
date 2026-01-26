@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react'
+import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
 import { LGraph, LGraphCanvas } from 'litegraph.js'
 import 'litegraph.js/css/litegraph.css'
 import { registerAllNodes } from '../nodes'
