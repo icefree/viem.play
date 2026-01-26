@@ -79,8 +79,8 @@ function attachInputAutoPairing(nodeType: typeof LGraphNode) {
     switch (input.type) {
       case LiteGraph.ACTION:
       case -1: {
-        const buttonNode = createNode(this.graph, NODE_TYPES.button, leftX, y + OFFSET_Y)
-        if (buttonNode) buttonNode.connect(0, this, index)
+        const timerNode = createNode(this.graph, NODE_TYPES.timer, leftX, y + OFFSET_Y)
+        if (timerNode) timerNode.connect(0, this, index)
         break
       }
       case 'string': {
