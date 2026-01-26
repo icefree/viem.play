@@ -72,6 +72,9 @@ function attachInputAutoPairing(nodeType: typeof LGraphNode) {
     const input = this.inputs?.[index]
     if (!input || !this.graph) return
 
+    // 如果已经有连线，则不响应
+    if (input.link !== null && input.link !== undefined) return
+
     const { x, y } = getBasePos(this, e)
     const leftX = x - GAP_X
     const leftX2 = x - GAP_X * 2
@@ -192,6 +195,9 @@ function attachInputAutoPairing(nodeType: typeof LGraphNode) {
     if (!this.graph || !this.outputs?.[index]) return
 
     const output = this.outputs?.[index]
+    // 如果已经有连线，则不响应
+    if (output?.links && output.links.length > 0) return
+
     const { x, y } = getBasePos(this, e)
 
     if (output?.type === LiteGraph.EVENT || output?.type === -1) {

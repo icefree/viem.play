@@ -19,7 +19,7 @@ class ButtonNode extends LGraphNode {
     this.addOutput('count', 'number')
     this.addProperty('label', 'CLICK ME')
     this.addProperty('count', 0)
-    this.size = [180, 80]
+    this.size = [180, 60]
   }
 
   onAction() {
