@@ -122,18 +122,79 @@ class TriggerNode extends LGraphNode {
   static title = 'Trigger'
   static desc = 'Manual action trigger'
 
-  color = '#4a5568'
-  bgcolor = '#2d3748'
+  color = '#3d5a80'
+  bgcolor = '#293241'
+
+  private isClicking = false
 
   constructor() {
     super()
     this.title = 'Trigger'
     this.addOutput('trigger', -1)
-    this.size = [140, 50]
+    this.size = [120, 50]
+  }
 
-    this.addWidget('button', 'Fire', '', () => {
-      this.triggerSlot(0)
-    })
+  onMouseDown() {
+    this.isClicking = true
+    this.triggerSlot(0, true)
+    this.setDirtyCanvas(true, true)
+    return true
+  }
+
+  onMouseUp() {
+    this.isClicking = false
+    this.setDirtyCanvas(true, true)
+    return true
+  }
+
+  onDrawBackground(ctx: CanvasRenderingContext2D) {
+    if (this.flags.collapsed) return
+
+    const [w, h] = this.size
+    const margin = 10
+    const btnW = w - margin * 2
+    const btnH = 24
+    const btnY = h - btnH - 8
+
+    ctx.save()
+    
+    // Draw button shadow/glow
+    if (this.isClicking) {
+      ctx.shadowColor = 'rgba(74, 144, 226, 0.5)'
+      ctx.shadowBlur = 10
+    }
+
+    // Button body
+    const grad = ctx.createLinearGradient(margin, btnY, margin, btnY + btnH)
+    if (this.isClicking) {
+      grad.addColorStop(0, '#2c3e50')
+      grad.addColorStop(1, '#34495e')
+    } else {
+      grad.addColorStop(0, '#4a90e2')
+      grad.addColorStop(1, '#357abd')
+    }
+
+    ctx.fillStyle = grad
+    ctx.beginPath()
+    ctx.roundRect(margin, btnY, btnW, btnH, 6)
+    ctx.fill()
+
+    // Inner highlight
+    if (!this.isClicking) {
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)'
+      ctx.lineWidth = 1
+      ctx.stroke()
+    }
+
+    // Text
+    ctx.shadowBlur = 0
+    ctx.fillStyle = '#ffffff'
+    ctx.font = 'bold 12px Arial'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText('FIRE', w / 2, btnY + btnH / 2)
+
+    ctx.restore()
   }
 }
 
