@@ -12,7 +12,7 @@ const NODE_TYPES = {
   number: 'Utilities/UI/Number',
   bytes: 'Utilities/UI/Bytes',
   json: 'Utilities/UI/JSON',
-  trigger: 'Utilities/UI/Trigger',
+  trigger: 'Control/Button',
   address: 'Utilities/UI/Address',
   bytes32: 'Utilities/UI/Bytes32',
   display: 'Utilities/UI/Display',
