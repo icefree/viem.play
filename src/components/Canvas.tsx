@@ -1,7 +1,67 @@
 import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
-import { LGraph, LGraphCanvas } from 'litegraph.js'
+import { LGraph, LGraphCanvas, LiteGraph } from 'litegraph.js'
 import 'litegraph.js/css/litegraph.css'
 import { registerAllNodes } from '../nodes'
+
+// 定义插槽类型到节点类型的映射
+const SLOT_TYPE_TO_NODE: Record<string, string> = {
+  'chain': 'Chains/Chain',
+  'transport': 'Clients & Transports/Transports/http',
+  'publicClient': 'Public Actions/Account/getBalance', // 修正路径
+  'account': 'Accounts/privateKeyToAccount',
+  'address': 'Utilities/Display/Address',
+}
+
+// 增强 LiteGraph 原型以支持双击插槽自动连接
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const LGraphCanvasAny = LGraphCanvas as any;
+const originalOnMouseDoubleClick = LGraphCanvasAny.prototype.onMouseDoubleClick;
+
+LGraphCanvasAny.prototype.onMouseDoubleClick = function(this: any, e: MouseEvent) {
+  const canvas = this;
+  const graph = canvas.graph;
+  if (!graph) return originalOnMouseDoubleClick.call(this, e);
+
+  // 获取点击位置下的节点
+  const node = canvas.getNodeOnPos(canvas.graph_mouse[0], canvas.graph_mouse[1]);
+  if (node) {
+    // 检查是否点击了输入插槽
+    const input = node.getInputSlot(canvas.graph_mouse[0], canvas.graph_mouse[1]);
+    if (input != null) {
+      const slot = node.inputs[input];
+      const nodeType = SLOT_TYPE_TO_NODE[slot.type || ''];
+      if (nodeType) {
+        const newNode = LiteGraph.createNode(nodeType);
+        if (newNode) {
+          newNode.pos = [node.pos[0] - (newNode.size[0] + 50), node.pos[1] + (input * 30)];
+          graph.add(newNode);
+          newNode.connect(0, node, input);
+          canvas.setDirty(true, true);
+          return;
+        }
+      }
+    }
+
+    // 检查是否点击了输出插槽
+    const output = node.getOutputSlot(canvas.graph_mouse[0], canvas.graph_mouse[1]);
+    if (output != null) {
+      const slot = node.outputs[output];
+      const nodeType = SLOT_TYPE_TO_NODE[slot.type || ''];
+      if (nodeType) {
+        const newNode = LiteGraph.createNode(nodeType);
+        if (newNode) {
+          newNode.pos = [node.pos[0] + node.size[0] + 50, node.pos[1] + (output * 30)];
+          graph.add(newNode);
+          node.connect(output, newNode, 0);
+          canvas.setDirty(true, true);
+          return;
+        }
+      }
+    }
+  }
+
+  return originalOnMouseDoubleClick.call(this, e);
+};
 
 export interface CanvasHandle {
   getGraph: () => LGraph | null
