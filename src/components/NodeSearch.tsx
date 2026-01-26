@@ -81,9 +81,10 @@ const ALL_NODES = [
 
 interface NodeSearchProps {
   graph: LGraph | null
+  getMousePosition: () => { x: number; y: number }
 }
 
-export function NodeSearch({ graph }: NodeSearchProps) {
+export function NodeSearch({ graph, getMousePosition }: NodeSearchProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -105,19 +106,23 @@ export function NodeSearch({ graph }: NodeSearchProps) {
     if (node) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const canvas = (graph as any).canvas
+      const mousePos = getMousePosition()
+      
       if (canvas) {
-        const centerX = (-canvas.ds.offset[0] + canvas.canvas.width / 2 / canvas.ds.scale)
-        const centerY = (-canvas.ds.offset[1] + canvas.canvas.height / 2 / canvas.ds.scale)
-        node.pos = [centerX - 100, centerY - 50]
+        // 将屏幕坐标转换为画布坐标
+        const canvasX = (mousePos.x - canvas.ds.offset[0]) / canvas.ds.scale
+        const canvasY = (mousePos.y - canvas.ds.offset[1]) / canvas.ds.scale
+        // 以鼠标位置为中心
+        node.pos = [canvasX - (node.size?.[0] || 200) / 2, canvasY - (node.size?.[1] || 60) / 2]
       } else {
-        node.pos = [200, 200]
+        node.pos = [mousePos.x, mousePos.y]
       }
       graph.add(node)
     }
     setIsOpen(false)
     setQuery('')
     setSelectedIndex(0)
-  }, [graph])
+  }, [graph, getMousePosition])
 
   // 键盘事件处理
   useEffect(() => {

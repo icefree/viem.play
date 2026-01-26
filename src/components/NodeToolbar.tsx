@@ -146,9 +146,10 @@ const NODE_CATEGORIES = [
 
 interface NodeToolbarProps {
   graph: LGraph | null
+  getMousePosition: () => { x: number; y: number }
 }
 
-export function NodeToolbar({ graph }: NodeToolbarProps) {
+export function NodeToolbar({ graph, getMousePosition }: NodeToolbarProps) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [dropdownPosition, setDropdownPosition] = useState<{ left: number } | null>(null)
   const toolbarRef = useRef<HTMLDivElement>(null)
@@ -160,20 +161,23 @@ export function NodeToolbar({ graph }: NodeToolbarProps) {
 
     const node = LiteGraph.createNode(nodeType)
     if (node) {
-      // 放置在画布中央
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const canvas = (graph as any).canvas
+      const mousePos = getMousePosition()
+      
       if (canvas) {
-        const centerX = (-canvas.ds.offset[0] + canvas.canvas.width / 2 / canvas.ds.scale)
-        const centerY = (-canvas.ds.offset[1] + canvas.canvas.height / 2 / canvas.ds.scale)
-        node.pos = [centerX - 100, centerY - 50]
+        // 将屏幕坐标转换为画布坐标
+        const canvasX = (mousePos.x - canvas.ds.offset[0]) / canvas.ds.scale
+        const canvasY = (mousePos.y - canvas.ds.offset[1]) / canvas.ds.scale
+        // 以鼠标位置为中心
+        node.pos = [canvasX - (node.size?.[0] || 200) / 2, canvasY - (node.size?.[1] || 60) / 2]
       } else {
-        node.pos = [200, 200]
+        node.pos = [mousePos.x, mousePos.y]
       }
       graph.add(node)
       setActiveCategory(null)
     }
-  }, [graph])
+  }, [graph, getMousePosition])
 
   // 处理鼠标进入分类
   const handleMouseEnter = useCallback((categoryName: string, event: React.MouseEvent<HTMLButtonElement>) => {

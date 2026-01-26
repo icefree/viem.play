@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { LGraph } from 'litegraph.js'
 import { Canvas } from './components/Canvas'
 import { NodeToolbar } from './components/NodeToolbar'
@@ -7,10 +7,25 @@ import './App.css'
 
 function App() {
   const [graph, setGraph] = useState<LGraph | null>(null)
+  // 追踪鼠标在画布上的位置
+  const mousePositionRef = useRef<{ x: number; y: number }>({ x: 400, y: 300 })
 
   const handleGraphReady = useCallback((g: LGraph) => {
     setGraph(g)
   }, [])
+
+  // 监听鼠标移动，记录最后位置
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mousePositionRef.current = { x: e.clientX, y: e.clientY }
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
+
+  // 获取鼠标位置的函数（传递给子组件）
+  const getMousePosition = useCallback(() => mousePositionRef.current, [])
 
   return (
     <div className="app">
@@ -33,7 +48,7 @@ function App() {
       </header>
 
       {/* Node Toolbar - eth.build style */}
-      <NodeToolbar graph={graph} />
+      <NodeToolbar graph={graph} getMousePosition={getMousePosition} />
 
       {/* Main Canvas */}
       <main className="app-main">
@@ -41,7 +56,7 @@ function App() {
       </main>
 
       {/* Node Search Modal (Space key) */}
-      <NodeSearch graph={graph} />
+      <NodeSearch graph={graph} getMousePosition={getMousePosition} />
 
       {/* Compact Help */}
       <aside className="help-panel compact">
