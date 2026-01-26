@@ -102,7 +102,7 @@ function App() {
   // Clear graph
   const clearGraph = useCallback(() => {
     if (graph) {
-      const confirmed = window.confirm('确定要清除当前所有节点吗？')
+      const confirmed = window.confirm('Are you sure you want to clear all nodes?')
       if (confirmed) {
         graph.clear()
         localStorage.removeItem('viemplay-graph')
@@ -162,15 +162,19 @@ function App() {
         </div>
 
         <div className="header-actions">
-          <button onClick={saveGraph} className="toolbar-btn" title="保存设计并下载 JSON 文件">
+          <button onClick={saveGraph} className="toolbar-btn" title="Save design and download as JSON">
             💾 Save
           </button>
-          <button onClick={loadGraph} className="toolbar-btn" title="从 JSON 文件加载设计">
+          <button onClick={loadGraph} className="toolbar-btn" title="Load design from JSON file">
             📂 Load
           </button>
-          <button onClick={clearGraph} className="toolbar-btn danger" title="清空工作区">
+          <button onClick={clearGraph} className="toolbar-btn danger" title="Clear workspace">
             🗑️ Clear
           </button>
+        </div>
+
+        <div className="header-tip">
+          <p>💡 Hover categories to add nodes · Press <kbd>{navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}</kbd> + <kbd>K</kbd> to search</p>
         </div>
 
         <div className="header-info">
@@ -196,11 +200,6 @@ function App() {
 
       {/* Node Search Modal (Space key) */}
       <NodeSearch graph={graph} getMousePosition={getMousePosition} />
-
-      {/* Compact Help */}
-      <aside className="help-panel compact">
-        <p>💡 鼠标悬停顶部分类查看节点 · 按 <kbd>{navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}</kbd> + <kbd>K</kbd> 快速搜索</p>
-      </aside>
     </div>
   )
 }
