@@ -89,7 +89,6 @@ class GetBlockNumberNode extends LGraphNode {
 
   private blockNumber: bigint | null = null
   private isLoading = false
-  private lastFetch = 0
   private pendingFetch = false
 
   constructor() {
@@ -98,11 +97,11 @@ class GetBlockNumberNode extends LGraphNode {
     this.addInput('trigger', -1)
     this.addInput('client', 'publicClient')
     this.addOutput('blockNumber', 'bigint')
-    this.size = [180, 60]
+    this.size = [180, 80]
   }
 
   onAction() {
-    // 当收到 action 时，标记需要立即刷新
+    // 当收到 action 时，标记需要刷新
     this.pendingFetch = true
   }
 
@@ -114,14 +113,10 @@ class GetBlockNumberNode extends LGraphNode {
       return
     }
 
-    // 如果有 pending 请求或者超过 5 秒自动刷新
-    const now = Date.now()
-    const shouldFetch = this.pendingFetch || (now - this.lastFetch > 5000)
-
-    if (shouldFetch && !this.isLoading) {
+    // 只在收到 action 触发时才请求
+    if (this.pendingFetch && !this.isLoading) {
       this.isLoading = true
       this.pendingFetch = false
-      this.lastFetch = now
 
       try {
         this.blockNumber = await client.getBlockNumber()
@@ -142,9 +137,9 @@ class GetBlockNumberNode extends LGraphNode {
     ctx.fillStyle = '#e2e8f0'
 
     if (this.blockNumber !== null) {
-      ctx.fillText(`#${this.blockNumber.toString()}`, 10, 40)
+      ctx.fillText(`#${this.blockNumber.toString()}`, 10, 60)
     } else {
-      ctx.fillText('No data', 10, 40)
+      ctx.fillText('No data', 10, 60)
     }
   }
 }
