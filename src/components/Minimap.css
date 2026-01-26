@@ -1,0 +1,29 @@
+.minimap-container {
+  position: absolute;
+  bottom: 5rem;
+  right: 1.5rem;
+  background: rgba(22, 27, 34, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+  padding: 4px;
+  pointer-events: auto;
+  cursor: crosshair;
+  z-index: 40;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.minimap-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-left: 4px;
+  margin-bottom: 2px;
+  font-weight: 600;
+}
+
+.minimap-canvas {
+  display: block;
+}
