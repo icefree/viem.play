@@ -1,6 +1,6 @@
 .shortcuts-panel {
   position: fixed;
-  right: 20px;
+  right: 12px;
   bottom: 220px; /* High enough to clear minimap */
   width: 260px;
   background: rgba(26, 32, 44, 0.85);
