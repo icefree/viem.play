@@ -29,6 +29,9 @@ LGraphCanvasAny.prototype.onMouseDoubleClick = function(this: any, e: MouseEvent
     const input = node.getInputSlot(canvas.graph_mouse[0], canvas.graph_mouse[1]);
     if (input != null) {
       const slot = node.inputs[input];
+      // 如果已经有连线，则不触发
+      if (slot.link !== null) return originalOnMouseDoubleClick.call(this, e);
+
       const nodeType = SLOT_TYPE_TO_NODE[slot.type || ''];
       if (nodeType) {
         const newNode = LiteGraph.createNode(nodeType);
@@ -46,6 +49,9 @@ LGraphCanvasAny.prototype.onMouseDoubleClick = function(this: any, e: MouseEvent
     const output = node.getOutputSlot(canvas.graph_mouse[0], canvas.graph_mouse[1]);
     if (output != null) {
       const slot = node.outputs[output];
+      // 如果已经有连线，则不触发
+      if (slot.links && slot.links.length > 0) return originalOnMouseDoubleClick.call(this, e);
+
       const nodeType = SLOT_TYPE_TO_NODE[slot.type || ''];
       if (nodeType) {
         const newNode = LiteGraph.createNode(nodeType);
@@ -108,12 +114,13 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady }, r
     canvas.render_connection_arrows = true
     canvas.allow_searchbox = false // Disable default search, use our custom one
 
+    //add 2px fontsize
+    canvas.title_text_font = "bold 16px Arial"
+    canvas.inner_text_font = "normal 14px Arial"
+
     // Start running the graph
     graph.start()
 
-    // Default zoom level (1.2x)
-    canvas.ds.scale = 1.2
-    
     // Notify parent
     onGraphReady?.(graph)
 
