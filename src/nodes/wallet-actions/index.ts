@@ -118,12 +118,52 @@ class GetAddressesNode extends LGraphNode {
   }
 }
 
+/**
+ * Base Placeholder Node for missing actions
+ */
+class WalletActionPlaceholderNode extends LGraphNode {
+  constructor(title: string, desc: string) {
+    super()
+    this.title = title
+    this.addInput('client', 'walletClient')
+    this.properties = { description: desc }
+    this.color = '#c53030'
+    this.bgcolor = '#742a2a'
+    this.size = [180, 40]
+  }
+
+  onDrawForeground(ctx: CanvasRenderingContext2D) {
+    if (this.flags.collapsed) return
+    ctx.font = '10px Arial'
+    ctx.fillStyle = '#666'
+    ctx.fillText('Placeholder', 10, 30)
+  }
+}
+
 export function registerWalletActionNodes() {
-  LiteGraph.registerNodeType('Wallet Actions/sendTransaction', SendTransactionNode)
-  LiteGraph.registerNodeType('Wallet Actions/signMessage', SignMessageNode)
-  LiteGraph.registerNodeType('Wallet Actions/signTypedData', SignTypedDataNode)
-  LiteGraph.registerNodeType('Wallet Actions/switchChain', SwitchChainNode)
-  LiteGraph.registerNodeType('Wallet Actions/getAddresses', GetAddressesNode)
+  // --- Transaction ---
+  LiteGraph.registerNodeType('Wallet Actions/Transaction/sendTransaction', SendTransactionNode)
+  LiteGraph.registerNodeType('Wallet Actions/Transaction/sendRawTransaction', class extends WalletActionPlaceholderNode { constructor() { super('sendRawTransaction', 'Send a signed transaction') } })
+  LiteGraph.registerNodeType('Wallet Actions/Transaction/prepareTransactionRequest', class extends WalletActionPlaceholderNode { constructor() { super('prepareTransactionRequest', 'Prepare transaction request') } })
+
+  // --- Sign ---
+  LiteGraph.registerNodeType('Wallet Actions/Sign/signMessage', SignMessageNode)
+  LiteGraph.registerNodeType('Wallet Actions/Sign/signTypedData', SignTypedDataNode)
+  LiteGraph.registerNodeType('Wallet Actions/Sign/signTransaction', class extends WalletActionPlaceholderNode { constructor() { super('signTransaction', 'Sign a transaction') } })
+
+  // --- Account ---
+  LiteGraph.registerNodeType('Wallet Actions/Account/getAddresses', GetAddressesNode)
+  LiteGraph.registerNodeType('Wallet Actions/Account/requestAddresses', class extends WalletActionPlaceholderNode { constructor() { super('requestAddresses', 'Request wallet addresses') } })
+  LiteGraph.registerNodeType('Wallet Actions/Account/getPermissions', class extends WalletActionPlaceholderNode { constructor() { super('getPermissions', 'Get wallet permissions') } })
+  LiteGraph.registerNodeType('Wallet Actions/Account/requestPermissions', class extends WalletActionPlaceholderNode { constructor() { super('requestPermissions', 'Request wallet permissions') } })
+
+  // --- Asset ---
+  LiteGraph.registerNodeType('Wallet Actions/Asset/watchAsset', class extends WalletActionPlaceholderNode { constructor() { super('watchAsset', 'Watch for an asset') } })
+
+  // --- Chain ---
+  LiteGraph.registerNodeType('Wallet Actions/Chain/switchChain', SwitchChainNode)
+  LiteGraph.registerNodeType('Wallet Actions/Chain/addChain', class extends WalletActionPlaceholderNode { constructor() { super('addChain', 'Add a chain to the wallet') } })
+  LiteGraph.registerNodeType('Wallet Actions/Chain/watchAsset', class extends WalletActionPlaceholderNode { constructor() { super('watchAsset', 'Watch for an asset') } })
 }
 
 export {

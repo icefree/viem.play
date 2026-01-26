@@ -138,13 +138,56 @@ class RevertNode extends LGraphNode {
   }
 }
 
+/**
+ * Base Placeholder Node for missing actions
+ */
+class TestActionPlaceholderNode extends LGraphNode {
+  constructor(title: string, desc: string) {
+    super()
+    this.title = title
+    this.addInput('client', 'testClient')
+    this.properties = { description: desc }
+    this.color = '#805ad5'
+    this.bgcolor = '#553c9a'
+    this.size = [180, 40]
+  }
+
+  onDrawForeground(ctx: CanvasRenderingContext2D) {
+    if (this.flags.collapsed) return
+    ctx.font = '10px Arial'
+    ctx.fillStyle = '#666'
+    ctx.fillText('Placeholder', 10, 30)
+  }
+}
+
 export function registerTestActionNodes() {
-  LiteGraph.registerNodeType('Test Actions/setBalance', SetBalanceNode)
-  LiteGraph.registerNodeType('Test Actions/mine', MineNode)
-  LiteGraph.registerNodeType('Test Actions/impersonateAccount', ImpersonateAccountNode)
-  LiteGraph.registerNodeType('Test Actions/setNextBlockTimestamp', SetNextBlockTimestampNode)
-  LiteGraph.registerNodeType('Test Actions/snapshot', SnapshotNode)
-  LiteGraph.registerNodeType('Test Actions/revert', RevertNode)
+  // --- Account ---
+  LiteGraph.registerNodeType('Test Actions/Account/setBalance', SetBalanceNode)
+  LiteGraph.registerNodeType('Test Actions/Account/impersonateAccount', ImpersonateAccountNode)
+  LiteGraph.registerNodeType('Test Actions/Account/stopImpersonatingAccount', class extends TestActionPlaceholderNode { constructor() { super('stopImpersonatingAccount', 'Stop impersonating an account') } })
+  LiteGraph.registerNodeType('Test Actions/Account/setCode', class extends TestActionPlaceholderNode { constructor() { super('setCode', 'Set code of a contract') } })
+  LiteGraph.registerNodeType('Test Actions/Account/setNonce', class extends TestActionPlaceholderNode { constructor() { super('setNonce', 'Set nonce of an account') } })
+  LiteGraph.registerNodeType('Test Actions/Account/setStorageAt', class extends TestActionPlaceholderNode { constructor() { super('setStorageAt', 'Set storage selection at a contract address') } })
+
+  // --- Block ---
+  LiteGraph.registerNodeType('Test Actions/Block/mine', MineNode)
+  LiteGraph.registerNodeType('Test Actions/Block/setNextBlockTimestamp', SetNextBlockTimestampNode)
+  LiteGraph.registerNodeType('Test Actions/Block/getBlockBadHash', class extends TestActionPlaceholderNode { constructor() { super('getBlockBadHash', 'Get block bad hash') } })
+  LiteGraph.registerNodeType('Test Actions/Block/setBlockTimestampInterval', class extends TestActionPlaceholderNode { constructor() { super('setBlockTimestampInterval', 'Set block timestamp interval') } })
+  LiteGraph.registerNodeType('Test Actions/Block/setNextBlockBaseFeePerGas', class extends TestActionPlaceholderNode { constructor() { super('setNextBlockBaseFeePerGas', 'Set next block base fee per gas') } })
+
+  // --- State ---
+  LiteGraph.registerNodeType('Test Actions/State/snapshot', SnapshotNode)
+  LiteGraph.registerNodeType('Test Actions/State/revert', RevertNode)
+  LiteGraph.registerNodeType('Test Actions/State/reset', class extends TestActionPlaceholderNode { constructor() { super('reset', 'Reset chain state') } })
+  LiteGraph.registerNodeType('Test Actions/State/dropTransaction', class extends TestActionPlaceholderNode { constructor() { super('dropTransaction', 'Drop a pending transaction') } })
+  LiteGraph.registerNodeType('Test Actions/State/dumpState', class extends TestActionPlaceholderNode { constructor() { super('dumpState', 'Dump chain state') } })
+  LiteGraph.registerNodeType('Test Actions/State/loadState', class extends TestActionPlaceholderNode { constructor() { super('loadState', 'Load chain state') } })
+
+  // --- Other ---
+  LiteGraph.registerNodeType('Test Actions/Other/inspect', class extends TestActionPlaceholderNode { constructor() { super('inspect', 'Inspect a transaction') } })
+  LiteGraph.registerNodeType('Test Actions/Other/setLoggingEnabled', class extends TestActionPlaceholderNode { constructor() { super('setLoggingEnabled', 'Enable/disable logging') } })
+  LiteGraph.registerNodeType('Test Actions/Other/setRpcUrl', class extends TestActionPlaceholderNode { constructor() { super('setRpcUrl', 'Set RPC URL') } })
 }
 
 export {
