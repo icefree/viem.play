@@ -14,7 +14,7 @@ class ButtonNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'Button'
-    this.addInput('trigger', -1)
+    this.addInput('timer', -1)
     this.addOutput('trigger', -1)
     this.addOutput('count', 'number')
     this.addProperty('label', 'CLICK ME')
