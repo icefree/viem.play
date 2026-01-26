@@ -1,15 +1,12 @@
 import { LGraphNode, LiteGraph } from 'litegraph.js'
 import { createPublicClient, http, type PublicClient, type Chain } from 'viem'
 
-// Store clients to avoid recreating
-const clientCache = new Map<string, PublicClient>()
-
 /**
  * PublicClient 节点 - 创建 viem 的 PublicClient
  * 用于读取区块链数据
  */
 class PublicClientNode extends LGraphNode {
-  static title = 'Public Client'
+  static title = 'PublicClient'
   static desc = 'Create a viem PublicClient for reading blockchain data'
 
   color = '#276749'
@@ -24,18 +21,31 @@ class PublicClientNode extends LGraphNode {
     this.addInput('chain', 'chain')
     this.addInput('transport', 'transport')
     this.addInput('batch', 'object')
-    this.addInput('cacheTime', 'number')
-    this.addInput('pollingInterval', 'number')
+    
+    // Properties for widgets
+    this.properties = {
+      name: 'Public Client',
+      key: 'public',
+      cacheTime: 4000,
+      pollingInterval: 4000,
+      ccipRead: false
+    }
+
+    // Widgets for all parameters
+    this.addWidget('text', 'Name', this.properties.name, (v: string) => { this.properties.name = v })
+    this.addWidget('text', 'Key', this.properties.key, (v: string) => { this.properties.key = v })
+    this.addWidget('number', 'Cache Time', this.properties.cacheTime, (v: number) => { this.properties.cacheTime = v }, { precision: 0 })
+    this.addWidget('number', 'Polling Interval', this.properties.pollingInterval, (v: number) => { this.properties.pollingInterval = v }, { precision: 0 })
+    this.addWidget('toggle', 'CCIP Read', this.properties.ccipRead, (v: boolean) => { this.properties.ccipRead = v })
+
     this.addOutput('client', 'publicClient')
-    this.size = [180, 110]
+    this.size = [220, 200]
   }
 
   onExecute() {
     const chain = this.getInputData(0) as Chain | undefined
     const transport = this.getInputData(1)
     const batch = this.getInputData(2)
-    const cacheTime = this.getInputData(3)
-    const pollingInterval = this.getInputData(4)
 
     if (!chain) {
       this.setOutputData(0, null)
@@ -47,23 +57,26 @@ class PublicClientNode extends LGraphNode {
       chainId: chain.id,
       transport: transport ? 'custom' : 'default',
       batch: !!batch,
-      cacheTime,
-      pollingInterval
+      name: this.properties.name,
+      key: this.properties.key,
+      cacheTime: this.properties.cacheTime,
+      pollingInterval: this.properties.pollingInterval,
+      ccipRead: this.properties.ccipRead
     }
     const configHash = JSON.stringify(config)
 
     if (this.lastConfigHash !== configHash) {
       this.lastConfigHash = configHash
       
-      // We recreate the client when config changes
-      // In a real app we might want a global cache but for a playground 
-      // per-node instance is often enough for reactivity
       this.currentClient = createPublicClient({
         chain,
         transport: transport || http(),
         batch: batch || undefined,
-        cacheTime: cacheTime || undefined,
-        pollingInterval: pollingInterval || undefined,
+        name: this.properties.name,
+        key: this.properties.key,
+        cacheTime: this.properties.cacheTime,
+        pollingInterval: this.properties.pollingInterval,
+        ccipRead: this.properties.ccipRead
       })
     }
 
@@ -75,7 +88,7 @@ class PublicClientNode extends LGraphNode {
     if (chain) {
       return `PublicClient (${chain.name})`
     }
-    return 'Public Client'
+    return this.properties.name || 'PublicClient'
   }
 }
 
