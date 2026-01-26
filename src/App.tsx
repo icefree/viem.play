@@ -103,7 +103,7 @@ function App() {
 
       {/* Compact Help */}
       <aside className="help-panel compact">
-        <p>💡 鼠标悬停顶部分类查看节点 · 按 <kbd>Space</kbd> 快速搜索</p>
+        <p>💡 鼠标悬停顶部分类查看节点 · 按 <kbd>{navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}</kbd> + <kbd>K</kbd> 快速搜索</p>
       </aside>
     </div>
   )
