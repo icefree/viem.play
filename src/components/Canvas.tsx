@@ -82,7 +82,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const graphRef = useRef<LGraph | null>(null)
   const canvasInstanceRef = useRef<LGraphCanvas | null>(null)
-  const scaleRef = useRef(1.2)
+  const scaleRef = useRef(1.0)
 
   // Expose graph via ref
   useImperativeHandle(ref, () => ({
@@ -119,9 +119,9 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     // Start running the graph
     graph.start()
 
-    // Default zoom level (1.2x)
-    canvas.ds.scale = 1.2
-    onScaleChange?.(1.2)
+    // Default zoom level (1.0x)
+    canvas.ds.scale = 1.0
+    onScaleChange?.(1.0)
 
     // Track scale changes by hooking into the draw method
     const originalRender = canvas.draw;
