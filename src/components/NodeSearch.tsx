@@ -133,7 +133,7 @@ export function NodeSearch({ graph, getMousePosition }: NodeSearchProps) {
             ref={inputRef}
             type="text"
             className="search-input"
-            placeholder="搜索节点... (按 ↑↓ 选择, Enter 添加, Esc 关闭)"
+            placeholder="Search nodes... (↑↓ to select, Enter to add, Esc to close)"
             value={query}
             onChange={e => {
               setQuery(e.target.value)
@@ -154,11 +154,11 @@ export function NodeSearch({ graph, getMousePosition }: NodeSearchProps) {
             </div>
           ))}
           {filteredNodes.length === 0 && (
-            <div className="search-no-results">没有找到匹配的节点</div>
+            <div className="search-no-results">No nodes found</div>
           )}
         </div>
         <div className="search-hint">
-          按 <kbd>{navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}</kbd> + <kbd>K</kbd> 打开 · <kbd>↑</kbd><kbd>↓</kbd> 选择 · <kbd>Enter</kbd> 添加 · <kbd>Esc</kbd> 关闭
+          Press <kbd>{navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}</kbd> + <kbd>K</kbd> to open · <kbd>↑</kbd><kbd>↓</kbd> to select · <kbd>Enter</kbd> to add · <kbd>Esc</kbd> to close
         </div>
       </div>
     </div>
