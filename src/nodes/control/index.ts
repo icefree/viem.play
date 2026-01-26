@@ -1,167 +1,179 @@
 import { LGraphNode, LiteGraph } from 'litegraph.js'
 
 /**
- * Button Node - Provides a clickable UI button to trigger actions
+ * Button 节点 - 可点击的按钮，触发事件
+ * 移植自 eth.build
  */
-export class ButtonNode extends LGraphNode {
+class ButtonNode extends LGraphNode {
   static title = 'Button'
-  static desc = 'Clickable button to trigger actions'
-
-  color = '#3f51b5'
-  bgcolor = '#283593'
-
-  private count: number = 0
-
-  constructor() {
-    super()
-    this.addInput('value', 'string')
-    this.addOutput('trigger', -1)
-    this.addOutput('value', 'string')
-    this.addOutput('count', 'number')
-    
-    this.properties = {
-      label: 'CLICK ME',
-      value: 'pulse'
-    }
-
-    this.size = [180, 80]
-
-    // Use a LiteGraph button widget
-    this.addWidget('button', this.properties.label, '', () => {
-      this.clicked()
-    })
-    
-    // Add a text widget to change the label
-    this.addWidget('text', 'Label', this.properties.label, (v: string) => {
-      this.properties.label = v
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((this as any).widgets && (this as any).widgets[0]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this as any).widgets[0].name = v
-      }
-    })
-  }
-
-  clicked() {
-    this.count++
-    this.triggerSlot(0, this.properties.value)
-    this.setDirtyCanvas(true, true)
-  }
-
-  onExecute() {
-    // Update label if input is connected
-    const inputVal = this.getInputData(0)
-    if (inputVal !== undefined && inputVal !== null) {
-      this.properties.label = String(inputVal)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((this as any).widgets && (this as any).widgets[0]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this as any).widgets[0].name = String(inputVal)
-      }
-    }
-
-    this.setOutputData(1, this.properties.value)
-    this.setOutputData(2, this.count)
-  }
-
-  onDrawForeground(ctx: CanvasRenderingContext2D) {
-    if (this.flags.collapsed) return
-    
-    // Show count in the corner
-    ctx.fillStyle = '#9fb3ff'
-    ctx.font = '10px Arial'
-    ctx.textAlign = 'right'
-    ctx.fillText(`${this.count} clicks`, this.size[0] - 10, this.size[1] - 10)
-    ctx.textAlign = 'left'
-  }
-}
-
-/**
- * Timer Node - Triggers an action periodically
- */
-export class TimerNode extends LGraphNode {
-  static title = 'Timer'
-  static desc = 'Triggers on a regular interval'
+  static desc = 'Clickable button that triggers an event'
 
   color = '#4a5568'
   bgcolor = '#2d3748'
 
-  private time: number = 0
-  private lastTime: number = 0
-  private triggered: boolean = false
-  private blink: number = 0
-
   constructor() {
     super()
-    this.addInput('interval', 'number')
-    this.addOutput('tick', -1)
-    this.addOutput('is_tick', 'boolean')
-    
-    this.properties = {
-      interval: 1000, // ms
-    }
+    this.title = 'Button'
+    this.addInput('label', 'string')
+    this.addOutput('trigger', -1)
+    this.addOutput('count', 'number')
+    this.addProperty('label', 'CLICK ME')
+    this.addProperty('count', 0)
+    this.size = [180, 60]
 
-    this.size = [160, 60]
-    
-    this.addWidget('number', 'Interval (ms)', this.properties.interval, (v: number) => {
-      this.properties.interval = v
+    this.addWidget('button', 'Click', '', () => {
+      this.properties.count = (this.properties.count as number) + 1
+      this.triggerSlot(0)
     })
   }
 
   onExecute() {
-    const now = performance.now()
-    if (this.lastTime === 0) {
-      this.lastTime = now
-      return
+    // 如果有输入的 label，则更新属性
+    const inputLabel = this.getInputData(0)
+    if (inputLabel !== undefined && inputLabel !== null) {
+      this.properties.label = String(inputLabel)
     }
+    this.setOutputData(1, this.properties.count)
+  }
 
-    const dt = now - this.lastTime
-    this.lastTime = now
-    
-    this.time += dt
-    
-    const interval = this.getInputData(0) || this.properties.interval
-    
-    if (this.time >= interval) {
-      this.time = this.time % interval
-      this.triggerSlot(0, true)
-      this.setOutputData(1, true)
-      this.triggered = true
-      this.blink = 5 // Blink for 5 frames
-    } else {
-      this.setOutputData(1, false)
-      if (this.blink > 0) {
-        this.blink--
-      } else {
-        this.triggered = false
-      }
+  getTitle(): string {
+    if (this.flags.collapsed && this.properties.label) {
+      return String(this.properties.label)
     }
+    return 'Button'
   }
 
   onDrawForeground(ctx: CanvasRenderingContext2D) {
     if (this.flags.collapsed) return
 
-    // Show progress bar
-    const interval = this.getInputData(0) || this.properties.interval
-    const progress = Math.min(1, this.time / interval)
-    
-    ctx.fillStyle = '#1a202c'
-    ctx.fillRect(10, 45, this.size[0] - 20, 4)
-    
-    ctx.fillStyle = this.triggered ? '#63b3ed' : '#4a5568'
-    ctx.fillRect(10, 45, (this.size[0] - 20) * progress, 4)
-    
-    // Show interval text
-    ctx.fillStyle = '#cbd5e0'
+    // 绘制按钮样式的标签
+    ctx.save()
+    ctx.fillStyle = '#3182ce'
+    ctx.strokeStyle = '#2c5282'
+    ctx.lineWidth = 2
+
+    const btnX = 10
+    const btnY = 30
+    const btnW = this.size[0] - 20
+    const btnH = 24
+
+    // 绘制圆角矩形按钮
+    const radius = 4
+    ctx.beginPath()
+    ctx.moveTo(btnX + radius, btnY)
+    ctx.lineTo(btnX + btnW - radius, btnY)
+    ctx.quadraticCurveTo(btnX + btnW, btnY, btnX + btnW, btnY + radius)
+    ctx.lineTo(btnX + btnW, btnY + btnH - radius)
+    ctx.quadraticCurveTo(btnX + btnW, btnY + btnH, btnX + btnW - radius, btnY + btnH)
+    ctx.lineTo(btnX + radius, btnY + btnH)
+    ctx.quadraticCurveTo(btnX, btnY + btnH, btnX, btnY + btnH - radius)
+    ctx.lineTo(btnX, btnY + radius)
+    ctx.quadraticCurveTo(btnX, btnY, btnX + radius, btnY)
+    ctx.closePath()
+    ctx.fill()
+    ctx.stroke()
+
+    // 绘制标签文字
+    ctx.fillStyle = '#ffffff'
+    ctx.font = 'bold 12px Arial'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    const label = String(this.properties.label)
+    const displayLabel = label.length > 20 ? label.slice(0, 17) + '...' : label
+    ctx.fillText(displayLabel, btnX + btnW / 2, btnY + btnH / 2)
+
+    ctx.restore()
+  }
+}
+
+/**
+ * Timer 节点 - 定时触发事件
+ * 移植自 eth.build
+ */
+class TimerNode extends LGraphNode {
+  static title = 'Timer'
+  static desc = 'Clock, repeat trigger at interval'
+
+  static on_color = '#AAA'
+  static off_color = '#222'
+
+  color = '#4a5568'
+  bgcolor = '#2d3748'
+
+  private time = 0
+  private last_interval = 3000
+  private triggered = false
+
+  constructor() {
+    super()
+    this.title = 'Timer'
+    this.addProperty('interval', 3000)
+    this.addProperty('event', 'tick')
+    this.addOutput('on_tick', -1)
+    this.size = [140, 60]
+
+    this.addWidget('number', 'ms', 3000, (v: number) => {
+      this.properties.interval = Math.max(100, v)
+    })
+  }
+
+  onStart() {
+    this.time = 0
+  }
+
+  getTitle(): string {
+    return 'Timer'
+  }
+
+  onDrawBackground(ctx: CanvasRenderingContext2D) {
+    this.boxcolor = this.triggered ? TimerNode.on_color : TimerNode.off_color
+    this.triggered = false
+
+    if (this.flags.collapsed) return
+
+    // 显示当前间隔
+    ctx.fillStyle = '#e2e8f0'
     ctx.font = '10px monospace'
-    ctx.fillText(`${interval}ms`, 10, 40)
-    
-    if (this.triggered) {
-      ctx.beginPath()
-      ctx.arc(this.size[0] - 15, 35, 4, 0, Math.PI * 2)
-      ctx.fillStyle = '#63b3ed'
-      ctx.fill()
+    ctx.textAlign = 'right'
+    ctx.fillText(`${this.last_interval}ms`, this.size[0] - 10, 50)
+  }
+
+  onExecute() {
+    const dt = this.graph?.elapsed_time ? this.graph.elapsed_time * 1000 : 16 // in ms, fallback to ~60fps
+
+    const wasZero = this.time === 0
+
+    this.time += dt
+    this.last_interval = Math.max(100, this.getInputOrProperty('interval') as number)
+
+    if (!wasZero && (this.time < this.last_interval || isNaN(this.last_interval))) {
+      // 还没到触发时间
+      if (this.outputs && this.outputs.length > 1 && this.outputs[1]) {
+        this.setOutputData(1, false)
+      }
+      return
     }
+
+    this.triggered = true
+    this.time = this.time % this.last_interval
+    this.triggerSlot(0, this.properties.event)
+    
+    // 更新输出标签
+    if (this.outputs && this.outputs[0]) {
+      this.outputs[0].label = this.last_interval.toString() + 'ms'
+    }
+    
+    if (this.outputs && this.outputs.length > 1 && this.outputs[1]) {
+      this.setOutputData(1, true)
+    }
+  }
+
+  onGetInputs() {
+    return [['interval', 'number']]
+  }
+
+  onGetOutputs() {
+    return [['tick', 'boolean']]
   }
 }
 
@@ -169,3 +181,5 @@ export function registerControlNodes() {
   LiteGraph.registerNodeType('Control/Button', ButtonNode)
   LiteGraph.registerNodeType('Control/Timer', TimerNode)
 }
+
+export { ButtonNode, TimerNode }

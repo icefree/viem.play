@@ -13,8 +13,6 @@ const NODE_TYPES = {
   bytes: 'Utilities/UI/Bytes',
   json: 'Utilities/UI/JSON',
   trigger: 'Utilities/UI/Trigger',
-  button: 'Control/Button',
-  timer: 'Control/Timer',
   address: 'Utilities/UI/Address',
   bytes32: 'Utilities/UI/Bytes32',
   display: 'Utilities/UI/Display',
@@ -79,8 +77,8 @@ function attachInputAutoPairing(nodeType: typeof LGraphNode) {
     switch (input.type) {
       case LiteGraph.ACTION:
       case -1: {
-        const buttonNode = createNode(this.graph, NODE_TYPES.button, leftX, y + OFFSET_Y)
-        if (buttonNode) buttonNode.connect(0, this, index)
+        const triggerNode = createNode(this.graph, NODE_TYPES.trigger, leftX, y + OFFSET_Y)
+        if (triggerNode) triggerNode.connect(0, this, index)
         break
       }
       case 'string': {

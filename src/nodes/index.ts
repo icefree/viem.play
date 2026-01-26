@@ -16,8 +16,8 @@ import { registerSiweNodes } from './siwe'
 import { registerAbiNodes } from './abi'
 import { registerEip7702Nodes } from './eip-7702'
 import { registerUtilityNodes } from './utilities'
-import { registerControlNodes } from './control'
 import { registerGlossaryNodes } from './glossary'
+import { registerControlNodes } from './control'
 
 /**
  * 注册所有自定义节点到 LiteGraph
@@ -54,13 +54,13 @@ export function registerAllNodes() {
   registerAbiNodes()             // 10. ABI
   registerEip7702Nodes()         // 11. EIP-7702
   registerUtilityNodes()         // 12. Utilities
-  registerControlNodes()         // 13. Control
-  registerGlossaryNodes()        // 14. Glossary
+  registerGlossaryNodes()        // 13. Glossary
+  registerControlNodes()          // 14. Control (Button, Timer)
 
   // Install auto node pairing after all nodes are registered
   installAutoNodePairing()
 
-  console.log('[ViemPlay] All 13 node categories registered')
+  console.log('[ViemPlay] All 14 node categories registered')
 }
 
 // Re-export for convenience
@@ -76,5 +76,5 @@ export * from './siwe'
 export * from './abi'
 export * from './eip-7702'
 export * from './utilities'
-export * from './control'
 export * from './glossary'
+export * from './control'
