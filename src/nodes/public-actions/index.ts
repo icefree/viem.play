@@ -90,27 +90,37 @@ class GetBlockNumberNode extends LGraphNode {
   private blockNumber: bigint | null = null
   private isLoading = false
   private lastFetch = 0
+  private pendingFetch = false
 
   constructor() {
     super()
     this.title = 'getBlockNumber'
+    this.addInput('trigger', -1)
     this.addInput('client', 'publicClient')
     this.addOutput('blockNumber', 'bigint')
     this.size = [180, 60]
   }
 
+  onAction() {
+    // 当收到 action 时，标记需要立即刷新
+    this.pendingFetch = true
+  }
+
   async onExecute() {
-    const client = this.getInputData(0) as PublicClient | undefined
+    const client = this.getInputData(1) as PublicClient | undefined
 
     if (!client) {
       this.setOutputData(0, null)
       return
     }
 
-    // Refresh every 5 seconds
+    // 如果有 pending 请求或者超过 5 秒自动刷新
     const now = Date.now()
-    if (now - this.lastFetch > 5000 && !this.isLoading) {
+    const shouldFetch = this.pendingFetch || (now - this.lastFetch > 5000)
+
+    if (shouldFetch && !this.isLoading) {
       this.isLoading = true
+      this.pendingFetch = false
       this.lastFetch = now
 
       try {
