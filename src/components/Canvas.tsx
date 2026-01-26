@@ -114,8 +114,19 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     historyIndexRef.current = history.length - 1
   }
 
+  // 立即执行挂起的保存
+  const flushSave = () => {
+    const graph = graphRef.current as any
+    if (graph && graph._save_timer) {
+      clearTimeout(graph._save_timer)
+      graph._save_timer = null
+      saveHistory()
+    }
+  }
+
   // 撤销
   const undo = () => {
+    flushSave()
     const history = historyRef.current
     const index = historyIndexRef.current
 
@@ -131,6 +142,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
 
   // 重做
   const redo = () => {
+    flushSave()
     const history = historyRef.current
     const index = historyIndexRef.current
 
@@ -203,6 +215,9 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
 
     // 监听图表变更以自动保存历史
     const debouncedSave = () => {
+      // 如果正在进行撤销/重做操作，不保存新历史
+      if (isUndoRedoRef.current) return;
+
       // 简单的防抖，避免连续触发
       if ((graph as any)._save_timer) clearTimeout((graph as any)._save_timer);
       (graph as any)._save_timer = setTimeout(saveHistory, 200);
@@ -216,6 +231,12 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     const originalOnNodeMoved = canvas.onNodeMoved;
     canvas.onNodeMoved = function(node: any) {
       if (originalOnNodeMoved) originalOnNodeMoved.apply(this, [node]);
+      debouncedSave();
+    };
+
+    const originalOnNodeSelectionMoved = (canvas as any).onNodeSelectionMoved;
+    (canvas as any).onNodeSelectionMoved = function() {
+      if (originalOnNodeSelectionMoved) originalOnNodeSelectionMoved.apply(this, []);
       debouncedSave();
     };
 
