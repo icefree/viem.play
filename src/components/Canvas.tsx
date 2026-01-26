@@ -127,11 +127,12 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady }, r
   // Handle window resize
   useEffect(() => {
     const handleResize = () => {
-      if (canvasRef.current && canvasInstanceRef.current) {
-        canvasRef.current.width = window.innerWidth
-        canvasRef.current.height = window.innerHeight
-        canvasInstanceRef.current.resize()
-      }
+      if (!canvasRef.current || !canvasInstanceRef.current) return
+      const parent = canvasRef.current.parentElement
+      if (!parent) return
+      const { clientWidth, clientHeight } = parent
+      if (!clientWidth || !clientHeight) return
+      canvasInstanceRef.current.resize(clientWidth, clientHeight)
     }
 
     window.addEventListener('resize', handleResize)
