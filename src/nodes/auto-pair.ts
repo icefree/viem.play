@@ -23,7 +23,8 @@ const NODE_TYPES = {
   publicClient: 'Clients & Transports/Clients/PublicClient',
   walletClient: 'Clients & Transports/Clients/WalletClient',
   testClient: 'Clients & Transports/Clients/TestClient',
-  toAccount: 'Accounts/JSON-RPC/toAccount'
+  toAccount: 'Accounts/JSON-RPC/toAccount',
+  transport: 'Clients & Transports/Transports/http'
 } as const
 
 const GAP_X = 240
@@ -168,6 +169,11 @@ function attachInputAutoPairing(nodeType: typeof LGraphNode) {
           addressNode.connect(0, accountNode, 0)
           accountNode.connect(0, this, index)
         }
+        break
+      }
+      case 'transport': {
+        const transportNode = createNode(this.graph, NODE_TYPES.transport, leftX, y + OFFSET_Y)
+        if (transportNode) transportNode.connect(0, this, index)
         break
       }
       default:
