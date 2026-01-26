@@ -14,25 +14,21 @@ class ButtonNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'Button'
-    this.addInput('label', 'string')
+    this.addInput('timer', -1)
     this.addOutput('trigger', -1)
     this.addOutput('count', 'number')
     this.addProperty('label', 'CLICK ME')
     this.addProperty('count', 0)
-    this.size = [180, 60]
+    this.size = [180, 50]
+  }
 
-    this.addWidget('button', 'Click', '', () => {
-      this.properties.count = (this.properties.count as number) + 1
-      this.triggerSlot(0)
-    })
+  onAction() {
+    // 当收到 timer 触发时，执行点击
+    this.properties.count = (this.properties.count as number) + 1
+    this.triggerSlot(0)
   }
 
   onExecute() {
-    // 如果有输入的 label，则更新属性
-    const inputLabel = this.getInputData(0)
-    if (inputLabel !== undefined && inputLabel !== null) {
-      this.properties.label = String(inputLabel)
-    }
     this.setOutputData(1, this.properties.count)
   }
 
@@ -41,6 +37,23 @@ class ButtonNode extends LGraphNode {
       return String(this.properties.label)
     }
     return 'Button'
+  }
+
+  // 处理鼠标点击
+  onMouseDown(_e: MouseEvent, localPos: [number, number]) {
+    // 检查点击是否在按钮区域内
+    const btnX = 10
+    const btnY = 26
+    const btnW = this.size[0] - 20
+    const btnH = 24
+
+    if (localPos[0] >= btnX && localPos[0] <= btnX + btnW &&
+        localPos[1] >= btnY && localPos[1] <= btnY + btnH) {
+      this.properties.count = (this.properties.count as number) + 1
+      this.triggerSlot(0)
+      return true // 消费事件
+    }
+    return false
   }
 
   onDrawForeground(ctx: CanvasRenderingContext2D) {
@@ -53,7 +66,7 @@ class ButtonNode extends LGraphNode {
     ctx.lineWidth = 2
 
     const btnX = 10
-    const btnY = 30
+    const btnY = 26
     const btnW = this.size[0] - 20
     const btnH = 24
 
@@ -110,11 +123,12 @@ class TimerNode extends LGraphNode {
     this.addProperty('interval', 3000)
     this.addProperty('event', 'tick')
     this.addOutput('on_tick', -1)
-    this.size = [140, 60]
+    this.size = [140, 50]
 
-    this.addWidget('number', 'ms', 3000, (v: number) => {
-      this.properties.interval = Math.max(100, v)
-    })
+    // 使用 slider widget，步进 1000ms
+    this.addWidget('slider', 'sec', 3, (v: number) => {
+      this.properties.interval = Math.max(1, Math.round(v)) * 1000
+    }, { min: 1, max: 10, step: 1 })
   }
 
   onStart() {
