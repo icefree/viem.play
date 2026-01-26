@@ -94,8 +94,8 @@ class GetBlockNumberNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'getBlockNumber'
-    this.addInput('trigger', -1)
     this.addInput('client', 'publicClient')
+    this.addInput('trigger', -1)
     this.addOutput('blockNumber', 'bigint')
     this.size = [180, 80]
   }
