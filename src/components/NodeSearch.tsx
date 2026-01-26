@@ -2,101 +2,48 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { LGraph, LiteGraph } from 'litegraph.js'
 import './NodeSearch.css'
 
-// 所有节点的扁平列表
-const ALL_NODES = [
-  // Clients
-  { type: 'Clients/PublicClient', label: 'PublicClient', category: 'Clients' },
-  { type: 'Clients/WalletClient', label: 'WalletClient', category: 'Clients' },
-  { type: 'Clients/TestClient', label: 'TestClient', category: 'Clients' },
-  // Public Actions
-  { type: 'Public Actions/getBalance', label: 'getBalance', category: 'Public Actions' },
-  { type: 'Public Actions/getBlockNumber', label: 'getBlockNumber', category: 'Public Actions' },
-  { type: 'Public Actions/getGasPrice', label: 'getGasPrice', category: 'Public Actions' },
-  { type: 'Public Actions/getBlock', label: 'getBlock', category: 'Public Actions' },
-  { type: 'Public Actions/getTransactionCount', label: 'getTransactionCount', category: 'Public Actions' },
-  // Wallet Actions
-  { type: 'Wallet Actions/sendTransaction', label: 'sendTransaction', category: 'Wallet Actions' },
-  { type: 'Wallet Actions/signMessage', label: 'signMessage', category: 'Wallet Actions' },
-  { type: 'Wallet Actions/signTypedData', label: 'signTypedData', category: 'Wallet Actions' },
-  { type: 'Wallet Actions/switchChain', label: 'switchChain', category: 'Wallet Actions' },
-  { type: 'Wallet Actions/getAddresses', label: 'getAddresses', category: 'Wallet Actions' },
-  // Test Actions
-  { type: 'Test Actions/setBalance', label: 'setBalance', category: 'Test Actions' },
-  { type: 'Test Actions/mine', label: 'mine', category: 'Test Actions' },
-  { type: 'Test Actions/impersonateAccount', label: 'impersonateAccount', category: 'Test Actions' },
-  { type: 'Test Actions/setNextBlockTimestamp', label: 'setNextBlockTimestamp', category: 'Test Actions' },
-  { type: 'Test Actions/snapshot', label: 'snapshot', category: 'Test Actions' },
-  { type: 'Test Actions/revert', label: 'revert', category: 'Test Actions' },
-  // Accounts
-  { type: 'Accounts/privateKeyToAccount', label: 'privateKeyToAccount', category: 'Accounts' },
-  { type: 'Accounts/mnemonicToAccount', label: 'mnemonicToAccount', category: 'Accounts' },
-  { type: 'Accounts/generatePrivateKey', label: 'generatePrivateKey', category: 'Accounts' },
-  { type: 'Accounts/generateMnemonic', label: 'generateMnemonic', category: 'Accounts' },
-  { type: 'Accounts/toAccount', label: 'toAccount', category: 'Accounts' },
-  // Chains
-  { type: 'Chains/Chain', label: 'Chain', category: 'Chains' },
-  { type: 'Chains/ChainId', label: 'ChainId', category: 'Chains' },
-  { type: 'Chains/ChainInfo', label: 'ChainInfo', category: 'Chains' },
-  // Contract
-  { type: 'Contract/readContract', label: 'readContract', category: 'Contract' },
-  { type: 'Contract/writeContract', label: 'writeContract', category: 'Contract' },
-  { type: 'Contract/simulateContract', label: 'simulateContract', category: 'Contract' },
-  { type: 'Contract/getContractEvents', label: 'getContractEvents', category: 'Contract' },
-  { type: 'Contract/deployContract', label: 'deployContract', category: 'Contract' },
-  // ENS
-  { type: 'ENS/getEnsAddress', label: 'getEnsAddress', category: 'ENS' },
-  { type: 'ENS/getEnsName', label: 'getEnsName', category: 'ENS' },
-  { type: 'ENS/getEnsAvatar', label: 'getEnsAvatar', category: 'ENS' },
-  { type: 'ENS/getEnsText', label: 'getEnsText', category: 'ENS' },
-  // SIWE
-  { type: 'SIWE/createSiweMessage', label: 'createSiweMessage', category: 'SIWE' },
-  { type: 'SIWE/verifySiweMessage', label: 'verifySiweMessage', category: 'SIWE' },
-  { type: 'SIWE/parseSiweMessage', label: 'parseSiweMessage', category: 'SIWE' },
-  // ABI
-  { type: 'ABI/parseAbi', label: 'parseAbi', category: 'ABI' },
-  { type: 'ABI/encodeAbiParameters', label: 'encodeAbiParameters', category: 'ABI' },
-  { type: 'ABI/decodeAbiParameters', label: 'decodeAbiParameters', category: 'ABI' },
-  { type: 'ABI/encodeFunctionData', label: 'encodeFunctionData', category: 'ABI' },
-  { type: 'ABI/decodeFunctionResult', label: 'decodeFunctionResult', category: 'ABI' },
-  { type: 'ABI/decodeEventLog', label: 'decodeEventLog', category: 'ABI' },
-  // EIP-7702
-  { type: 'EIP-7702/signAuthorization', label: 'signAuthorization', category: 'EIP-7702' },
-  { type: 'EIP-7702/recoverAuthorizationAddress', label: 'recoverAuthorizationAddress', category: 'EIP-7702' },
-  { type: 'EIP-7702/verifyAuthorization', label: 'verifyAuthorization', category: 'EIP-7702' },
-  // Utilities
-  { type: 'Utilities/Text', label: 'Text', category: 'Utilities' },
-  { type: 'Utilities/Number', label: 'Number', category: 'Utilities' },
-  { type: 'Utilities/Address', label: 'Address', category: 'Utilities' },
-  { type: 'Utilities/Bytes32', label: 'Bytes32', category: 'Utilities' },
-  { type: 'Utilities/Display', label: 'Display', category: 'Utilities' },
-  { type: 'Utilities/Console', label: 'Console', category: 'Utilities' },
-  { type: 'Utilities/toBigInt', label: 'toBigInt', category: 'Utilities' },
-  { type: 'Utilities/formatEther', label: 'formatEther', category: 'Utilities' },
-  { type: 'Utilities/parseEther', label: 'parseEther', category: 'Utilities' },
-  // Glossary
-  { type: 'Glossary/Terms', label: 'Terms', category: 'Glossary' },
-  { type: 'Glossary/Units', label: 'Units', category: 'Glossary' },
-  { type: 'Glossary/ChainIds', label: 'ChainIds', category: 'Glossary' },
-]
-
-interface NodeSearchProps {
-  graph: LGraph | null
-  getMousePosition: () => { x: number; y: number }
+interface NodeItem {
+  type: string
+  label: string
+  category: string
 }
 
 export function NodeSearch({ graph, getMousePosition }: NodeSearchProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [allNodes, setAllNodes] = useState<NodeItem[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Dynamically build all nodes list from LiteGraph
+  useEffect(() => {
+    const buildNodesList = () => {
+      const types = Object.keys(LiteGraph.registered_node_types)
+      const nodeList: NodeItem[] = types.map(type => {
+        const parts = type.split('/')
+        return {
+          type,
+          label: parts[parts.length - 1],
+          category: parts.slice(0, -1).join(' > ')
+        }
+      })
+      // Sort alphabetically by label
+      nodeList.sort((a, b) => a.label.localeCompare(b.label))
+      setAllNodes(nodeList)
+    }
+
+    if (isOpen) {
+      buildNodesList()
+    }
+  }, [isOpen])
 
   // 过滤节点
   const filteredNodes = query.trim()
-    ? ALL_NODES.filter(node =>
+    ? allNodes.filter(node =>
         node.label.toLowerCase().includes(query.toLowerCase()) ||
         node.category.toLowerCase().includes(query.toLowerCase())
       )
-    : ALL_NODES
+    : allNodes
 
   // 添加节点
   const addNode = useCallback((nodeType: string) => {
