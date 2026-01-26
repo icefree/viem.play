@@ -8,6 +8,10 @@ import './App.css'
 function App() {
   const [graph, setGraph] = useState<LGraph | null>(null)
   const [scale, setScale] = useState(1)
+  const [isScaleMenuOpen, setIsScaleMenuOpen] = useState(false)
+  
+  const zoomLevels = [0.5, 0.75, 0.9, 1.0, 1.1, 1.25, 1.5, 2.0]
+
   // 追踪鼠标在画布上的位置
   const mousePositionRef = useRef<{ x: number; y: number }>({ x: 400, y: 300 })
 
@@ -58,6 +62,17 @@ function App() {
     }
   }, [graph])
 
+  const handleScaleSelect = useCallback((newScale: number) => {
+    if (graph && (graph as any).canvas) {
+      const canvas = (graph as any).canvas;
+      canvas.ds.scale = newScale;
+      // Center the view slightly or just refresh
+      canvas.setDirty(true, true);
+      setScale(newScale);
+      setIsScaleMenuOpen(false);
+    }
+  }, [graph])
+
   return (
     <div className="app">
       {/* Header */}
@@ -65,7 +80,27 @@ function App() {
         <div className="logo">
           <span className="logo-icon">⚡</span>
           <span className="logo-text">Viem Playground</span>
-          <span className="scale-badge">{(scale * 100).toFixed(0)}%</span>
+          <div className="scale-container">
+            <button 
+              className={`scale-badge interactive ${isScaleMenuOpen ? 'active' : ''}`}
+              onClick={() => setIsScaleMenuOpen(!isScaleMenuOpen)}
+            >
+              {(scale * 100).toFixed(0)}%
+            </button>
+            {isScaleMenuOpen && (
+              <div className="scale-menu">
+                {zoomLevels.map(z => (
+                  <button 
+                    key={z} 
+                    className={`scale-item ${z === scale ? 'selected' : ''}`}
+                    onClick={() => handleScaleSelect(z)}
+                  >
+                    {(z * 100).toFixed(0)}%
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="header-actions">

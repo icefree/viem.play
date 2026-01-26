@@ -77,11 +77,64 @@ body {
   font-family: monospace;
   font-weight: 500;
   transition: all 0.2s;
+  cursor: default;
 }
 
-.scale-badge:hover {
+.scale-badge.interactive {
+  cursor: pointer;
+}
+
+.scale-badge.interactive:hover,
+.scale-badge.active {
   border-color: var(--accent-success);
+  background: var(--border-color);
   transform: translateY(-1px);
+}
+
+.scale-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.scale-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 80px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+}
+
+.scale-item {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  text-align: left;
+  font-size: 0.8rem;
+  font-family: monospace;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.scale-item:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.scale-item.selected {
+  color: var(--accent-success);
+  font-weight: bold;
 }
 
 .header-info {
