@@ -48,6 +48,10 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady }, r
     canvas.render_connection_arrows = true
     canvas.allow_searchbox = false // Disable default search, use our custom one
 
+    // Increase node font size by 2px (default is usually 14px)
+    canvas.title_text_font = "bold 16px Arial"
+    canvas.inner_text_font = "normal 14px Arial"
+
     // Start running the graph
     graph.start()
 
