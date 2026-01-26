@@ -1,6 +1,6 @@
 # Viem Playground ⚡
 
-一个基于节点的可视化 Web3 接口构建与调试工具。受 [eth.build](https://eth.build/) 启发，基于 [Viem](https://viem.sh/) 实现。
+一个基于节点的可视化 Web3 接口构建与调试工具。受 [eth.build](https://github.com/austintgriffith/eth.build) 启发，基于 [Viem](https://viem.sh/) 实现。
 
 ![Viem Playground Preview](https://via.placeholder.com/800x450.png?text=Viem+Playground+Preview)
 
