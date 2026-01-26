@@ -4,7 +4,7 @@
 
 [English](./README.md) | [简体中文](./README_ZH.md)
 
-![Viem Playground Preview](https://via.placeholder.com/800x450.png?text=Viem+Playground+Preview)
+![Viem Playground Preview](./public/snapshot.png)
 
 ## 🌟 特性
 

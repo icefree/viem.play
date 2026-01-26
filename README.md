@@ -4,7 +4,7 @@ A visual node-based Web3 API builder and debugging tool. Inspired by [eth.build]
 
 [English](./README.md) | [简体中文](./README_ZH.md)
 
-![Viem Playground Preview](https://via.placeholder.com/800x450.png?text=Viem+Playground+Preview)
+![Viem Playground Preview](./public/snapshot.png)
 
 ## 🌟 Features
 
