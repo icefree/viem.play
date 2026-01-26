@@ -19,7 +19,7 @@ class ButtonNode extends LGraphNode {
     this.addOutput('count', 'number')
     this.addProperty('label', 'CLICK ME')
     this.addProperty('count', 0)
-    this.size = [180, 70]
+    this.size = [180, 80]
   }
 
   onAction() {
@@ -42,7 +42,7 @@ class ButtonNode extends LGraphNode {
   onMouseDown(_e: MouseEvent, localPos: number[]): boolean {
     // 检测点击是否在蓝色按钮区域
     const btnX = 10
-    const btnY = 40
+    const btnY = 50
     const btnW = this.size[0] - 20
     const btnH = 24
 
@@ -65,7 +65,7 @@ class ButtonNode extends LGraphNode {
     ctx.lineWidth = 2
 
     const btnX = 10
-    const btnY = 40
+    const btnY = 50
     const btnW = this.size[0] - 20
     const btnH = 24
 
