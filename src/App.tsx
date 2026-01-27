@@ -6,6 +6,7 @@ import { NodeToolbar } from './components/NodeToolbar'
 import { NodeSearch } from './components/NodeSearch'
 import { Minimap } from './components/Minimap'
 import { ShortcutsPanel } from './components/ShortcutsPanel'
+import { generateShareUrl, parseShareUrl, copyToClipboard } from './utils/shareUtils'
 import './App.css'
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
   const [canvasInstance, setCanvasInstance] = useState<any>(null)
   const [scale, setScale] = useState(1)
   const [isScaleMenuOpen, setIsScaleMenuOpen] = useState(false)
+  const [shareText, setShareText] = useState('🔗 Share')
   
   const canvasRef = useRef<CanvasHandle>(null)
   const zoomLevels = [0.5, 0.75, 0.9, 1.0, 1.1, 1.25, 1.5, 2.0]
@@ -112,10 +114,59 @@ function App() {
     }
   }, [graph])
 
+  // Handle Share to URL
+  const handleShare = useCallback(async () => {
+    if (!graph) return
+
+    try {
+      const data = graph.serialize()
+      const url = await generateShareUrl(data)
+      const success = await copyToClipboard(url)
+
+      if (success) {
+        setShareText('✅ Copied!')
+        setTimeout(() => {
+          setShareText('🔗 Share')
+        }, 2000)
+      } else {
+        prompt('Copy this link:', url)
+      }
+    } catch (err) {
+      console.error('Failed to generate share link:', err)
+      alert('Failed to generate share link.')
+    }
+  }, [graph])
+
+  // Load shared graph from URL
+  useEffect(() => {
+    const loadSharedGraph = async () => {
+      if (!graph) return
+
+      const sharedData = await parseShareUrl()
+      if (sharedData) {
+        try {
+          // Give a small delay to ensure LiteGraph is ready and any local auto-load is done
+          setTimeout(() => {
+            graph.clear()
+            graph.configure(sharedData)
+            console.log('[ViemPlay] Shared graph loaded')
+            
+            // Clean up the URL only if we want to "consume" the share, 
+            // but keeping it allows refreshing. Keeping it is better UX for sharing.
+          }, 100)
+        } catch (err) {
+          console.error('Failed to load shared graph:', err)
+        }
+      }
+    }
+
+    loadSharedGraph()
+  }, [graph])
+
   const handleScaleSelect = useCallback((newScale: number) => {
     if (graph && canvasInstance) {
-      // @ts-expect-error: Internal LiteGraph scale modification
-      canvasInstance.ds.scale = newScale;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (canvasInstance as any).ds.scale = newScale;
       // Center the view slightly or just refresh
       canvasInstance.setDirty(true, true);
       setScale(newScale);
@@ -163,6 +214,14 @@ function App() {
         </div>
 
         <div className="header-actions">
+          <button 
+            id="share-btn"
+            onClick={handleShare} 
+            className="toolbar-btn" 
+            title="Share graph via URL"
+          >
+            {shareText}
+          </button>
           <button onClick={saveGraph} className="toolbar-btn" title="Save design and download as JSON">
             💾 Save
           </button>
