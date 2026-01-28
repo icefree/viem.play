@@ -41,16 +41,19 @@ export class InjectedWalletClientNode extends LGraphNode {
     this.size = [180, 110]
   }
 
-  async onAction(action: string) {
-    if (action === 'trigger') {
-      await this.connectWallet()
-    }
+  async onAction() {
+    console.log('[InjectedWallet] onAction triggered')
+    await this.connectWallet()
   }
 
   async connectWallet() {
+    console.log('[InjectedWallet] connectWallet called')
+    console.log('[InjectedWallet] window.ethereum:', window.ethereum)
+    
     if (typeof window === 'undefined' || !window.ethereum) {
       this.error = '未检测到钱包，请安装 MetaMask 或其他钱包'
       this.walletName = 'No wallet'
+      console.warn('[InjectedWallet] No wallet detected')
       return
     }
 
@@ -58,7 +61,10 @@ export class InjectedWalletClientNode extends LGraphNode {
 
     try {
       // 请求账户访问
+      console.log('[InjectedWallet] Requesting eth_requestAccounts...')
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' }) as Address[]
+      console.log('[InjectedWallet] Got accounts:', accounts)
+      
       if (!accounts || accounts.length === 0) {
         this.error = '用户拒绝了连接请求'
         return
@@ -67,6 +73,7 @@ export class InjectedWalletClientNode extends LGraphNode {
       // 获取当前链 ID
       const chainIdHex = await ethereum.request({ method: 'eth_chainId' }) as string
       this.chainId = parseInt(chainIdHex, 16)
+      console.log('[InjectedWallet] Chain ID:', this.chainId)
 
       // 获取对应的链配置
       const chain = chainIdToChain[this.chainId] || mainnet
@@ -77,6 +84,7 @@ export class InjectedWalletClientNode extends LGraphNode {
         transport: custom(ethereum),
         account: accounts[0],
       })
+      console.log('[InjectedWallet] WalletClient created:', this.client)
 
       this.account = accounts[0]
       this.walletName = ethereum.isMetaMask ? 'MetaMask' : 'Wallet'
@@ -85,7 +93,7 @@ export class InjectedWalletClientNode extends LGraphNode {
       // 监听账户和链变化
       this.setupListeners(ethereum)
     } catch (err) {
-      console.error('Wallet connection error:', err)
+      console.error('[InjectedWallet] Connection error:', err)
       this.error = err instanceof Error ? err.message : String(err)
       this.client = null
       this.account = null

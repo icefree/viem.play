@@ -17,7 +17,7 @@ export class TriggerNode extends LGraphNode {
     this.size = [120, 60]
 
     this.addWidget('button', 'Fire', '', () => {
-      this.triggerSlot(0, null)
+      this.triggerSlot(0, 'trigger')
     })
   }
 }

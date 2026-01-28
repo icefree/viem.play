@@ -18,13 +18,13 @@ export class ButtonNode extends LGraphNode {
 
     this.addWidget('button', 'CLICK ME', '', () => {
       this.properties.count++
-      this.triggerSlot(0, null)
+      this.triggerSlot(0, 'trigger')
     })
   }
 
   onAction(_action: string) {
     this.properties.count++
-    this.triggerSlot(0, null)
+    this.triggerSlot(0, 'trigger')
   }
 
   onExecute() {
