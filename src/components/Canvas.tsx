@@ -199,6 +199,10 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     canvas.render_connection_arrows = true
     canvas.allow_searchbox = false // Disable default search, use our custom one
 
+    // 允许所有节点可调整大小
+    canvas.allow_interaction = true
+    ;(canvas as any).allow_reconnect_links = true
+
     // Start running the graph
     graph.start()
 

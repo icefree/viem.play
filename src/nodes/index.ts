@@ -60,7 +60,16 @@ export function registerAllNodes() {
   // Install auto node pairing after all nodes are registered
   installAutoNodePairing()
 
-  console.log('[ViemPlay] All 14 node categories registered')
+  // 让所有节点默认可调整大小
+  const nodeTypes = LiteGraph.registered_node_types
+  for (const typeName in nodeTypes) {
+    const nodeType = nodeTypes[typeName]
+    if (nodeType && nodeType.prototype) {
+      nodeType.prototype.resizable = true
+    }
+  }
+
+  console.log('[ViemPlay] All 14 node categories registered, resizable enabled')
 }
 
 // Re-export for convenience
