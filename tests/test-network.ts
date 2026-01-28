@@ -16,7 +16,7 @@ export const TEST_ACCOUNTS = {
 export const ANVIL_RPC_URL = 'http://127.0.0.1:8545'
 
 // 创建连接 Anvil 的 PublicClient
-export function createAnvilClient() {
+export function createTestClient() {
   return createPublicClient({
     chain: anvil,
     transport: http(ANVIL_RPC_URL),

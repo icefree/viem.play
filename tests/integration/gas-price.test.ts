@@ -2,14 +2,14 @@
  * GetGasPrice 节点集成测试 - 使用 Anvil 真实数据验证
  */
 import { describe, it, expect, beforeAll } from 'vitest'
-import { createAnvilClient } from '../test-network'
+import { createTestClient } from '../test-network'
 import type { PublicClient } from 'viem'
 
 describe('GetGasPrice 集成测试 (Anvil)', () => {
   let client: PublicClient
 
   beforeAll(async () => {
-    client = createAnvilClient()
+    client = createTestClient()
 
     // 验证 Anvil 连接
     try {
