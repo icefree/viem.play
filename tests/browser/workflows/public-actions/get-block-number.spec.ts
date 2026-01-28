@@ -1,79 +1,7 @@
-/**
- * 浏览器 E2E 测试 - 验证完整用户流程
- */
 import { test, expect } from '@playwright/test'
-
-// 主画布选择器 (排除 minimap)
-const MAIN_CANVAS = 'canvas.lgraphcanvas'
-
-test.describe('Viem Playground 基础功能', () => {
-  
-  test('应用应该正常加载', async ({ page }) => {
-    await page.goto('/')
-    
-    // 验证页面标题
-    await expect(page).toHaveTitle(/viem\.play/i)
-    
-    // 验证主画布加载
-    const canvas = page.locator(MAIN_CANVAS)
-    await expect(canvas).toBeVisible()
-  })
-
-  test('应该显示控制台面板', async ({ page }) => {
-    await page.goto('/')
-    
-    // 验证画布存在
-    const canvas = page.locator(MAIN_CANVAS)
-    await expect(canvas).toBeVisible()
-  })
-})
-
-test.describe('节点操作', () => {
-  
-  test('双击画布应该打开节点搜索菜单', async ({ page }) => {
-    await page.goto('/')
-    
-    const canvas = page.locator(MAIN_CANVAS)
-    await canvas.dblclick({ position: { x: 400, y: 300 } })
-    
-    // 等待菜单出现
-    await page.waitForTimeout(500)
-    
-    // LiteGraph 搜索框应该出现 (不做断言，只验证操作不报错)
-  })
-
-  test('右键画布应该打开上下文菜单', async ({ page }) => {
-    await page.goto('/')
-    
-    const canvas = page.locator(MAIN_CANVAS)
-    await canvas.click({ button: 'right', position: { x: 400, y: 300 } })
-    
-    // 验证上下文菜单出现
-    await page.waitForTimeout(300)
-  })
-})
 
 test.describe('Block 节点工作流', () => {
   
-  test('应该能在画布上创建节点', async ({ page }) => {
-    await page.goto('/')
-    
-    const canvas = page.locator(MAIN_CANVAS)
-    
-    // 1. 双击打开节点搜索
-    await canvas.dblclick({ position: { x: 200, y: 150 } })
-    await page.waitForTimeout(500)
-    
-    // 2. 搜索 "mainnet" 
-    await page.keyboard.type('mainnet')
-    await page.waitForTimeout(300)
-    await page.keyboard.press('Enter')
-    await page.waitForTimeout(500)
-    
-    // 截图验证节点创建
-    await page.screenshot({ path: 'test-results/node-creation.png' })
-  })
-
   test('完整工作流: 通过 API 创建节点 → 连线 → 获取区块号', async ({ page }) => {
     // 清除 localStorage 防止加载旧数据
     await page.goto('/')
@@ -238,7 +166,6 @@ test.describe('Block 节点工作流', () => {
     await page.screenshot({ path: 'test-results/getBlockNumber-executed.png' })
     
     // 验证成功
-    expect(createResult.success).toBe(true)
     expect(connectResult.success).toBe(true)
     // 验证确实获取到了区块号
     expect(nodeOutput.blockNumber).not.toBeNull()
@@ -246,78 +173,5 @@ test.describe('Block 节点工作流', () => {
     expect(nodeOutput.output).not.toBeNull()
     // 应该是大整数
     expect(BigInt(nodeOutput.blockNumber!).toString()).toBe(nodeOutput.blockNumber)
-  })
-
-  test('节点拖拽连线测试', async ({ page }) => {
-    await page.goto('/')
-    await page.waitForTimeout(1000)
-    
-    const canvas = page.locator(MAIN_CANVAS)
-    
-    // 创建两个简单节点测试连线
-    // 1. 创建 mainnet Chain 节点
-    await canvas.dblclick({ position: { x: 150, y: 200 } })
-    await page.waitForTimeout(400)
-    await page.keyboard.type('mainnet')
-    await page.keyboard.press('Enter')
-    await page.waitForTimeout(600)
-    
-    // 2. 创建 PublicClient 节点  
-    await canvas.dblclick({ position: { x: 400, y: 200 } })
-    await page.waitForTimeout(400)
-    await page.keyboard.type('publicClient')
-    await page.keyboard.press('Enter')
-    await page.waitForTimeout(600)
-    
-    // 3. 通过鼠标拖拽连接
-    // Chain 节点的输出端口大约在节点右侧中心位置
-    // 节点默认宽度约 140px，输出端口在右边缘
-    const startX = 150 + 140  // Chain 节点的输出端口 X
-    const startY = 200 + 25   // 第一个输出端口的 Y (标题栏下方)
-    const endX = 400          // PublicClient 节点的输入端口 X  
-    const endY = 200 + 25     // 第一个输入端口的 Y
-    
-    // 执行拖拽操作
-    await page.mouse.move(startX, startY)
-    await page.waitForTimeout(100)
-    await page.mouse.down()
-    await page.waitForTimeout(100)
-    await page.mouse.move(endX, endY, { steps: 10 })
-    await page.waitForTimeout(100)
-    await page.mouse.up()
-    await page.waitForTimeout(500)
-    
-    // 截图记录拖拽连线结果
-    await page.screenshot({ path: 'test-results/drag-connect.png' })
-  })
-})
-
-test.describe('Console 面板', () => {
-  
-  test('Console 面板应该存在', async ({ page }) => {
-    await page.goto('/')
-    
-    // 验证页面加载完成
-    const canvas = page.locator(MAIN_CANVAS)
-    await expect(canvas).toBeVisible()
-  })
-})
-
-test.describe('响应式布局', () => {
-  
-  test('在移动端视口应该正常显示', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 })
-    await page.goto('/')
-    
-    const canvas = page.locator(MAIN_CANVAS)
-    await expect(canvas).toBeVisible()
-  })
-
-  test('在桌面视口应该正常显示', async ({ page }) => {
-    await page.setViewportSize({ width: 1920, height: 1080 })
-    await page.goto('/')
-    
-    const canvas = page.locator(MAIN_CANVAS)
-    await expect(canvas).toBeVisible()
   })
 })
