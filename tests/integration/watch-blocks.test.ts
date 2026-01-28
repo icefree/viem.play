@@ -48,9 +48,8 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
           }
         }, 3000)
 
-        const unsubscribe = client.watchBlockNumber(
-          { pollingInterval: 100 },
-          (blockNumber) => {
+        const unsubscribe = client.watchBlockNumber({
+          onBlockNumber: (blockNumber) => {
             blocks.push(blockNumber)
             console.log('接收到区块号:', blockNumber)
 
@@ -62,15 +61,18 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
               resolve()
             }
           },
-        )
+          poll: true,
+          pollingInterval: 100,
+        })
       })
     }, 10000)
 
     it('应该支持取消订阅', () => {
-      const unsubscribe = client.watchBlockNumber(
-        { pollingInterval: 1000 },
-        () => {},
-      )
+      const unsubscribe = client.watchBlockNumber({
+        onBlockNumber: () => {},
+        poll: true,
+        pollingInterval: 1000,
+      })
 
       expect(() => unsubscribe()).not.toThrow()
     })
@@ -89,9 +91,8 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
         }, 3000)
 
         let callCount = 0
-        const unsubscribe = client.watchBlockNumber(
-          { pollingInterval: 100 },
-          (blockNumber) => {
+        const unsubscribe = client.watchBlockNumber({
+          onBlockNumber: (blockNumber) => {
             callCount++
             console.log(`轮询调用 ${callCount}:`, blockNumber)
 
@@ -103,7 +104,9 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
               resolve()
             }
           },
-        )
+          poll: true,
+          pollingInterval: 100,
+        })
       })
     }, 10000)
   })
@@ -124,9 +127,8 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
           }
         }, 3000)
 
-        const unsubscribe = client.watchBlocks(
-          { pollingInterval: 100, includeTransactions: false },
-          (block) => {
+        const unsubscribe = client.watchBlocks({
+          onBlock: (block) => {
             blocks.push(block)
             console.log('接收到区块:', block?.number)
 
@@ -141,7 +143,10 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
               resolve()
             }
           },
-        )
+          poll: true,
+          pollingInterval: 100,
+          includeTransactions: false,
+        })
       })
     }, 10000)
 
@@ -153,9 +158,8 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
           resolve()
         }, 3000)
 
-        const unsubscribe = client.watchBlocks(
-          { pollingInterval: 100, includeTransactions: true },
-          (block) => {
+        const unsubscribe = client.watchBlocks({
+          onBlock: (block) => {
             if (block) {
               clearTimeout(timeout)
               unsubscribe()
@@ -166,16 +170,19 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
               resolve()
             }
           },
-        )
+          poll: true,
+          pollingInterval: 100,
+          includeTransactions: true,
+        })
       })
     }, 10000)
-  })
 
     it('应该支持取消订阅区块监听', () => {
-      const unsubscribe = client.watchBlocks(
-        { pollingInterval: 1000 },
-        () => {},
-      )
+      const unsubscribe = client.watchBlocks({
+        onBlock: () => {},
+        poll: true,
+        pollingInterval: 1000,
+      })
 
       expect(() => unsubscribe()).not.toThrow()
     })
@@ -190,9 +197,8 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
           resolve()
         }, 3000)
 
-        const unsubscribe = client.watchBlocks(
-          { pollingInterval: 1000, blockTag: 'latest' },
-          (block) => {
+        const unsubscribe = client.watchBlocks({
+          onBlock: (block) => {
             if (block) {
               clearTimeout(timeout)
               unsubscribe()
@@ -200,7 +206,10 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
               resolve()
             }
           },
-        )
+          poll: true,
+          pollingInterval: 1000,
+          blockTag: 'latest',
+        })
       })
     }, 8000)
 
@@ -211,9 +220,8 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
           resolve()
         }, 3000)
 
-        const unsubscribe = client.watchBlocks(
-          { pollingInterval: 1000, blockTag: 'safe' },
-          (block) => {
+        const unsubscribe = client.watchBlocks({
+          onBlock: (block) => {
             if (block) {
               clearTimeout(timeout)
               unsubscribe()
@@ -221,7 +229,10 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
               resolve()
             }
           },
-        )
+          poll: true,
+          pollingInterval: 1000,
+          blockTag: 'safe',
+        })
       })
     }, 8000)
 
@@ -232,9 +243,8 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
           resolve()
         }, 3000)
 
-        const unsubscribe = client.watchBlocks(
-          { pollingInterval: 1000, blockTag: 'finalized' },
-          (block) => {
+        const unsubscribe = client.watchBlocks({
+          onBlock: (block) => {
             if (block) {
               clearTimeout(timeout)
               unsubscribe()
@@ -242,7 +252,10 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
               resolve()
             }
           },
-        )
+          poll: true,
+          pollingInterval: 1000,
+          blockTag: 'finalized',
+        })
       })
     }, 8000)
 
@@ -253,9 +266,8 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
           resolve()
         }, 3000)
 
-        const unsubscribe = client.watchBlocks(
-          { pollingInterval: 1000, blockTag: 'pending' },
-          (block) => {
+        const unsubscribe = client.watchBlocks({
+          onBlock: (block) => {
             if (block) {
               clearTimeout(timeout)
               unsubscribe()
@@ -263,7 +275,10 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
               resolve()
             }
           },
-        )
+          poll: true,
+          pollingInterval: 1000,
+          blockTag: 'pending',
+        })
       })
     }, 8000)
   })
@@ -280,19 +295,21 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
         let count1 = 0
         let count2 = 0
 
-        const unsub1 = client.watchBlockNumber(
-          { pollingInterval: 500 },
-          () => {
+        const unsub1 = client.watchBlockNumber({
+          onBlockNumber: () => {
             count1++
           },
-        )
+          poll: true,
+          pollingInterval: 500,
+        })
 
-        const unsub2 = client.watchBlockNumber(
-          { pollingInterval: 500 },
-          () => {
+        const unsub2 = client.watchBlockNumber({
+          onBlockNumber: () => {
             count2++
           },
-        )
+          poll: true,
+          pollingInterval: 500,
+        })
 
         // 等待一段时间，确保两个监听器都被调用
         setTimeout(() => {
