@@ -73,6 +73,167 @@ test.describe('Block 节点工作流', () => {
     // 截图验证节点创建
     await page.screenshot({ path: 'test-results/node-creation.png' })
   })
+
+  test('完整工作流: 通过 API 创建节点 → 连线 → 获取区块号', async ({ page }) => {
+    // 清除 localStorage 防止加载旧数据
+    await page.goto('/')
+    await page.evaluate(() => localStorage.clear())
+    await page.reload()
+    await page.waitForTimeout(1500) // 等待 LiteGraph 完全初始化
+    
+    // ========== 1. 通过 LiteGraph API 创建节点 ==========
+    const createResult = await page.evaluate(() => {
+      // @ts-expect-error LiteGraph is global
+      const graph = window.graph
+      // @ts-expect-error LiteGraph is global
+      const LiteGraph = window.LiteGraph
+      
+      if (!graph) return { success: false, error: 'Graph not found' }
+      if (!LiteGraph) return { success: false, error: 'LiteGraph not found' }
+      
+      try {
+        // 创建 Chain 节点 (mainnet)
+        // 注意：ChainNode 默认 chainName 为 'mainnet'
+        const chainNode = LiteGraph.createNode('Chains/Chain')
+        if (!chainNode) return { success: false, error: 'Failed to create Chain node' }
+        chainNode.pos = [100, 150]
+        graph.add(chainNode)
+        
+        // 创建 HttpTransport 节点
+        const httpNode = LiteGraph.createNode('Clients & Transports/Transports/http')
+        if (!httpNode) return { success: false, error: 'Failed to create Http node' }
+        httpNode.pos = [100, 300]
+        graph.add(httpNode)
+        
+        // 创建 PublicClient 节点
+        const clientNode = LiteGraph.createNode('Clients & Transports/Clients/PublicClient')
+        if (!clientNode) return { success: false, error: 'Failed to create PublicClient node' }
+        clientNode.pos = [350, 220]
+        graph.add(clientNode)
+        
+        // 创建 getBlockNumber 节点
+        const blockNumNode = LiteGraph.createNode('Public Actions/Block/getBlockNumber')
+        if (!blockNumNode) return { success: false, error: 'Failed to create getBlockNumber node' }
+        blockNumNode.pos = [600, 220]
+        graph.add(blockNumNode)
+        
+        return { 
+          success: true, 
+          nodeCount: graph._nodes?.length || 0,
+          nodes: [chainNode.title, httpNode.title, clientNode.title, blockNumNode.title]
+        }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    })
+    
+    console.log('创建结果:', createResult)
+    
+    if (!createResult.success) {
+      await page.screenshot({ path: 'test-results/create-failed.png' })
+      expect(createResult.success).toBe(true)
+      return
+    }
+    
+    // ========== 2. 连接节点 ==========
+    const connectResult = await page.evaluate(() => {
+      // @ts-expect-error LiteGraph is global
+      const graph = window.graph
+      const nodes = graph._nodes || []
+      
+      // 按位置排序节点 (从左到右)
+      const sortedNodes = [...nodes].sort((a: { pos: number[] }, b: { pos: number[] }) => a.pos[0] - b.pos[0])
+      
+      const chainNode = sortedNodes[0]
+      const httpNode = sortedNodes[1]
+      const clientNode = sortedNodes[2]
+      const blockNumNode = sortedNodes[3]
+      
+      try {
+        // 连接 Chain → PublicClient
+        chainNode.connect(0, clientNode, 0)
+        
+        // 连接 HttpTransport → PublicClient
+        httpNode.connect(0, clientNode, 1)
+        
+        // 连接 PublicClient → getBlockNumber
+        clientNode.connect(0, blockNumNode, 1)
+        
+        // 刷新画布
+        // @ts-expect-error canvas is global
+        window.canvas?.setDirty?.(true, true)
+        
+        return { success: true }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    })
+    
+    console.log('连接结果:', connectResult)
+    
+    // ========== 3. 截图记录连线结果 ==========
+    await page.waitForTimeout(500)
+    await page.screenshot({ path: 'test-results/getBlockNumber-connected.png' })
+    
+    // ========== 4. 触发执行 ==========
+    await page.evaluate(() => {
+      // @ts-expect-error LiteGraph is global
+      window.graph?.runStep?.()
+    })
+    
+    // 等待网络请求
+    await page.waitForTimeout(3000)
+    
+    // ========== 5. 最终截图 ==========
+    await page.screenshot({ path: 'test-results/getBlockNumber-executed.png' })
+    
+    // 验证成功
+    expect(createResult.success).toBe(true)
+    expect(connectResult.success).toBe(true)
+  })
+
+  test('节点拖拽连线测试', async ({ page }) => {
+    await page.goto('/')
+    await page.waitForTimeout(1000)
+    
+    const canvas = page.locator(MAIN_CANVAS)
+    
+    // 创建两个简单节点测试连线
+    // 1. 创建 mainnet Chain 节点
+    await canvas.dblclick({ position: { x: 150, y: 200 } })
+    await page.waitForTimeout(400)
+    await page.keyboard.type('mainnet')
+    await page.keyboard.press('Enter')
+    await page.waitForTimeout(600)
+    
+    // 2. 创建 PublicClient 节点  
+    await canvas.dblclick({ position: { x: 400, y: 200 } })
+    await page.waitForTimeout(400)
+    await page.keyboard.type('publicClient')
+    await page.keyboard.press('Enter')
+    await page.waitForTimeout(600)
+    
+    // 3. 通过鼠标拖拽连接
+    // Chain 节点的输出端口大约在节点右侧中心位置
+    // 节点默认宽度约 140px，输出端口在右边缘
+    const startX = 150 + 140  // Chain 节点的输出端口 X
+    const startY = 200 + 25   // 第一个输出端口的 Y (标题栏下方)
+    const endX = 400          // PublicClient 节点的输入端口 X  
+    const endY = 200 + 25     // 第一个输入端口的 Y
+    
+    // 执行拖拽操作
+    await page.mouse.move(startX, startY)
+    await page.waitForTimeout(100)
+    await page.mouse.down()
+    await page.waitForTimeout(100)
+    await page.mouse.move(endX, endY, { steps: 10 })
+    await page.waitForTimeout(100)
+    await page.mouse.up()
+    await page.waitForTimeout(500)
+    
+    // 截图记录拖拽连线结果
+    await page.screenshot({ path: 'test-results/drag-connect.png' })
+  })
 })
 
 test.describe('Console 面板', () => {

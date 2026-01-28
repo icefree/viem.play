@@ -3,6 +3,10 @@ import { LGraph, LGraphCanvas, LiteGraph } from 'litegraph.js'
 import 'litegraph.js/css/litegraph.css'
 import { registerAllNodes } from '../nodes'
 
+// 暴露 LiteGraph 到 window 供 E2E 测试使用
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+;(window as any).LiteGraph = LiteGraph
+
 // 定义插槽类型到节点类型的映射
 const SLOT_TYPE_TO_NODE: Record<string, string> = {
   'chain': 'Chains/Chain',

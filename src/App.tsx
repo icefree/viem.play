@@ -27,10 +27,16 @@ function App() {
 
   const handleGraphReady = useCallback((g: LGraph) => {
     setGraph(g)
+    // Expose graph to window for E2E testing
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(window as any).graph = g
     // Get canvas instance after a short delay to ensure it's fully initialized
     setTimeout(() => {
       if (canvasRef.current) {
         setCanvasInstance(canvasRef.current.getCanvas())
+        // Also expose canvas for testing
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ;(window as any).canvas = canvasRef.current.getCanvas()
       }
     }, 100)
   }, [])
