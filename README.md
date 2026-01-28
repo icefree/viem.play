@@ -59,6 +59,10 @@ Open `http://localhost:5173` in your browser.
    - Click `Save` in the top right to download your design as a JSON file.
    - Click `Load` to upload a JSON file and restore your workspace.
 
+## 🚧 Roadmap / TODO
+
+- [ ] Dynamically generate nodes based on configuration.
+
 ## 📄 License
 
 MIT
