@@ -1,4 +1,4 @@
-import { LGraphNode, LiteGraph } from 'litegraph.js'
+import { LGraphNode } from 'litegraph.js'
 import { createPublicClient, http, type PublicClient, type Chain } from 'viem'
 import { logger } from '../../stores/useLogStore'
 import { createViemLogger } from '../../utils/viemLogger'
@@ -36,8 +36,6 @@ export class PublicClientNode extends LGraphNode {
     }
 
     // Create a config identifier to detect changes
-    // We try to use a unique identifier from transport if possible, 
-    // otherwise we rely on object reference.
     const transportId = transport ? (transport.uid || transport.url || 'custom-transport') : 'default'
     const configHash = `${chain.id}-${transportId}`
 

@@ -15,13 +15,13 @@ export class TestClientNode extends LGraphNode {
     super()
     this.title = 'TestClient'
     this.addInput('chain', 'chain')
+    this.addInput('transport', 'transport')
     this.addOutput('client', 'testClient')
-    this.size = [180, 50]
+    this.size = [180, 60]
   }
 
   onExecute() {
     // TestClient 用于 Anvil/Hardhat 本地节点
-    // 暂时只输出 null，后续实现
     this.setOutputData(0, null)
   }
 }

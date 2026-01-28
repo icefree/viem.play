@@ -16,18 +16,19 @@ export class WalletClientNode extends LGraphNode {
     super()
     this.title = 'WalletClient'
     this.addInput('chain', 'chain')
+    this.addInput('transport', 'transport')
     this.addInput('account', 'account')
     this.addOutput('client', 'walletClient')
-    this.size = [180, 70]
+    this.size = [180, 80]
   }
 
   onExecute() {
     // WalletClient 需要 account，暂时只输出 null
-    // 后续实现完整的钱包连接逻辑
     const chain = this.getInputData(0) as Chain | undefined
-    const account = this.getInputData(1)
+    const transport = this.getInputData(1)
+    const account = this.getInputData(2)
     
-    if (!chain || !account) {
+    if (!chain || !transport || !account) {
       this.setOutputData(0, null)
       return
     }
