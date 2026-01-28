@@ -19,7 +19,7 @@ export function registerClientNodes() {
   LiteGraph.registerNodeType('Clients & Transports/Transports/webSocket', WebSocketTransportNode)
   LiteGraph.registerNodeType('Clients & Transports/Transports/custom', class extends ClientPlaceholderNode { constructor() { super('custom', 'Custom (EIP-1193) transport', '#2d3748', '#1a202c') } })
   LiteGraph.registerNodeType('Clients & Transports/Transports/ipc', IpcTransportNode)
-  LiteGraph.registerNodeType('Clients & Transports/Transports/fallback', class extends ClientPlaceholderNode { constructor() { super('fallback', 'Fallback transport', '#2d3748', '#1a202c') } })
+  // LiteGraph.registerNodeType('Clients & Transports/Transports/fallback', class extends ClientPlaceholderNode { constructor() { super('fallback', 'Fallback transport', '#2d3748', '#1a202c') } })
 }
 
 export { 
