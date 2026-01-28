@@ -73,6 +73,102 @@ LGraphCanvasAny.prototype.onMouseDoubleClick = function(this: any, e: MouseEvent
   return originalOnMouseDoubleClick.call(this, e);
 };
 
+// 覆盖 LiteGraph 默认的 prompt 方法，使用自定义的输入框而不是 window.prompt
+LGraphCanvasAny.prototype.prompt = function(this: any, title: string, value: any, callback: (value: string | null) => void, event: MouseEvent) {
+  // 创建输入框容器
+  const wrapper = document.createElement('div');
+  wrapper.className = 'litegraph-prompt-wrapper';
+  wrapper.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    pointer-events: none; /* 让鼠标事件穿透背景 */
+  `;
+
+  // 计算位置
+  let x = 0;
+  let y = 0;
+  
+  if (event) {
+    x = event.clientX;
+    y = event.clientY;
+  } else {
+    // 默认居中
+    x = window.innerWidth / 2;
+    y = window.innerHeight / 2;
+  }
+
+  // 创建输入框
+  const input = document.createElement('input');
+  input.value = value !== undefined ? String(value) : '';
+  input.placeholder = title || '';
+  input.className = 'litegraph-prompt-input';
+  input.style.cssText = `
+    position: absolute;
+    left: ${x}px;
+    top: ${y}px;
+    transform: translate(-50%, -50%);
+    background: #1a1a2e;
+    color: white;
+    border: 1px solid #58a6ff;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-family: monospace;
+    font-size: 14px;
+    min-width: 100px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    pointer-events: auto;
+    outline: none;
+    z-index: 10001;
+  `;
+
+  // 确认函数
+  const confirm = () => {
+    if (wrapper.parentNode) {
+      document.body.removeChild(wrapper);
+    }
+    callback(input.value);
+  };
+
+  // 取消函数
+  const cancel = () => {
+    if (wrapper.parentNode) {
+      document.body.removeChild(wrapper);
+    }
+    // callback(null); // 通常取消时不调用 callback 或者传 null，视 LiteGraph 实现而定，这里为了安全不调用
+  };
+
+  // 事件监听
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      confirm();
+      e.stopPropagation();
+      e.preventDefault();
+    } else if (e.key === 'Escape') {
+      cancel();
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  });
+
+  input.addEventListener('blur', () => {
+    // 延时一点，防止点击外部导致立即消失而无法处理点击事件
+    setTimeout(cancel, 100);
+  });
+
+  wrapper.appendChild(input);
+  document.body.appendChild(wrapper);
+
+  // 自动聚焦并选中文本
+  setTimeout(() => {
+    input.focus();
+    input.select();
+  }, 10);
+};
+
 export interface CanvasHandle {
   getGraph: () => LGraph | null
   getCanvas: () => LGraphCanvas | null

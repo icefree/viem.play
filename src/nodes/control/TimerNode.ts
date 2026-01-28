@@ -26,7 +26,7 @@ export class TimerNode extends LGraphNode {
         this.properties.interval = v
         this.startTimer()
       },
-      { min: 50, max: 60000, step: 100, precision: 0 }
+      { min: 50, max: 600000, step: 1000, precision: 0 }
     )
 
     this.startTimer()
