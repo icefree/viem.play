@@ -179,6 +179,10 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     const graph = new LGraph()
     graphRef.current = graph
 
+    // Expose graph to window for E2E testing
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(window as any).graph = graph
+
     // Create canvas
     const canvas = new LGraphCanvas(canvasRef.current, graph)
     canvasInstanceRef.current = canvas
