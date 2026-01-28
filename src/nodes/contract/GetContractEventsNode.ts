@@ -20,13 +20,13 @@ export class GetContractEventsNode extends LGraphNode {
     this.addInput('address', 'address')
     this.addInput('abi', 'abi')
     this.addInput('eventName', 'string')
-    this.addInput('fetch', -1)
+    this.addInput('trigger', -1)
     this.addOutput('events', 'array')
     this.size = [180, 120]
   }
 
   async onAction(action: string) {
-    if (action === 'fetch') {
+    if (action === 'trigger') {
       const client = this.getInputData(0) as PublicClient | undefined
       const address = this.getInputData(1) as Address | undefined
       const abi = this.getInputData(2) as Abi | undefined

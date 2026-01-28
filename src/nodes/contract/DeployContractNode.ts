@@ -20,13 +20,13 @@ export class DeployContractNode extends LGraphNode {
     this.addInput('abi', 'abi')
     this.addInput('bytecode', 'bytes')
     this.addInput('args', 'array')
-    this.addInput('deploy', -1)
+    this.addInput('trigger', -1)
     this.addOutput('hash', 'string')
     this.size = [180, 140]
   }
 
   async onAction(action: string) {
-    if (action === 'deploy') {
+    if (action === 'trigger') {
       const client = this.getInputData(0) as WalletClient | undefined
       const abi = this.getInputData(1) as Abi | undefined
       const bytecode = this.getInputData(2) as `0x${string}` | undefined

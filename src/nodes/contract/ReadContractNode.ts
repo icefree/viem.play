@@ -22,13 +22,13 @@ export class ReadContractNode extends LGraphNode {
     this.addInput('abi', 'abi')
     this.addInput('functionName', 'string')
     this.addInput('args', 'array')
-    this.addInput('read', -1)
+    this.addInput('trigger', -1)
     this.addOutput('result', '') 
     this.size = [180, 140]
   }
 
   async onAction(action: string) {
-    if (action === 'read') {
+    if (action === 'trigger') {
       const client = this.getInputData(0) as PublicClient | undefined
       const address = this.getInputData(1) as Address | undefined
       const abi = this.getInputData(2) as Abi | undefined
