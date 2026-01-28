@@ -7,8 +7,6 @@ import {
   createWalletClient,
   createPublicClient,
   http,
-  parseEther,
-  encodeDeployData,
   Abi,
 } from 'viem'
 import { anvil } from 'viem/chains'
@@ -19,26 +17,26 @@ import { TEST_ACCOUNTS } from '../test-network'
 const STORAGE_ABI = [
   {
     inputs: [],
-    name: 'retrieve',
+    name: 'get',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'uint256', name: 'num', type: 'uint256' }],
-    name: 'store',
+    inputs: [{ internalType: 'uint256', name: '_value', type: 'uint256' }],
+    name: 'set',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
 ] as const satisfies Abi
 
-// 简单的存储合约字节码 - 使用 Foundry/Forge 编译的 SimpleStorage
+// 简单的存储合约字节码 - 最小化 EVM 字节码 (get/set)，避免引入编译依赖
 // SPDX-License-Identifier: MIT
 // pragma solidity ^0.8.13;
 // contract SimpleStorage { uint256 public value; function set(uint256 _value) public { value = _value; } function get() public view returns (uint256) { return value; } }
 const STORAGE_BYTECODE =
-  '0x6080604052348015600f57600080fd5b5060c78061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c806360fe47b11460375780636d4ce63c14604f575b600080fd5b604d600480360381019060499190608e565b6069565b005b6055607b565b6040516060919060c0565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b600080fd5b6000813590506088816081565b92915050565b60006020828403121560a35760a2607a565b5b600060af84828501607b565b91505092915050565b60bf8160d7565b82525050565b600060208201905060d8600083018460b8565b92915050565b600081905091905056fea2646970667358221220ad2f4b2c4c0e01f0e6d9e2e1a8c0d0b0a090807060504030201000f0e0d0c0b0a09080706050403020100064736f6c63430008150033' as const
+  '0x6035600c60003960356000f360003560e01c806360fe47b114601d57636d4ce63c14602957600080fd5b60043560005560006000f35b60005460005260206000f3' as const
 
 describe('Contract 节点集成测试 (Anvil)', () => {
   let walletClient: ReturnType<typeof createWalletClient>
@@ -84,7 +82,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
           await publicClient.readContract({
             address: contractAddress,
             abi: STORAGE_ABI,
-            functionName: 'retrieve',
+            functionName: 'get',
           })
         } catch {
           // 合约部署成功但字节码无效，标记为部署失败
@@ -128,7 +126,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
       const value = await publicClient.readContract({
         address: contractAddress,
         abi: STORAGE_ABI,
-        functionName: 'retrieve',
+        functionName: 'get',
       })
 
       expect(value).toBeDefined()
@@ -154,7 +152,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
   })
 
   describe('simulateContract', () => {
-    it('应该能够模拟合约调用', async () => {
+    it('应该能够模拟只读调用并返回结果', async () => {
       if (deployError || !contractAddress) {
         console.warn('合约未部署，跳过测试')
         return
@@ -163,16 +161,15 @@ describe('Contract 节点集成测试 (Anvil)', () => {
       const result = await publicClient.simulateContract({
         address: contractAddress,
         abi: STORAGE_ABI,
-        functionName: 'store',
-        args: [42n],
-        account: walletClient.account!.address,
+        functionName: 'get',
+        args: [],
       })
 
       expect(result).toBeDefined()
-      expect(result.result).toBeDefined()
+      expect(result.result).toBe(0n)
     })
 
-    it('模拟调用应该返回请求对象', async () => {
+    it('模拟写入调用应该返回请求对象', async () => {
       if (deployError || !contractAddress) {
         console.warn('合约未部署，跳过测试')
         return
@@ -181,7 +178,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
       const result = await publicClient.simulateContract({
         address: contractAddress,
         abi: STORAGE_ABI,
-        functionName: 'store',
+        functionName: 'set',
         args: [100n],
         account: walletClient.account!.address,
       })
@@ -189,24 +186,23 @@ describe('Contract 节点集成测试 (Anvil)', () => {
       expect(result.request).toBeDefined()
       expect(result.request.abi).toBeDefined()
       expect(result.request.address).toBe(contractAddress)
+      expect(result.result).toBeUndefined()
     })
 
-    it('模拟失败的操作应该返回错误', async () => {
+    it('模拟不存在的函数应该失败', async () => {
       if (deployError || !contractAddress) {
         console.warn('合约未部署，跳过测试')
         return
       }
 
-      // 这个测试验证模拟会正确处理错误
-      // 由于我们的简单合约不会 revert，这里只是验证模拟机制
-      const result = await publicClient.simulateContract({
-        address: contractAddress,
-        abi: STORAGE_ABI,
-        functionName: 'retrieve',
-        args: [],
-      })
-
-      expect(result).toBeDefined()
+      await expect(
+        publicClient.simulateContract({
+          address: contractAddress,
+          abi: STORAGE_ABI,
+          // @ts-expect-error - 测试不存在的函数
+          functionName: 'nonExistentFunction',
+        }),
+      ).rejects.toThrow()
     })
   })
 
@@ -220,7 +216,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
       const hash = await walletClient.writeContract({
         address: contractAddress,
         abi: STORAGE_ABI,
-        functionName: 'store',
+        functionName: 'set',
         args: [123n],
       })
 
@@ -241,7 +237,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
       const value = await publicClient.readContract({
         address: contractAddress,
         abi: STORAGE_ABI,
-        functionName: 'retrieve',
+        functionName: 'get',
       })
 
       expect(value).toBe(123n)
@@ -259,7 +255,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
         const hash = await walletClient.writeContract({
           address: contractAddress,
           abi: STORAGE_ABI,
-          functionName: 'store',
+          functionName: 'set',
           args: [testValue],
         })
 
@@ -269,7 +265,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
         const value = await publicClient.readContract({
           address: contractAddress,
           abi: STORAGE_ABI,
-          functionName: 'retrieve',
+          functionName: 'get',
         })
 
         expect(value).toBe(testValue)
@@ -320,7 +316,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
       const gas = await publicClient.estimateContractGas({
         address: contractAddress,
         abi: STORAGE_ABI,
-        functionName: 'store',
+        functionName: 'set',
         args: [999n],
         account: walletClient.account!.address,
       })
@@ -340,7 +336,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
       const value = await publicClient.readContract({
         address: contractAddress,
         abi: STORAGE_ABI,
-        functionName: 'retrieve',
+        functionName: 'get',
       })
 
       expect(value).toBeDefined()
@@ -355,7 +351,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
         publicClient.readContract({
           address: invalidAddress,
           abi: STORAGE_ABI,
-          functionName: 'retrieve',
+          functionName: 'get',
         }),
       ).rejects.toThrow()
     })
@@ -366,12 +362,12 @@ describe('Contract 节点集成测试 (Anvil)', () => {
         return
       }
 
-      // store 函数期望 uint256，传入错误类型的参数
+      // set 函数期望 uint256，传入错误类型的参数
       await expect(
         publicClient.simulateContract({
           address: contractAddress,
           abi: STORAGE_ABI,
-          functionName: 'store',
+          functionName: 'set',
           args: ['not a number' as unknown as bigint],
           account: walletClient.account!.address,
         }),
@@ -391,7 +387,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
       const value = await publicClient.readContract({
         address: contractAddress,
         abi: STORAGE_ABI,
-        functionName: 'retrieve',
+        functionName: 'get',
       })
 
       expect(value).toBeDefined()
