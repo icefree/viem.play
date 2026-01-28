@@ -48,13 +48,57 @@ export class PublicClientNode extends LGraphNode {
         finalTransport = http(undefined, { onFetchRequest, onFetchResponse })
       }
 
-      this.currentClient = createPublicClient({
+      const client = createPublicClient({
         chain,
         transport: finalTransport
       })
+
+      // Wrap client in a Proxy to log all method calls
+      this.currentClient = new Proxy(client, {
+        get(target: any, prop: string | symbol) {
+          const value = target[prop]
+          if (typeof value === 'function') {
+            return (...args: any[]) => {
+              // Only log viem action-related methods (exclude internal or symbol access)
+              if (typeof prop === 'string') {
+                logger.info(`[Viem:Action] Calling ${prop}`, 'ViemAction', {
+                  method: prop,
+                  args: args.map(arg => {
+                    // Pre-process args for better readability in logs (e.g. stringify bigints)
+                    return JSON.parse(JSON.stringify(arg, (_, v) => typeof v === 'bigint' ? v.toString() : v))
+                  })
+                })
+                
+                try {
+                  const result = value.apply(target, args)
+                  // If result is a promise, log when it resolves
+                  if (result instanceof Promise) {
+                    return result.then(res => {
+                      logger.debug(`[Viem:Action] ${prop} Success`, 'ViemAction', {
+                        method: prop,
+                        result: JSON.parse(JSON.stringify(res, (_, v) => typeof v === 'bigint' ? v.toString() : v))
+                      })
+                      return res
+                    }).catch(err => {
+                      logger.error(`[Viem:Action] ${prop} Failed: ${err.message}`, 'ViemAction', { method: prop, error: err })
+                      throw err
+                    })
+                  }
+                  return result
+                } catch (err: any) {
+                  logger.error(`[Viem:Action] ${prop} Error: ${err.message}`, 'ViemAction', { method: prop, error: err })
+                  throw err
+                }
+              }
+              return value.apply(target, args)
+            }
+          }
+          return value
+        }
+      }) as PublicClient
       
       const transportType = transport ? (transport.type || 'Custom') : 'Http-Default'
-      logger.info(`Created PublicClient for ${chain.name} via ${transportType}`, 'PublicClient', { chainId: chain.id })
+      logger.info(`Created Proactive PublicClient for ${chain.name} via ${transportType}`, 'PublicClient', { chainId: chain.id })
     }
 
     this.setOutputData(0, this.currentClient)
