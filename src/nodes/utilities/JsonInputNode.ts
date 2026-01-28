@@ -16,8 +16,8 @@ export class JsonInputNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'JSON'
-    this.addOutput('json', '')  // 空类型可以连接任何输入
-    this.addProperty('value', '{}', 'string')
+    this.addOutput('json', 'array')  // 兼容 array 类型输入
+    this.addProperty('value', '[]', 'string')  // 默认值改为数组
     this.size = [280, 140]
 
     // 使用 textarea widget

@@ -183,24 +183,6 @@ function attachInputAutoPairing(nodeType: typeof LGraphNode) {
         if (transportNode) transportNode.connect(0, this, index)
         break
       }
-      case '': {
-        // 空类型时根据输入名称决定创建哪个节点
-        const name = input.name?.toLowerCase() || ''
-        if (name.includes('permission') || name.includes('json') || name.includes('data') || name.includes('args')) {
-          const jsonNode = createNode(this.graph, NODE_TYPES.json, leftX, y + OFFSET_Y)
-          if (jsonNode) jsonNode.connect(0, this, index)
-        } else if (name.includes('address')) {
-          const addressNode = createNode(this.graph, NODE_TYPES.address, leftX, y + OFFSET_Y)
-          if (addressNode) addressNode.connect(0, this, index)
-        } else if (name.includes('value') || name.includes('amount')) {
-          const numberNode = createNode(this.graph, NODE_TYPES.number, leftX, y + OFFSET_Y)
-          if (numberNode) numberNode.connect(0, this, index)
-        } else {
-          // 默认创建 Display 节点用于调试
-          console.log('[ViemPlay] No auto input pairing for type:', input.type, 'name:', input.name)
-        }
-        break
-      }
       default:
         console.log('[ViemPlay] No auto input pairing for type:', input.type)
     }
