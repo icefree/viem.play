@@ -1,5 +1,6 @@
 import { LGraphNode } from 'litegraph.js'
 import { type PublicClient, type Address, formatEther } from 'viem'
+import { logger } from '../../stores/useLogStore'
 
 /**
  * GetBalance 节点 - 获取地址余额
@@ -45,10 +46,12 @@ export class GetBalanceNode extends LGraphNode {
 
       try {
         this.balance = await client.getBalance({ address })
+        logger.info(`Fetched balance for ${address}`, 'getBalance', { address, balance: this.balance.toString() })
         this.setOutputData(0, this.balance)
         this.setOutputData(1, formatEther(this.balance))
       } catch (e) {
         this.error = (e as Error).message
+        logger.error(`Failed to fetch balance: ${this.error}`, 'getBalance', { address })
         this.balance = null
       } finally {
         this.isLoading = false

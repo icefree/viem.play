@@ -1,0 +1,227 @@
+.console-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(13, 17, 23, 0.95);
+  border-top: 1px solid var(--border-color);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(12px);
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+.console-panel.closed {
+  height: 32px;
+}
+
+.console-panel.open {
+  height: 300px;
+}
+
+.console-header {
+  height: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.console-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.terminal-icon {
+  color: var(--accent-success);
+}
+
+.log-count {
+  background: var(--bg-tertiary);
+  color: var(--accent-primary);
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-size: 0.65rem;
+}
+
+.console-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.console-filter {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  width: 150px;
+  outline: none;
+}
+
+.console-filter:focus {
+  border-color: var(--accent-primary);
+}
+
+.console-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 2px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.console-btn:hover {
+  opacity: 1;
+}
+
+.console-toggle {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.6rem;
+}
+
+.console-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column-reverse; /* Newest logs at top or bottom? User preference, usually bottom. But column-reverse shows new ones first. */
+}
+
+/* Custom Scrollbar for Console */
+.console-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.console-body::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+.console-body::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+}
+
+.console-body::-webkit-scrollbar-thumb:hover {
+  background: var(--border-color);
+}
+
+.console-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.log-entry {
+  padding: 4px 8px;
+  border-bottom: 1px solid rgba(48, 54, 61, 0.4);
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.log-entry:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.log-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.log-time {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.log-source {
+  color: var(--accent-primary);
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+.log-level-badge {
+  font-size: 0.6rem;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-weight: 700;
+}
+
+.log-level-badge.info {
+  background: rgba(88, 166, 255, 0.1);
+  color: #58a6ff;
+}
+.log-level-badge.warn {
+  background: rgba(210, 153, 34, 0.1);
+  color: #d29922;
+}
+.log-level-badge.error {
+  background: rgba(248, 81, 73, 0.1);
+  color: #f85149;
+}
+.log-level-badge.debug {
+  background: rgba(139, 148, 158, 0.1);
+  color: #8b949e;
+}
+
+.log-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 0.5rem;
+}
+
+.log-message {
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.info .log-message {
+  color: var(--text-primary);
+}
+.warn .log-message {
+  color: #d29922;
+}
+.error .log-message {
+  color: #f85149;
+}
+.debug .log-message {
+  color: var(--text-secondary);
+}
+
+.log-data {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px;
+  border-radius: 4px;
+  margin: 4px 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  border: 1px solid var(--border-color);
+}

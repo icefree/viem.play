@@ -7,6 +7,7 @@ import { NodeSearch } from './components/NodeSearch'
 import { Minimap } from './components/Minimap'
 import { ShortcutsPanel } from './components/ShortcutsPanel'
 import { generateShareUrl, parseShareUrl, copyToClipboard } from './utils/shareUtils'
+import { Console } from './components/Console'
 import './App.css'
 
 function App() {
@@ -264,6 +265,9 @@ function App() {
       
       {/* Floating Shortcuts Panel */}
       <ShortcutsPanel />
+
+      {/* Log Console */}
+      <Console />
     </div>
   )
 }

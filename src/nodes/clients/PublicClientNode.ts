@@ -1,5 +1,6 @@
 import { LGraphNode, LiteGraph } from 'litegraph.js'
 import { createPublicClient, http, type PublicClient, type Chain } from 'viem'
+import { logger } from '../../stores/useLogStore'
 
 /**
  * PublicClient 节点 - 创建 viem 的 PublicClient
@@ -47,6 +48,7 @@ export class PublicClientNode extends LGraphNode {
         chain,
         transport: transport || http()
       })
+      logger.info(`Created PublicClient for ${chain.name}`, 'PublicClient', { chainId: chain.id })
     }
 
     this.setOutputData(0, this.currentClient)
