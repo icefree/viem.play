@@ -1,4 +1,4 @@
-import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
+import { useRef, useEffect, forwardRef, useImperativeHandle, useCallback } from 'react'
 import { LGraph, LGraphCanvas, LiteGraph } from 'litegraph.js'
 import 'litegraph.js/css/litegraph.css'
 import { registerAllNodes } from '../nodes'
@@ -92,7 +92,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
   const MAX_HISTORY = 50
 
   // 保存当前状态到历史记录
-  const saveHistory = () => {
+  const saveHistory = useCallback(() => {
     if (isUndoRedoRef.current || !graphRef.current) return
     
     const state = JSON.stringify(graphRef.current.serialize())
@@ -112,7 +112,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
       history.shift()
     }
     historyIndexRef.current = history.length - 1
-  }
+  }, [])
 
   // 立即执行挂起的保存
   const flushSave = () => {
@@ -125,7 +125,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
   }
 
   // 撤销
-  const undo = () => {
+  const undo = useCallback(() => {
     flushSave()
     const history = historyRef.current
     const index = historyIndexRef.current
@@ -139,10 +139,10 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     graphRef.current.start()
     canvasInstanceRef.current?.setDirty(true, true)
     isUndoRedoRef.current = false
-  }
+  }, [saveHistory])
 
   // 重做
-  const redo = () => {
+  const redo = useCallback(() => {
     flushSave()
     const history = historyRef.current
     const index = historyIndexRef.current
@@ -156,7 +156,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     graphRef.current.start()
     canvasInstanceRef.current?.setDirty(true, true)
     isUndoRedoRef.current = false
-  }
+  }, [saveHistory])
 
   // Expose graph via ref
   useImperativeHandle(ref, () => ({
@@ -246,7 +246,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     return () => {
       graph.stop()
     }
-  }, [onGraphReady, onScaleChange])
+  }, [onGraphReady, onScaleChange, saveHistory])
 
   // Handle window resize
   useEffect(() => {
@@ -308,7 +308,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     // Use capture to handle event before LiteGraph
     window.addEventListener('keydown', handleKeyDown, true)
     return () => window.removeEventListener('keydown', handleKeyDown, true)
-  }, [])
+  }, [undo, redo])
 
   // Auto-load saved graph on mount
   useEffect(() => {
