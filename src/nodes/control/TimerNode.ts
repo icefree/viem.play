@@ -7,16 +7,27 @@ export class TimerNode extends LGraphNode {
   static title = 'Timer'
   static desc = 'Periodic action trigger'
 
-  private timerId: any = null
+  private timerId: number | null = null
 
   constructor() {
     super()
     this.title = 'Timer'
     this.addOutput('tick', -1)
-    this.size = [120, 60]
+    this.size = [140, 70]
 
     this.addProperty('interval', 3000, 'number')
     this.addProperty('event', 'tick', 'string')
+
+    this.addWidget(
+      'number',
+      'Interval (ms)',
+      this.properties.interval,
+      (v: number) => {
+        this.properties.interval = v
+        this.startTimer()
+      },
+      { min: 50, max: 60000, step: 100, precision: 0 }
+    )
 
     this.startTimer()
   }
