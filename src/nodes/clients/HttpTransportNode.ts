@@ -1,5 +1,6 @@
 import { LGraphNode } from 'litegraph.js'
 import { http as viemHttp } from 'viem'
+import { createViemLogger } from '../../utils/viemLogger'
 
 /**
  * HttpTransport 节点
@@ -21,6 +22,11 @@ export class HttpTransportNode extends LGraphNode {
 
   onExecute() {
     const url = this.getInputData(0) as string | undefined
-    this.setOutputData(0, viemHttp(url))
+    const { onFetchRequest, onFetchResponse } = createViemLogger('HTTP')
+    
+    this.setOutputData(0, viemHttp(url, {
+      onFetchRequest,
+      onFetchResponse
+    }))
   }
 }
