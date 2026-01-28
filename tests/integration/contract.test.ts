@@ -62,27 +62,26 @@ describe('Contract 节点集成测试 (Anvil)', () => {
     } catch {
       throw new Error('无法连接到 Anvil，请确保已运行: anvil')
     }
-  })
+
+    // 部署合约供后续测试使用
+    const hash = await walletClient.deployContract({
+      abi: STORAGE_ABI,
+      bytecode: STORAGE_BYTECODE,
+      args: [],
+    })
+
+    const receipt = await publicClient.waitForTransactionReceipt({ hash })
+    if (receipt.contractAddress) {
+      contractAddress = receipt.contractAddress
+    }
+  }, 15000)
 
   describe('deployContract', () => {
     it('应该能够部署合约', async () => {
-      const hash = await walletClient.deployContract({
-        abi: STORAGE_ABI,
-        bytecode: STORAGE_BYTECODE,
-        args: [],
-      })
-
-      expect(hash).toBeDefined()
-      expect(hash).toMatch(/^0x[a-fA-F0-9]{64}$/)
-
-      // 等待交易收据
-      const receipt = await publicClient.waitForTransactionReceipt({ hash })
-      expect(receipt.contractAddress).toBeDefined()
-
-      if (receipt.contractAddress) {
-        contractAddress = receipt.contractAddress
-      }
-    }, 10000)
+      // 合约已在 beforeAll 中部署
+      expect(contractAddress).toBeDefined()
+      expect(contractAddress).toMatch(/^0x[a-fA-F0-9]{40}$/)
+    })
 
     it('部署的合约应该有有效地址', () => {
       expect(contractAddress).toBeDefined()
