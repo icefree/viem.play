@@ -30,7 +30,7 @@ export function createTestClient() {
   })
 }
 
-// 预期测试数据
+// 预期测试数据 (注意: 余额会因为之前的交易而减少)
 export const EXPECTED = {
-  deployerBalance: parseEther('10000'), // 10000 ETH
+  deployerBalance: parseEther('10000'), // 10000 ETH (初始余额,实际可能因交易而减少)
 }

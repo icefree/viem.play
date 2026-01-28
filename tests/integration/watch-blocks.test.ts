@@ -169,9 +169,7 @@ describe('Watch Blocks 集成测试 (Anvil)', () => {
         )
       })
     }, 10000)
-        )
-      })
-    }, 15000)
+  })
 
     it('应该支持取消订阅区块监听', () => {
       const unsubscribe = client.watchBlocks(
