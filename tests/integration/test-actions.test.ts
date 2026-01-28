@@ -21,7 +21,9 @@ describe('Test Actions 集成测试 (Anvil)', () => {
   beforeAll(async () => {
     // 创建 Test Client
     testClient = createTestClient({
+      chain: anvil,
       mode: 'anvil',
+      transport: http(ANVIL_RPC_URL),
     })
 
     // 创建 Wallet Client

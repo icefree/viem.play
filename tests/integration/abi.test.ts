@@ -62,7 +62,8 @@ describe('ABI 节点集成测试', () => {
         'function getUser(User memory user) pure returns (string)',
       ])
 
-      expect(abi.length).toBe(2)
+      // struct 不会生成单独的 ABI 项，只有 function 会
+      expect(abi.length).toBe(1)
       expect(abi[0].type).toBe('function')
     })
 
@@ -358,10 +359,22 @@ describe('ABI 节点集成测试', () => {
         [{ x: 10n, y: 20n }],
       )
 
+      const abi = [
+        {
+          type: 'function',
+          name: 'getPoint',
+          outputs: [
+            {
+              name: 'point',
+              type: 'tuple',
+              components: [{ name: 'x', type: 'uint256' }, { name: 'y', type: 'uint256' }],
+            },
+          ],
+        },
+      ] as const
+
       const result = decodeFunctionResult({
-        abi: parseAbi([
-          'function getPoint() returns (tuple(uint256 x, uint256 y))',
-        ]),
+        abi,
         functionName: 'getPoint',
         data,
       })

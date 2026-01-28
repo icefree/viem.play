@@ -24,7 +24,7 @@ describe('GetBlockNumber 集成测试 (Anvil)', () => {
       const blockNumber = await client.getBlockNumber()
 
       expect(typeof blockNumber).toBe('bigint')
-      expect(blockNumber).toBeGreaterThan(0n)
+      expect(blockNumber).toBeGreaterThanOrEqual(0n)
     })
 
     it('连续调用应该返回递增的区块号', async () => {
@@ -32,7 +32,7 @@ describe('GetBlockNumber 集成测试 (Anvil)', () => {
 
       // Anvil 默认不自动挖矿，需要手动触发或等待
       // 这里我们验证返回值是有效的
-      expect(blockNumber1).toBeGreaterThan(0n)
+      expect(blockNumber1).toBeGreaterThanOrEqual(0n)
 
       // 在实际应用中，如果有新区块被挖出，第二次调用会返回更大的值
       // 但在测试环境中，可能返回相同的区块号
@@ -50,8 +50,8 @@ describe('GetBlockNumber 集成测试 (Anvil)', () => {
     it('区块号应该是合理的数值范围', async () => {
       const blockNumber = await client.getBlockNumber()
 
-      // Anvil 初始区块号通常是 0
-      expect(blockNumber).toBeGreaterThan(0n)
+      // Anvil 初始区块号通常是 0，允许从 0 开始
+      expect(blockNumber).toBeGreaterThanOrEqual(0n)
       // 在测试环境中，区块号不应该太大
       expect(blockNumber).toBeLessThan(1000000n)
     })
