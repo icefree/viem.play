@@ -6,12 +6,45 @@ export const Console: React.FC = () => {
   const { logs, clearLogs } = useLogStore()
   const [isOpen, setIsOpen] = useState(false)
   const [filter, setFilter] = useState('')
+  const [height, setHeight] = useState(300)
+  const [isResizing, setIsResizing] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const consoleRef = useRef<HTMLDivElement>(null)
 
   const filteredLogs = logs.filter(log => 
     log.message.toLowerCase().includes(filter.toLowerCase()) || 
     log.source?.toLowerCase().includes(filter.toLowerCase())
   )
+
+  const startResizing = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setIsResizing(true)
+  }
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return
+      const newHeight = window.innerHeight - e.clientY
+      // Limit height
+      if (newHeight > 100 && newHeight < window.innerHeight * 0.8) {
+        setHeight(newHeight)
+      }
+    }
+
+    const stopResizing = () => {
+      setIsResizing(false)
+    }
+
+    if (isResizing) {
+      window.addEventListener('mousemove', handleMouseMove)
+      window.addEventListener('mouseup', stopResizing)
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', stopResizing)
+    }
+  }, [isResizing])
 
   useEffect(() => {
     // Scroll to bottom when new logs arrive and panel is open
@@ -28,16 +61,25 @@ export const Console: React.FC = () => {
     if (!data) return null
     try {
       if (typeof data === 'object') {
-        return <pre className="log-data">{JSON.stringify(data, (key, value) => typeof value === 'bigint' ? value.toString() + 'n' : value, 2)}</pre>
+        return <pre className="log-data">{JSON.stringify(data, (_key, value) => typeof value === 'bigint' ? value.toString() + 'n' : value, 2)}</pre>
       }
       return <span className="log-data">{String(data)}</span>
-    } catch (e) {
+    } catch {
       return null
     }
   }
 
   return (
-    <div className={`console-panel ${isOpen ? 'open' : 'closed'}`}>
+    <div 
+      ref={consoleRef}
+      className={`console-panel ${isOpen ? 'open' : 'closed'} ${isResizing ? 'resizing' : ''}`}
+      style={isOpen ? { height: `${height}px` } : undefined}
+    >
+      <div 
+        className="console-resizer" 
+        onMouseDown={startResizing}
+        title="Drag to resize"
+      />
       <div className="console-header" onClick={() => setIsOpen(!isOpen)}>
         <div className="console-title">
           <span className="terminal-icon">$_</span>
@@ -53,7 +95,13 @@ export const Console: React.FC = () => {
                 onChange={e => setFilter(e.target.value)}
                 className="console-filter"
               />
-              <button onClick={clearLogs} className="console-btn" title="Clear Console">🚫</button>
+              <button 
+                onClick={(e) => { e.stopPropagation(); clearLogs(); }} 
+                className="console-btn" 
+                title="Clear Console"
+              >
+                🚫
+              </button>
             </>
           )}
           <button className="console-toggle">{isOpen ? '▼' : '▲'}</button>

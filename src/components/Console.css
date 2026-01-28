@@ -14,11 +14,32 @@
 }
 
 .console-panel.closed {
-  height: 32px;
+  height: 32px !important;
 }
 
 .console-panel.open {
-  height: 300px;
+  min-height: 100px;
+}
+
+.console-panel.resizing {
+  transition: none;
+  user-select: none;
+}
+
+.console-resizer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  cursor: ns-resize;
+  background: transparent;
+  z-index: 1001;
+  transition: background 0.2s;
+}
+
+.console-resizer:hover, .console-panel.resizing .console-resizer {
+  background: var(--accent-primary);
 }
 
 .console-header {
