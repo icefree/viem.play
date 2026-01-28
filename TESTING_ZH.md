@@ -129,6 +129,19 @@ Playwright 提供了多种运行模式，适用于不同的场景：
 - **关键 UI 组件**: 覆盖所有主交互路径
 - **CI 集成**: 每次 PR 必须通过所有测试用例
 
+## 6. 节点测试覆盖率追踪 (Node Test Coverage) 📊
+
+| 类别 (Category)    | 节点名称 (Node Name)       | 单元测试 (Unit) | E2E 测试 (E2E) | 备注 (Notes)            |
+| ------------------ | -------------------------- | :-------------: | :------------: | ----------------------- |
+| **Public Actions** | `GetBlock`                 |       ✅        |                |                         |
+|                    | `GetBlockNumber`           |       ✅        |       ✅       | 在 `app.spec.ts` 中测试 |
+|                    | `GetBlockTransactionCount` |       ✅        |                |                         |
+|                    | `WatchBlockNumber`         |       ✅        |                |                         |
+|                    | `WatchBlocks`              |       ✅        |                |                         |
+| **Clients**        | `PublicClient`             |                 |       ✅       | 通过 E2E 工作流测试     |
+| **Transports**     | `HttpTransport`            |                 |       ✅       | 通过 E2E 工作流测试     |
+| **Chains**         | `Chain`                    |                 |       ✅       | 通过 E2E 工作流测试     |
+
 ---
 
 > [!TIP]

@@ -131,7 +131,17 @@ Playwright offers multiple running modes suitable for different scenarios:
 - **Key UI Components**: Cover all main interaction paths
 - **CI Integration**: Every PR must pass all test cases
 
----
+## 6. Node Test Coverage 📊
 
-> [!TIP]
+| Category           | Node Name                  | Unit Test | E2E Test | Notes                   |
+| ------------------ | -------------------------- | :-------: | :------: | ----------------------- |
+| **Public Actions** | `GetBlock`                 |    ✅     |          |                         |
+|                    | `GetBlockNumber`           |    ✅     |    ✅    | Tested in `app.spec.ts` |
+|                    | `GetBlockTransactionCount` |    ✅     |          |                         |
+|                    | `WatchBlockNumber`         |    ✅     |          |                         |
+|                    | `WatchBlocks`              |    ✅     |          |                         |
+| **Clients**        | `PublicClient`             |           |    ✅    | Tested via E2E workflow |
+| **Transports**     | `HttpTransport`            |           |    ✅    | Tested via E2E workflow |
+| **Chains**         | `Chain`                    |           |    ✅    | Tested via E2E workflow |
+
 > **Dev Guide**: It is recommended to write `.test.ts` files synchronously when developing new nodes. Using TDD (Test Driven Development) pattern can significantly reduce repetitive manual node connection debugging in the browser.
