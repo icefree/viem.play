@@ -176,20 +176,76 @@ test.describe('Block 节点工作流', () => {
     await page.screenshot({ path: 'test-results/getBlockNumber-connected.png' })
     
     // ========== 4. 触发执行 ==========
+    const executionResult = await page.evaluate(async () => {
+      // @ts-expect-error LiteGraph is global
+      const graph = window.graph
+      if (!graph) return { success: false, error: 'Graph not found' }
+      
+      const nodes = graph._nodes || []
+      const sortedNodes = [...nodes].sort((a: { pos: number[] }, b: { pos: number[] }) => a.pos[0] - b.pos[0])
+      // 假设最后一个是 getBlockNumber 节点
+      const blockNumNode = sortedNodes[3]
+      
+      if (!blockNumNode) return { success: false, error: 'Node not found' }
+      
+      try {
+        // 手动触发 action，模拟 Trigger 信号
+        if (blockNumNode.onAction) {
+          await blockNumNode.onAction('trigger')
+          return { success: true, triggered: true }
+        }
+        return { success: false, error: 'onAction not method' }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    })
+    
+    console.log('触发结果:', executionResult)
+    expect(executionResult.success).toBe(true)
+    
+    // 等待网络请求完成 (给一点缓冲时间)
+    await page.waitForTimeout(3000)
+    
+    // 运行一次图谱更新输出
     await page.evaluate(() => {
       // @ts-expect-error LiteGraph is global
       window.graph?.runStep?.()
     })
+
+    // ========== 5. 验证结果 ==========
+    const nodeOutput = await page.evaluate(() => {
+      // @ts-expect-error LiteGraph is global
+      const graph = window.graph
+      const nodes = graph._nodes || []
+      const sortedNodes = [...nodes].sort((a: { pos: number[] }, b: { pos: number[] }) => a.pos[0] - b.pos[0])
+      const blockNumNode = sortedNodes[3]
+      
+      // 获取私有属性 blockNumber (通过 outputData 获取更标准)
+      // LiteGraph 节点 output 0 的数据
+      const outputData = blockNumNode.getOutputData(0)
+      
+      // 也可以尝试获取直接属性，以此验证显示
+      return { 
+        output: outputData ? String(outputData) : null,
+        // @ts-expect-error accessing private property
+        blockNumber: blockNumNode.blockNumber ? String(blockNumNode.blockNumber) : null
+      }
+    })
     
-    // 等待网络请求
-    await page.waitForTimeout(3000)
+    console.log('节点输出:', nodeOutput)
     
-    // ========== 5. 最终截图 ==========
+    // ========== 6. 最终截图 ==========
     await page.screenshot({ path: 'test-results/getBlockNumber-executed.png' })
     
     // 验证成功
     expect(createResult.success).toBe(true)
     expect(connectResult.success).toBe(true)
+    // 验证确实获取到了区块号
+    expect(nodeOutput.blockNumber).not.toBeNull()
+    // 验证输出数据也是存在的
+    expect(nodeOutput.output).not.toBeNull()
+    // 应该是大整数
+    expect(BigInt(nodeOutput.blockNumber!).toString()).toBe(nodeOutput.blockNumber)
   })
 
   test('节点拖拽连线测试', async ({ page }) => {

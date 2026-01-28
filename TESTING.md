@@ -56,10 +56,48 @@ pnpm add -D vitest @vitest/ui happy-dom @testing-library/react @testing-library/
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   }
 }
 ```
+
+### 3.3 运行 E2E 测试
+
+Playwright 提供了多种运行模式，适用于不同的场景：
+
+1.  **无头模式 (Headless)** - 默认
+    - 适用于 CI 环境，速度最快。
+    ```bash
+    npx playwright test
+    ```
+2.  **UI 界面模式 (Interactive UI)** -- **推荐用于调试**
+    - 提供时间轴视图，可以查看每一步的截图和 DOM 快照。
+    - 可以在不重新启动整个套件的情况下重跑单个测试。
+
+    ```bash
+    npx playwright test --ui
+    ```
+
+3.  **显示浏览器模式 (Headed Mode)**
+    - 能够看到浏览器弹出来并在进行自动操作。
+
+    ```bash
+    npx playwright test --headed
+    ```
+
+    - **SlowMo (慢放)**: 如果执行太快看不清，可以在 `playwright.config.ts` 中配置 `launchOptions: { slowMo: 1000 }` 来减慢速度。
+
+4.  **调试单一文件**
+
+    ```bash
+    npx playwright test tests/browser/app.spec.ts --headed
+    ```
+
+5.  **查看测试报告**
+    ```bash
+    npx playwright show-report
+    ```
 
 ## 4. Mock 策略
 

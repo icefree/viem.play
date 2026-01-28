@@ -12,6 +12,10 @@ export default defineConfig({
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    // 慢放模式：每个操作等待 1000ms，便于观察
+    launchOptions: {
+      slowMo: 1000,
+    },
   },
 
   projects: [
