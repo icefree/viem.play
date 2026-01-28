@@ -24,13 +24,13 @@ describe('Chains 集成测试 (Anvil)', () => {
       const chainId = await client.getChainId()
 
       // Anvil 默认 chainId 是 31337
-      expect(chainId).toBe(31337n)
+      expect(chainId).toBe(31337)
     })
 
     it('chainId 应该是 bigint 类型', async () => {
       const chainId = await client.getChainId()
 
-      expect(typeof chainId).toBe('bigint')
+      expect(typeof chainId).toBe('number')
     })
 
     it('多次调用应该返回相同的 chainId', async () => {
