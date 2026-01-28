@@ -9,6 +9,7 @@ import {
   http,
   parseEther,
   decodeErrorResult,
+  publicActions,
 } from 'viem'
 import { anvil } from 'viem/chains'
 import { privateKeyToAccount } from 'viem/accounts'
@@ -24,7 +25,7 @@ describe('Test Actions 集成测试 (Anvil)', () => {
       chain: anvil,
       mode: 'anvil',
       transport: http(ANVIL_RPC_URL),
-    })
+    }).extend(publicActions)
 
     // 创建 Wallet Client
     const account = privateKeyToAccount(TEST_ACCOUNTS.deployer.privateKey)
@@ -142,7 +143,8 @@ describe('Test Actions 集成测试 (Anvil)', () => {
 
     it('应该能够设置区块时间戳', async () => {
       const blockNumberBefore = await testClient.getBlockNumber()
-      const customTimestamp = 1609459200n // 2021-01-01 00:00:00 UTC
+      const latestBlock = await testClient.getBlock()
+      const customTimestamp = latestBlock.timestamp + 1000000n // 未来时间戳
 
       await testClient.mine({
         blocks: 1,
@@ -295,7 +297,8 @@ describe('Test Actions 集成测试 (Anvil)', () => {
 
   describe('setNextBlockTimestamp', () => {
     it('应该能够设置下一个区块的时间戳', async () => {
-      const customTimestamp = 1672531200n // 2023-01-01 00:00:00 UTC
+      const latestBlock = await testClient.getBlock()
+      const customTimestamp = latestBlock.timestamp + 86400n // 未来1天
 
       await testClient.setNextBlockTimestamp({
         timestamp: customTimestamp,
@@ -305,20 +308,22 @@ describe('Test Actions 集成测试 (Anvil)', () => {
       await testClient.mine({ blocks: 1 })
 
       // 获取最新区块
-      const latestBlock = await testClient.getBlock()
+      const newBlock = await testClient.getBlock()
 
-      expect(latestBlock.timestamp).toBe(customTimestamp)
+      expect(newBlock.timestamp).toBe(customTimestamp)
     })
 
     it('应该支持时间戳递增', async () => {
-      const timestamp1 = 1672531200n
-      const timestamp2 = 1672617600n // 第二天
+      const latestBlock = await testClient.getBlock()
+      const timestamp1 = latestBlock.timestamp + 86400n // 未来1天
 
       await testClient.setNextBlockTimestamp({ timestamp: timestamp1 })
       await testClient.mine({ blocks: 1 })
 
       const block1 = await testClient.getBlock()
       expect(block1.timestamp).toBe(timestamp1)
+
+      const timestamp2 = timestamp1 + 86400n // 再未来1天
 
       await testClient.setNextBlockTimestamp({ timestamp: timestamp2 })
       await testClient.mine({ blocks: 1 })
@@ -338,26 +343,29 @@ describe('Test Actions 集成测试 (Anvil)', () => {
       expect(block2.timestamp).toBeGreaterThan(block1.timestamp)
     })
 
-    it('应该能够设置过去的时间戳（测试环境）', async () => {
-      const pastTimestamp = 1609459200n // 2021-01-01
+    it('应该能够设置未来的时间戳', async () => {
+      const latestBlock = await testClient.getBlock()
+      const futureTimestamp = latestBlock.timestamp + 604800n // 未来1周
 
-      await testClient.setNextBlockTimestamp({ timestamp: pastTimestamp })
+      await testClient.setNextBlockTimestamp({ timestamp: futureTimestamp })
       await testClient.mine({ blocks: 1 })
 
       const block = await testClient.getBlock()
-      expect(block.timestamp).toBe(pastTimestamp)
+      expect(block.timestamp).toBe(futureTimestamp)
     })
   })
 
   describe('组合操作', () => {
     it('snapshot + mine + revert 应该正常工作', async () => {
       const blockNumberBefore = await testClient.getBlockNumber()
+      const latestBlock = await testClient.getBlock()
 
       // 创建快照
       const snapshotId = await testClient.snapshot()
 
       // 挖区块并修改时间戳
-      await testClient.setNextBlockTimestamp({ timestamp: 1672531200n })
+      const futureTimestamp = latestBlock.timestamp + 86400n
+      await testClient.setNextBlockTimestamp({ timestamp: futureTimestamp })
       await testClient.mine({ blocks: 2 })
 
       // 修改余额
