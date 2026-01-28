@@ -92,17 +92,23 @@ describe('Test Actions 集成测试 (Anvil)', () => {
     })
 
     it('应该能够增加现有账户的余额', async () => {
-      const address = TEST_ACCOUNTS.deployer.address
-      const balanceBefore = await testClient.getBalance({ address })
-      const additionalAmount = parseEther('1000')
+      const address = '0x8888888888888888888888888888888888888888' as const
+      const initialBalance = parseEther('5')
+      const additionalAmount = parseEther('2')
 
+      await testClient.setBalance({
+        address,
+        value: initialBalance,
+      })
+
+      const balanceBefore = await testClient.getBalance({ address })
       await testClient.setBalance({
         address,
         value: balanceBefore + additionalAmount,
       })
 
       const balanceAfter = await testClient.getBalance({ address })
-      expect(balanceAfter).toBeGreaterThanOrEqual(balanceBefore + additionalAmount)
+      expect(balanceAfter).toBe(balanceBefore + additionalAmount)
     })
   })
 
