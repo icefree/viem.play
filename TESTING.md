@@ -31,14 +31,23 @@ Based on the project's **Vite + React 19 + Viem** characteristics, the following
   - Rendering correctness: Logs panel, search box, menus, etc.
   - User interaction: State updates after button clicks, text input.
 
-### 2.3 Integration & E2E Tests (Playwright)
+### 2.3 Integration Tests (Vitest + Anvil)
 
-**Goal**: Verify node connections and data flow.
+**Goal**: Verify node behavior in a real blockchain environment (Anvil).
 
-- **Location**: `tests/integration/*.spec.ts`
+- **Location**: `@/tests/integration/**/*.test.ts`
 - **Focus**:
-  - Drag and drop: Simulating user dragging cables to connect nodes.
-  - Core workflows: E.g., `Chain -> Client -> getBalance -> Display`.
+  - Real Data: Ensure data fetched from the local private chain matches Expected/Mock formats.
+  - State Sync: Verify watch nodes trigger correctly upon block updates.
+
+### 2.4 E2E Tests (Playwright)
+
+**Goal**: Verify complete UI workflows and visual connections between nodes.
+
+- **Location**: `@/tests/browser/**/*.spec.ts`
+- **Focus**:
+  - Drag & Drop: Simulating user dragging cables to connect nodes.
+  - End-to-End flows: E.g., a full cycle from `Chain -> Client -> getBalance -> Display`.
 
 ## 3. Setup and Configuration
 
@@ -74,7 +83,7 @@ pnpm add -D vitest @vitest/ui happy-dom @testing-library/react @testing-library/
   ```bash
   npm run test:unit
   ```
-- **Run integration tests only** (tests/e2e/\*\*):
+- **Run integration tests only** (tests/integration/\*\*):
   ```bash
   npm run test:integration
   ```
@@ -144,8 +153,8 @@ Playwright offers multiple running modes suitable for different scenarios:
 | `GetBlockTransactionCount` |    ✅     |            ⬜️            |          |                            |
 | `WatchBlockNumber`         |    ✅     |            ⬜️            |          |                            |
 | `WatchBlocks`              |    ✅     |            ⬜️            |          |                            |
-| `GetBalance`               |    ⬜️     |            ⬜️            |          |                            |
-| `GetGasPrice`              |    ⬜️     |            ⬜️            |          |                            |
+| `GetBalance`               |    ✅     |            ✅            |    ✅    | Full test coverage         |
+| `GetGasPrice`              |    ✅     |            ✅            |    ✅    | Full test coverage         |
 | `GetTransactionCount`      |    ⬜️     |            ⬜️            |          |                            |
 
 ### 6.2 Clients & Transports
@@ -213,4 +222,7 @@ Playwright offers multiple running modes suitable for different scenarios:
 | `ToBigInt`     |    ⬜️     |                          |          |       |
 | `Trigger`      |    ⬜️     |                          |          |       |
 
+---
+
+> [!TIP]
 > **Dev Guide**: It is recommended to write `.test.ts` files synchronously when developing new nodes. Using TDD (Test Driven Development) pattern can significantly reduce repetitive manual node connection debugging in the browser.

@@ -31,14 +31,23 @@
   - 渲染正确性：日志面板、搜索框、菜单等是否显示。
   - 用户交互：点击按钮、输入文本后的状态更新。
 
-### 2.3 集成与 E2E 测试 (Integration & E2E - Playwright)
+### 2.3 集成测试 (Integration Tests - Vitest + Anvil)
 
-**目标**: 验证节点间的连接与数据流。
+**目标**: 验证节点在真实区块链环境（Anvil）下的表现。
 
-- **位置**: `tests/integration/*.spec.ts`
+- **位置**: `@/tests/integration/**/*.test.ts`
 - **重点**:
-  - 拖拽连接：模拟用户拖拽线缆连接节点。
-  - 核心链路：例如 `Chain -> Client -> getBalance -> Display` 的完整闭环。
+  - 真实数据：验证节点从本地私链获取的数据格式与 Mock 是否一致。
+  - 状态同步：验证监听节点（Watch）在区块更新时能正确触发。
+
+### 2.4 E2E 测试 (End-to-End Tests - Playwright)
+
+**目标**: 验证完整的 UI 工作流和节点间的视觉连接。
+
+- **位置**: `@/tests/browser/**/*.spec.ts`
+- **重点**:
+  - 拖拽连接：模拟用户拖拽连接线。
+  - 完整闭环：例如从 `Chain -> Client -> getBalance -> Display` 的端到端操作。
 
 ## 3. 安装与配置
 
