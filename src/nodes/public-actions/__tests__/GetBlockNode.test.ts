@@ -34,7 +34,7 @@ describe('GetBlockNode', () => {
 
   describe('fetchBlock', () => {
     it('当没有 client 时应该输出 null', async () => {
-      node.getInputData = vi.fn().mockReturnValue(undefined)
+      vi.spyOn(node, 'getInputData').mockReturnValue(undefined)
 
       await node.fetchBlock()
 
@@ -44,7 +44,7 @@ describe('GetBlockNode', () => {
     it('应该成功获取最新区块', async () => {
       const mockBlock = createMockBlock({ number: 100n })
       mockClient.getBlock = vi.fn().mockResolvedValue(mockBlock)
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined))
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
 
       await node.fetchBlock()
 
@@ -58,7 +58,7 @@ describe('GetBlockNode', () => {
       const blockNumber = 12345n
       const mockBlock = createMockBlock({ number: blockNumber })
       mockClient.getBlock = vi.fn().mockResolvedValue(mockBlock)
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         if (idx === 1) return blockNumber
         return undefined
@@ -73,7 +73,7 @@ describe('GetBlockNode', () => {
     it('应该处理 API 错误', async () => {
       const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
       mockClient.getBlock = vi.fn().mockRejectedValue(new Error('API Error'))
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined))
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
 
       await node.fetchBlock()
 
@@ -85,7 +85,7 @@ describe('GetBlockNode', () => {
       mockClient.getBlock = vi.fn().mockImplementation(
         () => new Promise((resolve) => setTimeout(() => resolve(createMockBlock()), 100))
       )
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined))
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
 
       // 同时发起两次请求
       const promise1 = node.fetchBlock()
@@ -120,7 +120,7 @@ describe('GetBlockNode', () => {
     it('当有缓存 block 时应该输出它', async () => {
       const mockBlock = createMockBlock()
       mockClient.getBlock = vi.fn().mockResolvedValue(mockBlock)
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined))
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
 
       await node.fetchBlock()
       node.onExecute()

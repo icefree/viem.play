@@ -41,7 +41,7 @@ describe('WatchBlockNumberNode', () => {
 
   describe('startWatching', () => {
     it('没有 client 时不应该开始监听', () => {
-      node.getInputData = vi.fn().mockReturnValue(undefined) as typeof node.getInputData
+      vi.spyOn(node, 'getInputData').mockReturnValue(undefined)
 
       node.startWatching()
 
@@ -49,7 +49,7 @@ describe('WatchBlockNumberNode', () => {
     })
 
     it('应该成功开始监听', () => {
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
 
       node.startWatching()
 
@@ -58,7 +58,7 @@ describe('WatchBlockNumberNode', () => {
     })
 
     it('已经在监听时不应该重复开始', () => {
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
 
       node.startWatching()
       node.startWatching()
@@ -72,7 +72,7 @@ describe('WatchBlockNumberNode', () => {
         capturedCallback = options.onBlockNumber
         return mockUnwatch
       })
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
       const triggerSlotSpy = vi.spyOn(node, 'triggerSlot')
 
       node.startWatching()
@@ -85,7 +85,7 @@ describe('WatchBlockNumberNode', () => {
 
   describe('stopWatching', () => {
     it('应该停止监听并调用 unwatch', () => {
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
 
       node.startWatching()
       node.stopWatching()
@@ -97,7 +97,7 @@ describe('WatchBlockNumberNode', () => {
 
   describe('onAction', () => {
     it('触发 trigger 时应该切换监听状态', async () => {
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
 
       // 第一次触发：开始监听
       await node.onAction('trigger')
@@ -111,7 +111,7 @@ describe('WatchBlockNumberNode', () => {
 
   describe('onRemoved', () => {
     it('节点被移除时应该停止监听', () => {
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
 
       node.startWatching()
       node.onRemoved()
@@ -129,7 +129,7 @@ describe('WatchBlockNumberNode', () => {
         fillText: vi.fn(),
       } as unknown as CanvasRenderingContext2D
 
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
       node.startWatching()
 
       node.onDrawForeground(ctx)

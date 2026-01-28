@@ -37,7 +37,7 @@ describe('GetBalanceNode', () => {
 
   describe('fetchBalance', () => {
     it('当没有 client 时应该输出 null', async () => {
-      node.getInputData = vi.fn().mockReturnValue(undefined)
+      vi.spyOn(node, 'getInputData').mockReturnValue(undefined)
 
       await node.fetchBalance()
 
@@ -46,7 +46,7 @@ describe('GetBalanceNode', () => {
     })
 
     it('当没有 address 时应该输出 null', async () => {
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         return undefined
       })
@@ -60,7 +60,7 @@ describe('GetBalanceNode', () => {
     it('应该成功获取余额', async () => {
       const expectedBalance = 1000000000000000000n // 1 ETH
       mockClient.getBalance = vi.fn().mockResolvedValue(expectedBalance)
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         if (idx === 1) return testAddress
         return undefined
@@ -76,7 +76,7 @@ describe('GetBalanceNode', () => {
     it('应该正确格式化余额', async () => {
       const balance = 2500000000000000000n // 2.5 ETH
       mockClient.getBalance = vi.fn().mockResolvedValue(balance)
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         if (idx === 1) return testAddress
         return undefined
@@ -91,7 +91,7 @@ describe('GetBalanceNode', () => {
     it('应该处理 API 错误', async () => {
       const loggerErrorSpy = vi.spyOn(logger, 'error').mockImplementation(() => {})
       mockClient.getBalance = vi.fn().mockRejectedValue(new Error('Network Error'))
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         if (idx === 1) return testAddress
         return undefined
@@ -109,7 +109,7 @@ describe('GetBalanceNode', () => {
 
     it('应该使用缓存机制，相同地址不重复请求', async () => {
       mockClient.getBalance = vi.fn().mockResolvedValue(1000000000000000000n)
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         if (idx === 1) return testAddress
         return undefined
@@ -127,7 +127,7 @@ describe('GetBalanceNode', () => {
     it('当地址改变时应该重新获取', async () => {
       const newAddress = '0x1234567890123456789012345678901234567890' as const
       mockClient.getBalance = vi.fn().mockResolvedValue(2000000000000000000n)
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         if (idx === 1) return newAddress
         return undefined
@@ -142,7 +142,7 @@ describe('GetBalanceNode', () => {
       mockClient.getBalance = vi.fn().mockImplementation(
         () => new Promise((resolve) => setTimeout(() => resolve(1000000000000000000n), 100))
       )
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         if (idx === 1) return testAddress
         return undefined
@@ -179,7 +179,7 @@ describe('GetBalanceNode', () => {
     it('应该设置输出数据', async () => {
       const balance = 3000000000000000000n // 3 ETH
       mockClient.getBalance = vi.fn().mockResolvedValue(balance)
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         if (idx === 1) return testAddress
         return undefined
@@ -209,7 +209,7 @@ describe('GetBalanceNode', () => {
       } as unknown as CanvasRenderingContext2D
 
       mockClient.getBalance = vi.fn().mockResolvedValue(1000000000000000000n)
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         if (idx === 1) return testAddress
         return undefined
@@ -233,7 +233,7 @@ describe('GetBalanceNode', () => {
       mockClient.getBalance = vi.fn().mockImplementation(
         () => new Promise((resolve) => setTimeout(() => resolve(1000000000000000000n), 100))
       )
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         if (idx === 1) return testAddress
         return undefined

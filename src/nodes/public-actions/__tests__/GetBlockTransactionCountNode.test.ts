@@ -34,7 +34,7 @@ describe('GetBlockTransactionCountNode', () => {
 
   describe('fetchCount', () => {
     it('当没有 client 时应该输出 null', async () => {
-      node.getInputData = vi.fn().mockReturnValue(undefined) as typeof node.getInputData
+      vi.spyOn(node, 'getInputData').mockReturnValue(undefined)
 
       await node.fetchCount()
 
@@ -43,7 +43,7 @@ describe('GetBlockTransactionCountNode', () => {
 
     it('应该成功获取最新区块的交易数量', async () => {
       mockClient.getBlockTransactionCount = vi.fn().mockResolvedValue(150)
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
 
       await node.fetchCount()
 
@@ -54,11 +54,11 @@ describe('GetBlockTransactionCountNode', () => {
     it('应该根据 blockNumber 获取交易数量', async () => {
       const blockNumber = 12345n
       mockClient.getBlockTransactionCount = vi.fn().mockResolvedValue(50)
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         if (idx === 1) return blockNumber
         return undefined
-      }) as typeof node.getInputData
+      })
 
       await node.fetchCount()
 
@@ -69,12 +69,12 @@ describe('GetBlockTransactionCountNode', () => {
       const blockNumber = 12345n
       const blockHash = '0xabc123...' as `0x${string}`
       mockClient.getBlockTransactionCount = vi.fn().mockResolvedValue(75)
-      node.getInputData = vi.fn((idx) => {
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
         if (idx === 1) return blockNumber
         if (idx === 2) return blockHash
         return undefined
-      }) as typeof node.getInputData
+      })
 
       await node.fetchCount()
 
@@ -85,7 +85,7 @@ describe('GetBlockTransactionCountNode', () => {
     it('应该处理 API 错误', async () => {
       const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
       mockClient.getBlockTransactionCount = vi.fn().mockRejectedValue(new Error('API Error'))
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
 
       await node.fetchCount()
 
@@ -113,7 +113,7 @@ describe('GetBlockTransactionCountNode', () => {
       } as unknown as CanvasRenderingContext2D
 
       mockClient.getBlockTransactionCount = vi.fn().mockResolvedValue(42)
-      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => (idx === 0 ? mockClient : undefined))
       await node.fetchCount()
 
       node.onDrawForeground(ctx)
