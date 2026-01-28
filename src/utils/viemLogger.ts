@@ -4,20 +4,26 @@ import { logger } from '../stores/useLogStore'
  * Intercepts JSON-RPC requests and responses from viem transports
  */
 export function createViemLogger(transportName: string) {
+  // Use a weak map to track requests that have already been logged to prevent duplicates
+  // in case viem triggers callbacks multiple times for the same logical operation
+  const seenRequests = new WeakSet<Request>()
+
   return {
     onFetchRequest(request: Request) {
-      // In a real browser Request object, we might need to clone it or read headers
-      // But viem passes the internal request init/details sometimes depending on version
-      // For standard Request objects:
+      if (seenRequests.has(request)) return
+      seenRequests.add(request)
+
       try {
-        const url = request.url
-        logger.debug(`[Viem:${transportName}] Request: ${url}`, 'RPC-Req', {
+        // Clone headers to avoid mutation issues if any
+        const headers = Object.fromEntries(request.headers.entries())
+        
+        logger.debug(`[Viem:${transportName}] Request started`, 'RPC-Req', {
+          url: request.url,
           method: request.method,
-          headers: Object.fromEntries(request.headers.entries()),
+          headers
         })
-      } catch (e) {
-        // Fallback for non-standard request objects if any
-        logger.debug(`[Viem:${transportName}] Request started`, 'RPC-Req', request)
+      } catch {
+        logger.debug(`[Viem:${transportName}] Request started`, 'RPC-Req', { url: request.url })
       }
     },
     async onFetchResponse(response: Response) {
@@ -25,16 +31,16 @@ export function createViemLogger(transportName: string) {
         const clonedRes = response.clone()
         const data = await clonedRes.json()
         
-        // Log based on JSON-RPC result or error
         if (data.error) {
           logger.error(`[Viem:${transportName}] RPC Error: ${data.error.message}`, 'RPC-Res', data)
         } else {
-          // Compact log for success, full data in details
-          const method = data.id ? `ID:${data.id}` : 'Response'
-          logger.info(`[Viem:${transportName}] RPC Success: ${method}`, 'RPC-Res', data)
+          // Compact log for success, full data in details. ID is usually the JSON-RPC id.
+          const id = data.id !== undefined ? ` (ID:${data.id})` : ''
+          logger.info(`[Viem:${transportName}] RPC Success${id}`, 'RPC-Res', data)
         }
-      } catch (e) {
-        logger.debug(`[Viem:${transportName}] Response received (non-json)`, 'RPC-Res')
+      } catch {
+        // Not a JSON response or failed to parse
+        logger.debug(`[Viem:${transportName}] Response received (Status: ${response.status})`, 'RPC-Res')
       }
     }
   }
