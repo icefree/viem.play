@@ -21,7 +21,7 @@ export class RequestPermissionsNode extends LGraphNode {
     super()
     this.title = 'requestPermissions'
     this.addInput('client', 'walletClient')
-    this.addInput('permissions', 'array')
+    this.addInput('permissions', '')  // 接受任何类型
     this.addInput('trigger', -1)
     this.addOutput('permissions', 'array')
     this.addOutput('error', 'string')

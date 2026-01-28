@@ -1,4 +1,4 @@
-import { LGraphNode, IWidget } from 'litegraph.js'
+import { LGraphNode, type IWidget } from 'litegraph.js'
 
 /**
  * JSON 输入节点 - 使用多行文本输入
@@ -16,7 +16,7 @@ export class JsonInputNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'JSON'
-    this.addOutput('json', 'object')
+    this.addOutput('json', '')  // 空类型可以连接任何输入
     this.addProperty('value', '{}', 'string')
     this.size = [280, 140]
 
@@ -37,7 +37,7 @@ export class JsonInputNode extends LGraphNode {
     try {
       JSON.parse(value)
       this.isValid = true
-      this.boxcolor = undefined // 恢复默认边框颜色
+      this.boxcolor = '#48bb78' // 绿色边框表示有效
     } catch {
       this.isValid = false
       this.boxcolor = '#e53e3e' // 红色边框表示无效 JSON
