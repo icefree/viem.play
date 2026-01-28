@@ -2,7 +2,7 @@
  * Block 节点集成测试 - 使用 Anvil 真实数据验证
  */
 import { describe, it, expect, beforeAll } from 'vitest'
-import { createAnvilClient, TEST_ACCOUNTS, EXPECTED } from './setup'
+import { createAnvilClient, TEST_ACCOUNTS, EXPECTED } from '../setup'
 import type { PublicClient } from 'viem'
 
 describe('Block 节点集成测试 (Anvil)', () => {

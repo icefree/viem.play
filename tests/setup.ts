@@ -7,8 +7,8 @@ import { anvil } from 'viem/chains'
 // Anvil 默认测试账户
 export const TEST_ACCOUNTS = {
   deployer: {
-    address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' as const,
-    privateKey: '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80' as const,
+    address: '0xa0ee7a142d267c1f36714e4a8f75612f20a79720' as const,
+    privateKey: '0x2191ef87e392377ec08e7c08eb105ef5448eced5b2c88b2d1d1c4e4b8f7f1adf' as const,
   },
 } as const
 

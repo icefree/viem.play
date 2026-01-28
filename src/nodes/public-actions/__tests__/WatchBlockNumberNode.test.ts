@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { WatchBlockNumberNode } from '../WatchBlockNumberNode'
-import { createMockPublicClient } from '../../../test/helpers'
+import { createMockPublicClient } from '../../../../tests/utils/helpers'
 import type { PublicClient } from 'viem'
 
 describe('WatchBlockNumberNode', () => {
