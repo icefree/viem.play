@@ -15,28 +15,30 @@ export class TimerNode extends LGraphNode {
     this.addOutput('tick', -1)
     this.size = [140, 70]
 
+    this.addInput('interval', 'number')
     this.addProperty('interval', 3000, 'number')
     this.addProperty('event', 'tick', 'string')
 
-    this.addWidget(
-      'number',
-      'Interval (ms)',
-      this.properties.interval,
-      (v: number) => {
-        this.properties.interval = v
-        this.startTimer()
-      },
-      { min: 50, max: 600000, step: 1000, precision: 0 }
-    )
-
     this.startTimer()
+  }
+
+  onExecute() {
+    const interval = this.getInputData(0)
+    if (interval !== undefined && interval !== null && typeof interval === 'number') {
+      // 限制最小间隔为 50ms 防止卡死
+      const safeInterval = Math.max(50, interval)
+      if (safeInterval !== this.properties.interval) {
+        this.properties.interval = safeInterval
+        this.startTimer()
+      }
+    }
   }
 
   startTimer() {
     if (this.timerId) {
       clearInterval(this.timerId)
     }
-    this.timerId = setInterval(() => {
+    this.timerId = window.setInterval(() => {
       this.triggerSlot(0, null)
     }, this.properties.interval)
   }
