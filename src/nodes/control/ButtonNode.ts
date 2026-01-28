@@ -10,7 +10,7 @@ export class ButtonNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'Button'
-    this.addInput('trigger', -1)  // 支持外部触发
+    this.addInput('timer', 'timer')
     this.addOutput('trigger', -1)
     this.size = [120, 60]
 
