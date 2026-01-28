@@ -4,6 +4,9 @@ import { GetBlockNumberNode } from './GetBlockNumberNode'
 import { GetGasPriceNode } from './GetGasPriceNode'
 import { GetBlockNode } from './GetBlockNode'
 import { GetTransactionCountNode } from './GetTransactionCountNode'
+import { GetBlockTransactionCountNode } from './GetBlockTransactionCountNode'
+import { WatchBlockNumberNode } from './WatchBlockNumberNode'
+import { WatchBlocksNode } from './WatchBlocksNode'
 import { PublicActionPlaceholderNode } from './PublicActionPlaceholderNode'
 
 export function registerPublicActionNodes() {
@@ -17,9 +20,9 @@ export function registerPublicActionNodes() {
   // --- Block ---
   LiteGraph.registerNodeType('Public Actions/Block/getBlock', GetBlockNode)
   LiteGraph.registerNodeType('Public Actions/Block/getBlockNumber', GetBlockNumberNode)
-  LiteGraph.registerNodeType('Public Actions/Block/getBlockTransactionCount', class extends PublicActionPlaceholderNode { constructor() { super('getBlockTransactionCount', 'Get transaction count of a block') } })
-  LiteGraph.registerNodeType('Public Actions/Block/watchBlocks', class extends PublicActionPlaceholderNode { constructor() { super('watchBlocks', 'Watch for new blocks') } })
-  LiteGraph.registerNodeType('Public Actions/Block/watchBlockNumber', class extends PublicActionPlaceholderNode { constructor() { super('watchBlockNumber', 'Watch for new block numbers') } })
+  LiteGraph.registerNodeType('Public Actions/Block/getBlockTransactionCount', GetBlockTransactionCountNode)
+  LiteGraph.registerNodeType('Public Actions/Block/watchBlocks', WatchBlocksNode)
+  LiteGraph.registerNodeType('Public Actions/Block/watchBlockNumber', WatchBlockNumberNode)
 
   // --- Transaction ---
   LiteGraph.registerNodeType('Public Actions/Transaction/getTransaction', class extends PublicActionPlaceholderNode { constructor() { super('getTransaction', 'Get transaction information') } })
@@ -53,5 +56,8 @@ export {
   GetGasPriceNode, 
   GetBlockNode, 
   GetTransactionCountNode,
+  GetBlockTransactionCountNode,
+  WatchBlockNumberNode,
+  WatchBlocksNode,
   PublicActionPlaceholderNode
 }
