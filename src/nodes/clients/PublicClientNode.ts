@@ -35,14 +35,13 @@ export class PublicClientNode extends LGraphNode {
       return
     }
 
-    // Create a config object to detect changes
-    const config = {
-      chainId: chain.id,
-      transport: transport ? 'custom' : 'default'
-    }
-    const configHash = JSON.stringify(config)
+    // Create a config identifier to detect changes
+    // We try to use a unique identifier from transport if possible, 
+    // otherwise we rely on object reference.
+    const transportId = transport ? (transport.uid || transport.url || 'custom-transport') : 'default'
+    const configHash = `${chain.id}-${transportId}`
 
-    if (this.lastConfigHash !== configHash) {
+    if (this.lastConfigHash !== configHash || (transport && !this.currentClient)) {
       this.lastConfigHash = configHash
       
       let finalTransport = transport
@@ -55,7 +54,9 @@ export class PublicClientNode extends LGraphNode {
         chain,
         transport: finalTransport
       })
-      logger.info(`Created PublicClient for ${chain.name}`, 'PublicClient', { chainId: chain.id })
+      
+      const transportType = transport ? (transport.type || 'Custom') : 'Http-Default'
+      logger.info(`Created PublicClient for ${chain.name} via ${transportType}`, 'PublicClient', { chainId: chain.id })
     }
 
     this.setOutputData(0, this.currentClient)
@@ -63,8 +64,10 @@ export class PublicClientNode extends LGraphNode {
 
   getTitle(): string {
     const chain = this.getInputData(0) as Chain | undefined
+    const transport = this.getInputData(1)
     if (chain) {
-      return `PublicClient (${chain.name})`
+      const transportType = transport ? (transport.type || 'Custom') : ''
+      return `PublicClient (${chain.name}${transportType ? ' : ' + transportType : ''})`
     }
     return 'PublicClient'
   }
