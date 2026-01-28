@@ -4,6 +4,7 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 import { createTestClient, TEST_ACCOUNTS, EXPECTED } from '../test-network'
 import type { PublicClient } from 'viem'
+import { parseEther } from 'viem'
 
 describe('Block 节点集成测试 (Anvil)', () => {
   let client: PublicClient
