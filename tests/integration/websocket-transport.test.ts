@@ -49,8 +49,8 @@ describe('WebSocket Transport 集成测试 (Anvil)', () => {
   afterAll(async () => {
     if (wsClient) {
       try {
-        // @ts-expect-error - transport.destroy 可能存在
-        await wsClient.transport?.destroy?.()
+        // 尝试清理 WebSocket 连接
+        await (wsClient.transport as { destroy?: () => Promise<void> })?.destroy?.()
       } catch {
         // 忽略清理错误
       }

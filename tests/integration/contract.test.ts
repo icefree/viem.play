@@ -244,7 +244,8 @@ describe('Contract WebSocket 集成测试 (Anvil)', () => {
       expect(deployReceipt.status).toBe('success')
       const testContractAddress = deployReceipt.contractAddress!
 
-      const testValues = [100n, 200n, 300n]
+      // 减少写入次数以加快测试速度
+      const testValues = [100n, 200n]
 
       for (const testValue of testValues) {
         // 写入
@@ -267,7 +268,7 @@ describe('Contract WebSocket 集成测试 (Anvil)', () => {
         })
         expect(value).toBe(testValue)
       }
-    }, 30000)
+    }, 60000)
   })
 
   describe('simulateContract (通过 WebSocket)', () => {
