@@ -61,8 +61,8 @@ Open `http://localhost:5173` in your browser.
 
 ## 🧪 Testing
 
-- [Testing Strategy (English)](./TESTING.en.md)
-- [测试方案 (中文)](./TESTING.md)
+- [Testing Strategy](./TESTING.md)
+- [测试方案 (中文)](./TESTING_ZH.md)
 
 ## 🚧 Roadmap / TODO
 
