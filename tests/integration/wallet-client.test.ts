@@ -277,11 +277,12 @@ describe('WalletClient 集成测试 (Anvil)', () => {
       expect(address).toMatch(/^0x[a-fA-F0-9]{40}$/)
     })
 
-    it('应该能够获取所有地址', () => {
-      const addresses = walletClient.getAddresses()
+    it('应该能够获取账户地址', () => {
+      // WalletClient 使用 account.address 而不是 getAddresses()
+      const address = walletClient.account!.address
 
-      expect(Array.isArray(addresses)).toBe(true)
-      expect(addresses.length).toBeGreaterThanOrEqual(1)
+      expect(typeof address).toBe('string')
+      expect(address).toMatch(/^0x[a-fA-F0-9]{40}$/)
     })
   })
 
