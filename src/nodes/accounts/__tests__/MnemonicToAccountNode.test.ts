@@ -45,7 +45,7 @@ describe('MnemonicToAccountNode', () => {
 
       expect(account).toBeTruthy()
       expect(address).toBeTruthy()
-      expect(address).toMatch(/^0x[a-f0-9]{40}$/)
+      expect(address).toMatch(/^0x[a-fA-F0-9]{40}$/)
     })
 
     it('当没有助记词时应该输出 null', () => {

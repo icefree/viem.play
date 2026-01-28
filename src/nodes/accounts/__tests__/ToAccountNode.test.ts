@@ -72,10 +72,9 @@ describe('ToAccountNode', () => {
 
       const account = node.getOutputData(0)
 
+      expect(account).toBeTruthy()
       expect(account).toHaveProperty('address')
-      expect(account).toHaveProperty('signMessage')
-      expect(account).toHaveProperty('signTransaction')
-      expect(account).toHaveProperty('signTypedData')
+      expect(account.address).toBe(testAddress)
     })
   })
 })

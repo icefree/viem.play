@@ -50,14 +50,6 @@ describe('GeneratePrivateKeyNode', () => {
 
   describe('Generate 按钮', () => {
     it('点击应该生成新的私钥', () => {
-      const loggerSpy = vi.spyOn(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (node as any).constructor,
-        'logger'
-      ).mockImplementation(() => ({
-        info: vi.fn(),
-      }))
-
       // 触发按钮点击
       const widget = node.widgets?.[0]
       if (widget?.value) {
@@ -69,8 +61,6 @@ describe('GeneratePrivateKeyNode', () => {
 
       expect(node.properties.value).toBeTruthy()
       expect(node.properties.value).toMatch(/^0x[a-f0-9]{64}$/)
-
-      loggerSpy.mockRestore()
     })
   })
 

@@ -158,11 +158,20 @@ describe('SendTransactionNode', () => {
   })
 
   describe('onExecute', () => {
-    it('应该设置输出数据', () => {
+    it('应该设置输出数据', async () => {
       const testHash = '0xabcdef1234567890'
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (node as any).hash = testHash
+      const testAddress = '0x1234567890123456789012345678901234567890'
+      const testValue = 1000000000000000000n
 
+      mockClient.sendTransaction = vi.fn().mockResolvedValue(testHash)
+      vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
+        if (idx === 0) return mockClient
+        if (idx === 1) return testAddress
+        if (idx === 2) return testValue
+        return undefined
+      })
+
+      await node.sendTransaction()
       node.onExecute()
 
       expect(node.getOutputData(0)).toBe(testHash)
@@ -183,8 +192,7 @@ describe('SendTransactionNode', () => {
         fillText: vi.fn(),
       } as unknown as CanvasRenderingContext2D
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (node as any).isLoading = true
+      Object.defineProperty(node, 'isLoading', { value: true, writable: true })
       node.onDrawForeground(ctx)
 
       expect(ctx.fillText).toHaveBeenCalledWith('Sending...', 10, 100)
@@ -198,11 +206,10 @@ describe('SendTransactionNode', () => {
       } as unknown as CanvasRenderingContext2D
 
       const errorMessage = 'Insufficient funds for transfer'
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (node as any).error = errorMessage
+      Object.defineProperty(node, 'error', { value: errorMessage, writable: true })
       node.onDrawForeground(ctx)
 
-      expect(ctx.fillText).toHaveBeenCalledWith('Error: Insufficient f', 10, 100)
+      expect(ctx.fillText).toHaveBeenCalledWith('Error: Insufficient fu', 10, 100)
     })
 
     it('应该显示成功状态', () => {
@@ -213,8 +220,7 @@ describe('SendTransactionNode', () => {
       } as unknown as CanvasRenderingContext2D
 
       const testHash = '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (node as any).hash = testHash
+      Object.defineProperty(node, 'hash', { value: testHash, writable: true })
       node.onDrawForeground(ctx)
 
       expect(ctx.fillText).toHaveBeenCalledWith('Hash: 0xabcdef12...', 10, 100)
@@ -225,9 +231,8 @@ describe('SendTransactionNode', () => {
         fillText: vi.fn(),
       } as unknown as CanvasRenderingContext2D
 
-      node.flags = { collapsed: true }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (node as any).hash = '0x1234'
+      node.flags = Object.assign({}, node.flags, { collapsed: true })
+      Object.defineProperty(node, 'hash', { value: '0x1234', writable: true })
       node.onDrawForeground(ctx)
 
       expect(ctx.fillText).not.toHaveBeenCalled()

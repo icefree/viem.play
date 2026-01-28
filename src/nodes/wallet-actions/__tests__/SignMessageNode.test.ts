@@ -104,8 +104,7 @@ describe('SignMessageNode', () => {
   describe('onExecute', () => {
     it('应该设置输出数据', () => {
       const testSignature = '0xabcdef1234567890'
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (node as any).signature = testSignature
+      Object.defineProperty(node, 'signature', { value: testSignature, writable: true })
 
       node.onExecute()
 
@@ -127,8 +126,7 @@ describe('SignMessageNode', () => {
         fillText: vi.fn(),
       } as unknown as CanvasRenderingContext2D
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (node as any).isLoading = true
+      Object.defineProperty(node, 'isLoading', { value: true, writable: true })
       node.onDrawForeground(ctx)
 
       expect(ctx.fillText).toHaveBeenCalledWith('Signing...', 10, 70)
@@ -139,9 +137,8 @@ describe('SignMessageNode', () => {
         fillText: vi.fn(),
       } as unknown as CanvasRenderingContext2D
 
-      node.flags = { collapsed: true }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (node as any).isLoading = true
+      node.flags = Object.assign({}, node.flags, { collapsed: true })
+      Object.defineProperty(node, 'isLoading', { value: true, writable: true })
       node.onDrawForeground(ctx)
 
       expect(ctx.fillText).not.toHaveBeenCalled()

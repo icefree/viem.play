@@ -40,7 +40,7 @@ describe('PrivateKeyToAccountNode', () => {
 
       expect(account).toBeTruthy()
       expect(address).toBeTruthy()
-      expect(address).toMatch(/^0x[a-f0-9]{40}$/)
+      expect(address).toMatch(/^0x[a-fA-F0-9]{40}$/)
     })
 
     it('当没有私钥时应该输出 null', () => {

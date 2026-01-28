@@ -50,14 +50,6 @@ describe('GenerateMnemonicNode', () => {
 
   describe('Generate 按钮', () => {
     it('点击应该生成新的助记词', () => {
-      const loggerSpy = vi.spyOn(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (node as any).constructor,
-        'logger'
-      ).mockImplementation(() => ({
-        info: vi.fn(),
-      }))
-
       // 触发按钮点击
       const widget = node.widgets?.[0]
       if (widget?.value) {
@@ -71,8 +63,6 @@ describe('GenerateMnemonicNode', () => {
       // BIP39 助记词通常是 12 或 24 个单词
       const words = node.properties.value.split(' ')
       expect([12, 15, 18, 21, 24]).toContain(words.length)
-
-      loggerSpy.mockRestore()
     })
   })
 })
