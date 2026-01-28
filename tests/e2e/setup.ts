@@ -2,7 +2,7 @@
  * 集成测试配置 - 使用 Anvil 本地测试网
  */
 import { createPublicClient, http, parseEther } from 'viem'
-import { foundry } from 'viem/chains'
+import { anvil } from 'viem/chains'
 
 // Anvil 默认测试账户
 export const TEST_ACCOUNTS = {
@@ -18,7 +18,7 @@ export const ANVIL_RPC_URL = 'http://127.0.0.1:8545'
 // 创建连接 Anvil 的 PublicClient
 export function createAnvilClient() {
   return createPublicClient({
-    chain: foundry,
+    chain: anvil,
     transport: http(ANVIL_RPC_URL),
   })
 }
