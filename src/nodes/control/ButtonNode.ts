@@ -1,7 +1,7 @@
 import { LGraphNode } from 'litegraph.js'
 
 /**
- * 按钮节点 - 手动输出动作
+ * 按钮节点 - 手动输出动作，支持定时器触发
  */
 export class ButtonNode extends LGraphNode {
   static title = 'Button'
@@ -10,6 +10,7 @@ export class ButtonNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'Button'
+    this.addInput('timer', -1)  // 支持 Timer 触发
     this.addOutput('trigger', -1)
     this.size = [120, 60]
 
@@ -17,21 +18,24 @@ export class ButtonNode extends LGraphNode {
     this.addProperty('count', 0, 'number')
 
     this.addWidget('button', 'CLICK ME', '', () => {
-      this.properties.count++
-      this.triggerSlot(0, null)
+      this.fire()
     })
   }
 
-  onAction(_action: string) {
+  private fire() {
     this.properties.count++
-    this.triggerSlot(0, null)
+    this.triggerSlot(0, 'trigger')
+  }
+
+  onAction() {
+    this.fire()
   }
 
   onExecute() {
     // 渲染时更新 label
-    const widgets = (this as any).widgets
+    const widgets = (this as unknown as { widgets?: Array<{ name: string }> }).widgets
     if (widgets && widgets[0]) {
-      widgets[0].name = this.properties.label
+      widgets[0].name = this.properties.label as string
     }
   }
 }
