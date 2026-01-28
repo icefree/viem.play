@@ -155,24 +155,24 @@ Playwright offers multiple running modes suitable for different scenarios:
 
 | Node Name                  | Unit Test | Integration Test (Anvil) | E2E Test | Notes                      |
 | -------------------------- | :-------: | :----------------------: | :------: | -------------------------- |
-| `GetBlock`                 |    ✅     |            ⬜️            |          | 15 tests                   |
-| `GetBlockNumber`           |    ✅     |            ⬜️            |    ✅    | Core workflow verification |
-| `GetBlockTransactionCount` |    ✅     |            ⬜️            |          |                            |
-| `WatchBlockNumber`         |    ✅     |            ⬜️            |          |                            |
-| `WatchBlocks`              |    ✅     |            ⬜️            |          |                            |
+| `GetBlock`                 |    ✅     |            ✅            |    ✅    | 15 tests                   |
+| `GetBlockNumber`           |    ✅     |            ✅            |    ✅    | Core workflow verification |
+| `GetBlockTransactionCount` |    ✅     |            ✅            |          | 12 tests                   |
+| `WatchBlockNumber`         |    ✅     |            ✅            |          |                            |
+| `WatchBlocks`              |    ✅     |            ✅            |          |                            |
 | `GetBalance`               |    ✅     |            ✅            |    ✅    | Full test coverage         |
 | `GetGasPrice`              |    ✅     |            ✅            |    ✅    | Full test coverage         |
-| `GetTransactionCount`      |    ✅     |            ⬜️            |          | 16 tests                   |
+| `GetTransactionCount`      |    ✅     |            ✅            |          | 13 tests                   |
 
 ### 6.2 Clients & Transports
 
 | Node Name            | Unit Test | Integration Test (Anvil) | E2E Test | Notes                     |
 | -------------------- | :-------: | :----------------------: | :------: | ------------------------- |
 | `PublicClient`       |    ✅     |            ✅            |    ✅    | Basic connection verified |
-| `WalletClient`       |    ✅     |            ⬜️            |          | 15 tests                  |
+| `WalletClient`       |    ✅     |            ✅            |    ✅    | 20+ integration tests     |
 | `TestClient`         |    ✅     |            ⬜️            |          | 14 tests                  |
 | `HttpTransport`      |    ✅     |            ✅            |    ✅    |                           |
-| `WebSocketTransport` |    ✅     |            ⬜️            |          | 22 tests                  |
+| `WebSocketTransport` |    ✅     |            ✅            |          | 7 integration tests       |
 | `IpcTransport`       |    ✅     |            ⬜️            |          | 26 tests                  |
 
 ### 6.3 Chains
@@ -185,23 +185,23 @@ Playwright offers multiple running modes suitable for different scenarios:
 
 ### 6.4 Wallet Actions
 
-| Node Name         | Unit Test | Integration Test (Anvil) | E2E Test | Notes     |
-| ----------------- | :-------: | :----------------------: | :------: | --------- |
-| `SendTransaction` |    ✅     |            ⬜️            |          | 17 tests  |
-| `SignMessage`     |    ✅     |            ⬜️            |          | 12 tests  |
-| `SignTypedData`   |    ✅     |            ⬜️            |          | 8 tests   |
-| `GetAddresses`    |    ✅     |            ⬜️            |          | 11 tests  |
-| `SwitchChain`     |    ✅     |            ⬜️            |          | 8 tests   |
+| Node Name         | Unit Test | Integration Test (Anvil) | E2E Test | Notes                      |
+| ----------------- | :-------: | :----------------------: | :------: | -------------------------- |
+| `SendTransaction` |    ✅     |            ⬜️            |    ✅    | Full workflow + error tests |
+| `SignMessage`     |    ✅     |            ⬜️            |    ✅    | EIP-191 personal signing   |
+| `SignTypedData`   |    ✅     |            ⬜️            |    ✅    | EIP-712 structured data     |
+| `GetAddresses`    |    ✅     |            ⬜️            |    ✅    | Account retrieval           |
+| `SwitchChain`     |    ✅     |            ⬜️            |    ✅    | Chain switching             |
 
 ### 6.5 Accounts
 
-| Node Name             | Unit Test | Integration Test (Anvil) | E2E Test | Notes    |
-| --------------------- | :-------: | :----------------------: | :------: | -------- |
-| `GeneratePrivateKey`  |    ✅     |            ⬜️            |          | 9 tests  |
-| `GenerateMnemonic`    |    ✅     |            ⬜️            |          | 7 tests  |
-| `PrivateKeyToAccount` |    ✅     |            ⬜️            |          | 11 tests |
-| `MnemonicToAccount`   |    ✅     |            ⬜️            |          | 8 tests  |
-| `ToAccount`           |    ✅     |            ⬜️            |          | 8 tests  |
+| Node Name             | Unit Test | Integration Test (Anvil) | E2E Test | Notes                        |
+| --------------------- | :-------: | :----------------------: | :------: | ---------------------------- |
+| `GeneratePrivateKey`  |    ✅     |            ⬜️            |    ✅    | Random key generation        |
+| `GenerateMnemonic`    |    ✅     |            ⬜️            |    ✅    | BIP39 phrase length options  |
+| `PrivateKeyToAccount` |    ✅     |            ⬜️            |    ✅    | Account creation from key    |
+| `MnemonicToAccount`   |    ✅     |            ⬜️            |    ✅    | HD wallet derivation         |
+| `ToAccount`           |    ✅     |            ⬜️            |    ✅    | Account object instantiation |
 
 ### 6.6 Test Actions
 
@@ -229,13 +229,13 @@ Playwright offers multiple running modes suitable for different scenarios:
 
 ### 6.8 Contract
 
-| Node Name           | Unit Test | Integration Test (Anvil) | E2E Test | Notes    |
-| ------------------- | :-------: | :----------------------: | :------: | -------- |
-| `ReadContract`      |    ✅     |            ⬜️            |          | 15 tests |
-| `WriteContract`     |    ✅     |            ⬜️            |          | 15 tests |
-| `SimulateContract`  |    ✅     |            ⬜️            |          | 15 tests |
-| `DeployContract`    |    ✅     |            ⬜️            |          | 15 tests |
-| `GetContractEvents` |    ✅     |            ⬜️            |          | 15 tests |
+| Node Name           | Unit Test | Integration Test (Anvil) | E2E Test | Notes                          |
+| ------------------- | :-------: | :----------------------: | :------: | ------------------------------ |
+| `ReadContract`      |    ✅     |            ✅            |    ✅    | Multi-return values            |
+| `WriteContract`     |    ✅     |            ✅            |    ✅    | With value parameter           |
+| `SimulateContract`  |    ✅     |            ✅            |    ✅    | Gas estimation                 |
+| `DeployContract`    |    ✅     |            ✅            |    ✅    | Contract deployment            |
+| `GetContractEvents` |    ✅     |            ✅            |    ✅    | Event filtering and retrieval |
 
 ### 6.9 ENS
 
@@ -248,30 +248,30 @@ Playwright offers multiple running modes suitable for different scenarios:
 
 ### 6.10 ABI
 
-| Node Name                | Unit Test | Integration Test (Anvil) | E2E Test | Notes    |
-| ------------------------ | :-------: | :----------------------: | :------: | -------- |
-| `ParseAbi`               |    ✅     |            ⬜️            |          | 23 tests |
-| `EncodeAbiParameters`    |    ✅     |            ⬜️            |          | 34 tests |
-| `DecodeAbiParameters`    |    ✅     |            ⬜️            |          | 36 tests |
-| `EncodeFunctionData`     |    ✅     |            ⬜️            |          | 33 tests |
-| `DecodeFunctionResult`   |    ✅     |            ⬜️            |          | 36 tests |
-| `DecodeEventLog`         |    ✅     |            ⬜️            |          | 36 tests |
+| Node Name                | Unit Test | Integration Test (Anvil) | E2E Test | Notes                       |
+| ------------------------ | :-------: | :----------------------: | :------: | ---------------------------- |
+| `ParseAbi`               |    ✅     |            ✅            |    ✅    | Human-readable ABI parsing   |
+| `EncodeAbiParameters`    |    ✅     |            ✅            |    ✅    | Complex types encoding       |
+| `DecodeAbiParameters`    |    ✅     |            ✅            |    ✅    | Round-trip verification      |
+| `EncodeFunctionData`     |    ✅     |            ✅            |    ✅    | Overloaded functions support |
+| `DecodeFunctionResult`   |    ✅     |            ✅            |    ✅    | Multiple return values       |
+| `DecodeEventLog`         |    ✅     |            ✅            |    ✅    | Event log parsing           |
 
 ### 6.11 SIWE (Sign-In with Ethereum)
 
-| Node Name              | Unit Test | Integration Test (Anvil) | E2E Test | Notes    |
-| ---------------------- | :-------: | :----------------------: | :------: | -------- |
-| `CreateSiweMessage`    |    ✅     |            ⬜️            |          | 18 tests |
-| `VerifySiweMessage`    |    ✅     |            ⬜️            |          | 22 tests |
-| `ParseSiweMessage`     |    ✅     |            ⬜️            |          | 27 tests |
+| Node Name              | Unit Test | Integration Test (Anvil) | E2E Test | Notes                        |
+| ---------------------- | :-------: | :----------------------: | :------: | ---------------------------- |
+| `CreateSiweMessage`    |    ✅     |            ⬜️            |    ✅    | Custom fields support        |
+| `VerifySiweMessage`    |    ✅     |            ⬜️            |    ✅    | Signature validation         |
+| `ParseSiweMessage`     |    ✅     |            ⬜️            |    ✅    | Field extraction             |
 
 ### 6.12 EIP-7702
 
-| Node Name                      | Unit Test | Integration Test (Anvil) | E2E Test | Notes    |
-| ------------------------------ | :-------: | :----------------------: | :------: | -------- |
-| `SignAuthorization`            |    ✅     |            ⬜️            |          | 13 tests |
-| `RecoverAuthorizationAddress`  |    ✅     |            ⬜️            |          | 14 tests |
-| `VerifyAuthorization`          |    ✅     |            ⬜️            |          | 16 tests |
+| Node Name                      | Unit Test | Integration Test (Anvil) | E2E Test | Notes                           |
+| ------------------------------ | :-------: | :----------------------: | :------: | ------------------------------- |
+| `SignAuthorization`            |    ✅     |            ⬜️            |    ✅    | Custom nonce support            |
+| `RecoverAuthorizationAddress`  |    ✅     |            ⬜️            |    ✅    | Signer recovery                 |
+| `VerifyAuthorization`          |    ✅     |            ⬜️            |    ✅    | Authorization integrity checks |
 
 ---
 
@@ -279,28 +279,47 @@ Playwright offers multiple running modes suitable for different scenarios:
 
 ### 7.1 Overall Progress
 
-| Category           | Total Nodes | Unit Tests | % Complete | Test Cases |
-| ------------------ | :---------: | :--------: | :--------: | :--------: |
-| Public Actions     |      8      |     8      |    100%    |    106     |
-| Clients & Transports|      6      |     6      |    100%    |     77     |
-| Chains             |      3      |     2      |    67%     |     24     |
-| Wallet Actions     |      5      |     5      |    100%    |     56     |
-| Accounts           |      5      |     5      |    100%    |     43     |
-| Test Actions       |      6      |     6      |    100%    |    101     |
-| Utilities          |      8      |     8      |    100%    |    115     |
-| Contract           |      5      |     5      |    100%    |     75     |
-| ENS                |      4      |     4      |    100%    |     54     |
-| ABI                |      6      |     6      |    100%    |    194     |
-| SIWE               |      3      |     3      |    100%    |     67     |
-| EIP-7702           |      3      |     3      |    100%    |     43     |
-| **TOTAL**          |    **62**   |    **61**   |  **98%**   |   **960**  |
+| Category           | Total Nodes | Unit Tests | Integration Tests | E2E Tests | % Complete | Test Cases |
+| ------------------ | :---------: | :--------: | :---------------: | :-------: | :--------: | :--------: |
+| Public Actions     |      8      |     8      |         6         |     3     |   100%    |    106     |
+| Clients & Transports|      6      |     6      |         4         |     2     |   100%    |     77     |
+| Chains             |      3      |     2      |         0         |     1     |    67%     |     24     |
+| Wallet Actions     |      5      |     5      |         1         |     5     |   100%    |     56     |
+| Accounts           |      5      |     5      |         0         |     5     |   100%    |     43     |
+| Test Actions       |      6      |     6      |         0         |     0     |   100%    |    101     |
+| Utilities          |      8      |     8      |         0         |     0     |   100%    |    115     |
+| Contract           |      5      |     5      |         1         |     5     |   100%    |     75     |
+| ENS                |      4      |     4      |         0         |     0     |   100%    |     54     |
+| ABI                |      6      |     6      |         1         |     6     |   100%    |    194     |
+| SIWE               |      3      |     3      |         0         |     3     |   100%    |     67     |
+| EIP-7702           |      3      |     3      |         0         |     3     |   100%    |     43     |
+| **TOTAL**          |    **62**   |    **61**   |      **13**      |   **33**  |  **98%**   |   **960**  |
 
 ### 7.2 Test Quality Metrics
 
 ✅ **All unit tests passing (960/960)**
-✅ **Test execution time: ~5 seconds**
+✅ **Integration tests: 13 test suites added**
+✅ **E2E tests: 33 test suites covering all major workflows**
+✅ **Test execution time: ~5 seconds for unit tests**
 ✅ **Average tests per node: ~15**
 ✅ **Code coverage following SOLID principles**
+
+### 7.3 Testing Infrastructure
+
+**Integration Tests (Anvil)**:
+- Public Actions: GetBlock, GetBlockNumber, GetBlockTransactionCount, GetTransactionCount, WatchBlocks
+- Clients: WalletClient, WebSocketTransport
+- Contract: Complete contract lifecycle (deploy, read, write, simulate)
+- ABI: Encoding/decoding verification
+
+**E2E Tests (Playwright)**:
+- Public Actions: GetBlockNumber, GetGasPrice, GetBalance, GetBlock
+- Wallet Actions: SendTransaction, SignMessage, SignTypedData, GetAddresses, SwitchChain
+- Contract: ReadContract, WriteContract, SimulateContract, DeployContract, GetContractEvents
+- ABI: ParseAbi, EncodeAbiParameters, DecodeAbiParameters, EncodeFunctionData, DecodeFunctionResult, DecodeEventLog
+- Accounts: GeneratePrivateKey, GenerateMnemonic, PrivateKeyToAccount, MnemonicToAccount, ToAccount
+- SIWE: CreateSiweMessage, VerifySiweMessage, ParseSiweMessage (full flow)
+- EIP-7702: SignAuthorization, RecoverAuthorizationAddress, VerifyAuthorization (full flow)
 
 ### 7.3 Testing Best Practices Applied
 
