@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { ReadContractNode } from '../ReadContractNode'
-import type { PublicClient, Address, Abi } from 'viem'
+import type { PublicClient } from 'viem'
 
 describe('ReadContractNode', () => {
   let node: ReadContractNode

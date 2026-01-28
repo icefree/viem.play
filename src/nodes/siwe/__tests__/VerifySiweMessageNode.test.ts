@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { VerifySiweMessageNode } from '../VerifySiweMessageNode'
-import type { Address } from 'viem'
 
 describe('VerifySiweMessageNode', () => {
   let node: VerifySiweMessageNode

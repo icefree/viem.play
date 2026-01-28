@@ -29,7 +29,6 @@ export class SignTypedDataNode extends LGraphNode {
       if (!client || !typedData) return
 
       try {
-        // @ts-expect-error
         const sig = await client.signTypedData(typedData)
         this.setOutputData(0, sig)
       } catch (err) {

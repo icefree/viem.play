@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { DeployContractNode } from '../DeployContractNode'
-import type { WalletClient, Abi } from 'viem'
+import type { WalletClient } from 'viem'
 
 describe('DeployContractNode', () => {
   let node: DeployContractNode

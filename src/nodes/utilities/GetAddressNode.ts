@@ -8,24 +8,33 @@ export class GetAddressNode extends LGraphNode {
   static title = 'getAddress'
   static desc = 'Checksum an address'
 
+  private checksummed: string | null = null
+
   constructor() {
     super()
     this.title = 'getAddress'
     this.addInput('address', 'string')
+    this.addInput('trigger', -1)
     this.addOutput('address', 'address')
-    this.size = [160, 50]
+    this.size = [160, 80]
+  }
+
+  onAction(action: string) {
+    if (action === 'trigger') {
+      const input = this.getInputData(0) as string | undefined
+      if (input) {
+        try {
+          this.checksummed = viemGetAddress(input)
+        } catch {
+          this.checksummed = null
+        }
+      } else {
+        this.checksummed = null
+      }
+    }
   }
 
   onExecute() {
-    const input = this.getInputData(0) as string | undefined
-    if (input) {
-      try {
-        this.setOutputData(0, viemGetAddress(input))
-      } catch {
-        this.setOutputData(0, null)
-      }
-    } else {
-      this.setOutputData(0, null)
-    }
+    this.setOutputData(0, this.checksummed)
   }
 }

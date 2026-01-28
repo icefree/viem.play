@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { SimulateContractNode } from '../SimulateContractNode'
-import type { PublicClient, Address, Abi } from 'viem'
+import type { PublicClient } from 'viem'
 
 describe('SimulateContractNode', () => {
   let node: SimulateContractNode

@@ -8,6 +8,11 @@ interface NodeItem {
   category: string
 }
 
+interface NodeSearchProps {
+  graph: LGraph | null
+  getMousePosition: () => { x: number; y: number }
+}
+
 export function NodeSearch({ graph, getMousePosition }: NodeSearchProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState('')
@@ -182,7 +187,7 @@ export function NodeSearch({ graph, getMousePosition }: NodeSearchProps) {
           )}
         </div>
         <div className="search-hint">
-          <kbd>{navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}+K</kbd> or <kbd>Space</kbd> to open · <kbd>↑</kbd><kbd>↓</kbd> select · <kbd>Enter</kbd> add · <kbd>Esc</kbd> close
+          <kbd>{navigator.platform && navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}+K</kbd> or <kbd>Space</kbd> to open · <kbd>↑</kbd><kbd>↓</kbd> select · <kbd>Enter</kbd> add · <kbd>Esc</kbd> close
         </div>
       </div>
     </div>

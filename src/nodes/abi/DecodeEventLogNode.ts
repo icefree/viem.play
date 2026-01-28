@@ -11,35 +11,42 @@ export class DecodeEventLogNode extends LGraphNode {
   color = '#e53e3e'
   bgcolor = '#742a2a'
 
+  private decoded: any = null
+
   constructor() {
     super()
     this.title = 'decodeEventLog'
     this.addInput('abi', 'abi')
     this.addInput('topics', 'array')
     this.addInput('data', 'bytes')
+    this.addInput('trigger', -1)
     this.addOutput('decoded', 'object')
-    this.size = [180, 90]
+    this.size = [180, 110]
+  }
+
+  onAction(action: string) {
+    if (action === 'trigger') {
+      const abi = this.getInputData(0) as Abi
+      const topics = this.getInputData(1) as [string, ...string[]] | []
+      const data = this.getInputData(2) as `0x${string}`
+
+      if (abi && topics && data) {
+           try {
+               this.decoded = decodeEventLog({
+                   abi,
+                   data,
+                   topics: topics as any
+               })
+           } catch (e) {
+               this.decoded = null
+           }
+      } else {
+           this.decoded = null
+      }
+    }
   }
 
   onExecute() {
-    const abi = this.getInputData(0) as Abi
-    const topics = this.getInputData(1) as [string, ...string[]] | []
-    const data = this.getInputData(2) as `0x${string}`
-
-    if (abi && topics && data) {
-         try {
-             // topics might need casting from generic array
-             const decoded = decodeEventLog({
-                 abi,
-                 data,
-                 topics: topics as any
-             })
-             this.setOutputData(0, decoded)
-         } catch (e) {
-             this.setOutputData(0, null)
-         }
-    } else {
-         this.setOutputData(0, null)
-    }
+    this.setOutputData(0, this.decoded)
   }
 }

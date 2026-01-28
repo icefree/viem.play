@@ -1,23 +1,23 @@
 import { LGraphNode } from 'litegraph.js'
 
 /**
- * 触发节点 - 手动触发动作输出
+ * Trigger 节点 - 手动触发出点
  */
 export class TriggerNode extends LGraphNode {
-  static title = 'Trigger'
-  static desc = 'Manual action trigger'
+  static title = 'trigger'
+  static desc = 'Manual trigger'
 
   color = '#4a5568'
   bgcolor = '#2d3748'
 
   constructor() {
     super()
-    this.title = 'Trigger'
+    this.title = 'trigger'
     this.addOutput('trigger', -1)
-    this.size = [140, 50]
+    this.size = [120, 60]
 
     this.addWidget('button', 'Fire', '', () => {
-      this.triggerSlot(0)
-    }, {})
+      this.triggerSlot(0, null)
+    })
   }
 }

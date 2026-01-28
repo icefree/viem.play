@@ -15,15 +15,22 @@ export class GeneratePrivateKeyNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'generatePrivateKey'
+    this.addInput('trigger', -1)
     this.addOutput('privateKey', 'string')
-    this.size = [180, 50]
+    this.size = [180, 80]
     
     this.addWidget('button', 'Generate', '', () => {
+      this.onAction('trigger')
+    })
+    this.addProperty('value', '', 'string')
+  }
+
+  onAction(action: string) {
+    if (action === 'trigger') {
       const pk = generatePrivateKey()
       this.properties.value = pk
       logger.info('Generated new private key', 'Accounts')
-    })
-    this.addProperty('value', '')
+    }
   }
 
   onExecute() {

@@ -119,14 +119,14 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
   }, [])
 
   // 立即执行挂起的保存
-  const flushSave = () => {
+  const flushSave = useCallback(() => {
     const graph = graphRef.current as any
     if (graph && graph._save_timer) {
       clearTimeout(graph._save_timer)
       graph._save_timer = null
       saveHistory()
     }
-  }
+  }, [saveHistory])
 
   // 撤销
   const undo = useCallback(() => {
@@ -143,7 +143,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     graphRef.current.start()
     canvasInstanceRef.current?.setDirty(true, true)
     isUndoRedoRef.current = false
-  }, [saveHistory])
+  }, [flushSave])
 
   // 重做
   const redo = useCallback(() => {
@@ -160,7 +160,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     graphRef.current.start()
     canvasInstanceRef.current?.setDirty(true, true)
     isUndoRedoRef.current = false
-  }, [saveHistory])
+  }, [flushSave])
 
   // Expose graph via ref
   useImperativeHandle(ref, () => ({

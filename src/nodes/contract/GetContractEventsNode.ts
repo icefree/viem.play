@@ -59,7 +59,6 @@ export class GetContractEventsNode extends LGraphNode {
       }
 
       try {
-        // @ts-expect-error - bypass complex viem client/account typing
         this.events = await client.getContractEvents({
           address,
           abi,

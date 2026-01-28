@@ -12,7 +12,6 @@ export class ReadContractNode extends LGraphNode {
   bgcolor = '#2a4365'
 
   private result: any = null
-  private isLoadingRead = false
 
   constructor() {
     super()
@@ -37,7 +36,6 @@ export class ReadContractNode extends LGraphNode {
 
       if (!client || !address || !abi || !functionName) return
 
-      this.isLoadingRead = true
       try {
         this.result = await client.readContract({
           address,
@@ -48,8 +46,6 @@ export class ReadContractNode extends LGraphNode {
       } catch (err) {
         console.error(err)
         this.result = null
-      } finally {
-        this.isLoadingRead = false
       }
     }
   }

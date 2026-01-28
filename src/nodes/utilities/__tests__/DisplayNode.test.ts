@@ -86,7 +86,7 @@ describe('DisplayNode', () => {
     })
 
     it('应该处理无法 JSON 序列化的对象', () => {
-      const testValue = { circular: null }
+      const testValue: any = { circular: null }
       testValue.circular = testValue
       vi.spyOn(node, 'getInputData').mockReturnValue(testValue)
 

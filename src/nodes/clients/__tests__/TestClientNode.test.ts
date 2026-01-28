@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { TestClientNode } from '../TestClientNode'
-import type { TestClient, Chain, Transport } from 'viem'
+import { type TestClient, type Chain, http, webSocket } from 'viem'
 
 describe('TestClientNode', () => {
   let node: TestClientNode
@@ -95,8 +95,6 @@ describe('TestClientNode', () => {
         },
       }
 
-      // 创建一个真实的 transport 而不是 mock
-      const { http } = require('viem')
       const mockTransport = http('http://localhost:8545')
 
       vi.spyOn(node, 'getInputData').mockImplementation((index) => {
@@ -181,8 +179,6 @@ describe('TestClientNode', () => {
         },
       }
 
-      // 创建真实的 transport
-      const { http } = require('viem')
       const mockTransport1 = http('http://localhost:8545')
       const mockTransport2 = http('http://localhost:8546')
 
@@ -259,11 +255,8 @@ describe('TestClientNode', () => {
         },
       }
 
-      // 创建真实的 transport
-      const { webSocket } = require('viem')
       const mockTransport = webSocket('ws://localhost:8545')
-      // 确保 type 属性存在
-      mockTransport.type = 'webSocket'
+      mockTransport({}).config.type = 'webSocket'
 
       vi.spyOn(node, 'getInputData').mockImplementation((index) => {
         if (index === 0) return mockChain

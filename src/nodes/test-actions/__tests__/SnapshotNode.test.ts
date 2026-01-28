@@ -51,7 +51,7 @@ describe('SnapshotNode', () => {
 
   describe('onAction', () => {
     it('应该正确执行 snapshot 操作并存储 ID', async () => {
-      const testSnapshotId = '0x123'
+      const testSnapshotId = '0x123' as `0x${string}`
       const snapshotSpy = vi.spyOn(mockClient, 'snapshot').mockResolvedValue(testSnapshotId)
 
       vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
@@ -91,7 +91,7 @@ describe('SnapshotNode', () => {
       consoleError.mockRestore()
     })
 
-    it('非 trigger action 应该不执行操作', async () => {
+    it('非 trigger action 应该 not 执行操作', async () => {
       const snapshotSpy = vi.spyOn(mockClient, 'snapshot')
       vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
         if (idx === 0) return mockClient
@@ -104,8 +104,8 @@ describe('SnapshotNode', () => {
     })
 
     it('应该更新 snapshotId', async () => {
-      const firstSnapshotId = '0x1'
-      const secondSnapshotId = '0x2'
+      const firstSnapshotId = '0x1' as `0x${string}`
+      const secondSnapshotId = '0x2' as `0x${string}`
       const snapshotSpy = vi.spyOn(mockClient, 'snapshot')
         .mockResolvedValueOnce(firstSnapshotId)
         .mockResolvedValueOnce(secondSnapshotId)
@@ -131,7 +131,7 @@ describe('SnapshotNode', () => {
 
   describe('onExecute', () => {
     it('应该输出当前的 snapshotId', async () => {
-      const testSnapshotId = '0x456'
+      const testSnapshotId = '0x456' as `0x${string}`
       vi.spyOn(mockClient, 'snapshot').mockResolvedValue(testSnapshotId)
 
       vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
@@ -151,7 +151,7 @@ describe('SnapshotNode', () => {
     })
 
     it('多次调用 onExecute 应该保持相同的 snapshotId', async () => {
-      const testSnapshotId = '0x789'
+      const testSnapshotId = '0x789' as `0x${string}`
       vi.spyOn(mockClient, 'snapshot').mockResolvedValue(testSnapshotId)
 
       vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
@@ -175,7 +175,7 @@ describe('SnapshotNode', () => {
 
   describe('输出数据验证', () => {
     it('成功时应该输出 snapshot ID', async () => {
-      const testSnapshotId = '0xabcd1234'
+      const testSnapshotId = '0xabcd1234' as `0x${string}`
       vi.spyOn(mockClient, 'snapshot').mockResolvedValue(testSnapshotId)
 
       vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
@@ -191,7 +191,7 @@ describe('SnapshotNode', () => {
     })
 
     it('失败时不应该更新 snapshotId', async () => {
-      const initialSnapshotId = '0x999'
+      const initialSnapshotId = '0x999' as `0x${string}`
       // 首先设置一个初始值
       vi.spyOn(mockClient, 'snapshot').mockResolvedValue(initialSnapshotId)
       vi.spyOn(node, 'getInputData').mockImplementation((idx) => {
@@ -219,10 +219,10 @@ describe('SnapshotNode', () => {
   describe('不同的快照 ID 格式', () => {
     it('应该处理不同的快照 ID 格式', async () => {
       const testCases = [
-        '0x1',
-        '0x123',
-        '0xffffffff',
-        '0x' + '1'.repeat(64),
+        '0x1' as `0x${string}`,
+        '0x123' as `0x${string}`,
+        '0xffffffff' as `0x${string}`,
+        ('0x' + '1'.repeat(64)) as `0x${string}`,
       ]
 
       for (const snapshotId of testCases) {

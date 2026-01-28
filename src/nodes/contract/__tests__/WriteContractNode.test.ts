@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { WriteContractNode } from '../WriteContractNode'
-import type { WalletClient, Address, Abi } from 'viem'
+import type { WalletClient } from 'viem'
 
 describe('WriteContractNode', () => {
   let node: WriteContractNode

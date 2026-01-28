@@ -9,7 +9,7 @@ describe('GeneratePrivateKeyNode', () => {
   })
 
   describe('constructor', () => {
-    it('应该正确设置节点标题和输出', () => {
+    it('应该正确设置节点标题 and 输出', () => {
       expect(node.title).toBe('generatePrivateKey')
       expect(node.outputs).toHaveLength(1)
     })
@@ -20,8 +20,8 @@ describe('GeneratePrivateKeyNode', () => {
     })
 
     it('应该有一个 Generate 按钮', () => {
-      expect(node.widgets).toHaveLength(1)
-      expect(node.widgets?.[0].name).toBe('Generate')
+      expect((node as any).widgets).toHaveLength(1)
+      expect((node as any).widgets?.[0].name).toBe('Generate')
     })
 
     it('应该有 value 属性', () => {
@@ -51,10 +51,7 @@ describe('GeneratePrivateKeyNode', () => {
   describe('Generate 按钮', () => {
     it('点击应该生成新的私钥', () => {
       // 触发按钮点击
-      const widget = node.widgets?.[0]
-      if (widget?.value) {
-        widget.value = ''
-      }
+      const widget = (node as any).widgets?.[0]
       if (widget?.callback) {
         widget.callback('')
       }

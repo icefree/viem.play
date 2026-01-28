@@ -11,34 +11,42 @@ export class DecodeFunctionResultNode extends LGraphNode {
   color = '#e53e3e'
   bgcolor = '#742a2a'
 
+  private result: any = null
+
   constructor() {
     super()
     this.title = 'decodeFunctionResult'
     this.addInput('abi', 'abi')
     this.addInput('functionName', 'string')
     this.addInput('data', 'bytes')
-    this.addOutput('result', 'array') // Result is usually array or single value, let's say 'any' or 'array'
-    this.size = [200, 90]
+    this.addInput('trigger', -1)
+    this.addOutput('result', 'array') 
+    this.size = [200, 110]
+  }
+
+  onAction(action: string) {
+    if (action === 'trigger') {
+       const abi = this.getInputData(0) as Abi
+       const functionName = this.getInputData(1) as string
+       const data = this.getInputData(2) as `0x${string}`
+
+       if (abi && functionName && data) {
+          try {
+              this.result = decodeFunctionResult({
+                  abi,
+                  functionName,
+                  data
+              })
+          } catch (e) {
+              this.result = null
+          }
+       } else {
+          this.result = null
+       }
+    }
   }
 
   onExecute() {
-     const abi = this.getInputData(0) as Abi
-     const functionName = this.getInputData(1) as string
-     const data = this.getInputData(2) as `0x${string}`
-
-     if (abi && functionName && data) {
-        try {
-            const result = decodeFunctionResult({
-                abi,
-                functionName,
-                data
-            })
-            this.setOutputData(0, result)
-        } catch (e) {
-            this.setOutputData(0, null)
-        }
-     } else {
-        this.setOutputData(0, null)
-     }
+    this.setOutputData(0, this.result)
   }
 }

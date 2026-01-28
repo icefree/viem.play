@@ -15,15 +15,22 @@ export class GenerateMnemonicNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'generateMnemonic'
+    this.addInput('trigger', -1)
     this.addOutput('mnemonic', 'string')
-    this.size = [180, 50]
+    this.size = [180, 80]
 
     this.addWidget('button', 'Generate', '', () => {
+      this.onAction('trigger')
+    })
+    this.addProperty('value', '', 'string')
+  }
+
+  onAction(action: string) {
+    if (action === 'trigger') {
       const mn = generateMnemonic(english)
       this.properties.value = mn
       logger.info('Generated new mnemonic', 'Accounts')
-    })
-    this.addProperty('value', '')
+    }
   }
 
   onExecute() {

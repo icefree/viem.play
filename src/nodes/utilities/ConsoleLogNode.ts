@@ -18,7 +18,7 @@ export class ConsoleLogNode extends LGraphNode {
     this.size = [140, 50]
   }
 
-  onAction() {
+  onAction(_action: string) {
     const value = this.getInputData(0)
     console.log('[ViemPlay Action]', value)
   }

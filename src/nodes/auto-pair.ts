@@ -59,7 +59,7 @@ function findFirstInputIndexByType(node: LGraphNode, type: unknown) {
 }
 
 function attachInputAutoPairing(nodeType: typeof LGraphNode) {
-  const proto = nodeType.prototype as LGraphNode & { [AUTO_PAIR_FLAG]?: boolean }
+  const proto = nodeType.prototype as any
   if (proto[AUTO_PAIR_FLAG]) return
   proto[AUTO_PAIR_FLAG] = true
 
@@ -202,7 +202,7 @@ function attachInputAutoPairing(nodeType: typeof LGraphNode) {
 
     const { x, y } = getBasePos(this, e)
 
-    if (output?.type === LiteGraph.EVENT || output?.type === -1) {
+    if (output?.type === LiteGraph.EVENT || (output?.type as any) === -1) {
       const consoleNode = createNode(this.graph, NODE_TYPES.console, x + OUTPUT_OFFSET_X, y + OFFSET_Y)
       if (consoleNode) {
         const triggerIndex = findFirstInputIndexByType(consoleNode, LiteGraph.ACTION)
@@ -222,6 +222,6 @@ export function installAutoNodePairing() {
   const nodeTypes = Object.values(LiteGraph.registered_node_types)
   nodeTypes.forEach((nodeType) => {
     if (!nodeType || typeof nodeType !== 'function') return
-    attachInputAutoPairing(nodeType as typeof LGraphNode)
+    attachInputAutoPairing(nodeType as any)
   })
 }

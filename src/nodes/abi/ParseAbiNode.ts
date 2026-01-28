@@ -10,25 +10,33 @@ export class ParseAbiNode extends LGraphNode {
   color = '#e53e3e'
   bgcolor = '#742a2a'
 
+  private abi: any = null
+
   constructor() {
     super()
     this.title = 'parseAbi'
     this.addInput('abiJson', 'string')
+    this.addInput('trigger', -1)
     this.addOutput('abi', 'abi')
-    this.size = [160, 50]
+    this.size = [160, 80]
+  }
+
+  onAction(action: string) {
+    if (action === 'trigger') {
+      const abiJson = this.getInputData(0) as string
+      if (abiJson) {
+        try {
+          this.abi = JSON.parse(abiJson)
+        } catch {
+          this.abi = null
+        }
+      } else {
+        this.abi = null
+      }
+    }
   }
 
   onExecute() {
-    const abiJson = this.getInputData(0) as string
-    if (abiJson) {
-      try {
-        const abi = JSON.parse(abiJson)
-        this.setOutputData(0, abi)
-      } catch {
-        this.setOutputData(0, null)
-      }
-    } else {
-      this.setOutputData(0, null)
-    }
+    this.setOutputData(0, this.abi)
   }
 }

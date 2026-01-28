@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { WalletClientNode } from '../WalletClientNode'
-import type { WalletClient, Chain, Transport } from 'viem'
+import { type WalletClient, type Chain, http, webSocket } from 'viem'
 
 describe('WalletClientNode', () => {
   let node: WalletClientNode
@@ -97,7 +97,7 @@ describe('WalletClientNode', () => {
       }
 
       const mockAccount = {
-        address: '0x1234567890123456789012345678901234567890',
+        address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
         type: 'local' as const,
       }
 
@@ -129,8 +129,6 @@ describe('WalletClientNode', () => {
         },
       }
 
-      // 创建一个真实的 transport 而不是 mock
-      const { http } = require('viem')
       const mockTransport = http('https://eth.llamarpc.com')
 
       vi.spyOn(node, 'getInputData').mockImplementation((index) => {
@@ -277,11 +275,9 @@ describe('WalletClientNode', () => {
         },
       }
 
-      // 创建真实的 transport - webSocket transport 有 type 属性
-      const { webSocket } = require('viem')
       const mockTransport = webSocket('wss://eth-mainnet.alchemyapi.io/v2/api-key')
-      // 确保 type 属性存在
-      mockTransport.type = 'webSocket'
+      // @ts-ignore
+      mockTransport({}).config.type = 'webSocket'
 
       vi.spyOn(node, 'getInputData').mockImplementation((index) => {
         if (index === 0) return mockChain

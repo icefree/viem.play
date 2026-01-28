@@ -199,7 +199,7 @@ describe('RevertNode', () => {
 
   describe('错误处理', () => {
     it('应该处理快照 ID 不存在的错误', async () => {
-      const revertSpy = vi.spyOn(mockClient, 'revert').mockRejectedValue(
+      vi.spyOn(mockClient, 'revert').mockRejectedValue(
         new Error('Snapshot not found')
       )
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { GetContractEventsNode } from '../GetContractEventsNode'
-import type { PublicClient, Address, Abi } from 'viem'
+import type { PublicClient } from 'viem'
 
 describe('GetContractEventsNode', () => {
   let node: GetContractEventsNode

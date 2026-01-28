@@ -1,22 +1,22 @@
 import { LGraphNode } from 'litegraph.js'
 
 /**
- * 文本输入节点 - 允许用户输入字符串值
+ * Text 输入节点
  */
 export class TextInputNode extends LGraphNode {
   static title = 'Text'
-  static desc = 'Input text value'
+  static desc = 'Input a string'
 
   constructor() {
     super()
     this.title = 'Text'
-    this.addOutput('text', 'string')
-    this.addProperty('value', '')
-    this.size = [180, 60]
+    this.addOutput('string', 'string')
+    this.addProperty('value', '', 'string')
+    this.size = [260, 60]
 
     this.addWidget('text', 'Value', '', (v: string) => {
       this.properties.value = v
-    }, {})
+    })
   }
 
   onExecute() {

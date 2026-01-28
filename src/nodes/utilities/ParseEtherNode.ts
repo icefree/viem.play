@@ -11,24 +11,35 @@ export class ParseEtherNode extends LGraphNode {
   color = '#38a169'
   bgcolor = '#276749'
 
+  private wei: bigint | null = null
+
   constructor() {
     super()
     this.title = 'parseEther'
     this.addInput('ether', 'string')
+    this.addInput('trigger', -1)
     this.addOutput('wei', 'bigint')
-    this.size = [160, 50]
+    this.size = [160, 80]
+  }
+
+  onAction(action: string) {
+    if (action === 'trigger') {
+      const ether = this.getInputData(0) as string | undefined
+      if (ether && typeof ether === 'string') {
+        try {
+          this.wei = viemParseEther(ether)
+        } catch {
+          this.wei = null
+        }
+      } else {
+        this.wei = null
+      }
+    }
   }
 
   onExecute() {
-    const ether = this.getInputData(0) as string | undefined
-    if (ether && typeof ether === 'string') {
-      try {
-        this.setOutputData(0, viemParseEther(ether))
-      } catch {
-        this.setOutputData(0, null)
-      }
-    } else {
-      this.setOutputData(0, null)
-    }
+    // If no trigger connected, maybe we want reactive behavior?
+    // But consistent with other "verb" nodes, we'll wait for trigger.
+    this.setOutputData(0, this.wei)
   }
 }

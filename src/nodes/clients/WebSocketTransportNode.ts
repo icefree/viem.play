@@ -27,35 +27,41 @@ export class WebSocketTransportNode extends LGraphNode {
 
   onExecute() {
     const url = (this.getInputData(0) as string) || (this.properties.url as string)
-    const transport = viemWebSocket(url)
+    const factory = viemWebSocket(url)
     
-    // Intercept requests for logging
+    // Intercept requests for logging by wrapping the transport factory
     const { onFetchRequest, onFetchResponse } = createViemLogger('WS')
-    const originalRequest = transport.request
     
-    transport.request = (async (args: any) => {
-      // Mock a request-like object for the logger
-      onFetchRequest({ 
-        url: url || 'ws://localhost', 
-        method: 'POST', 
-        headers: new Headers() 
-      } as any)
+    const wrappedTransport = (args: any) => {
+      const transport = factory(args)
+      const originalRequest = transport.request
       
-      try {
-        const response = await originalRequest(args)
-        onFetchResponse({
-          clone: () => ({ json: async () => response })
+      transport.request = (async (requestArgs: any) => {
+        // Mock a request-like object for the logger
+        onFetchRequest({ 
+          url: url || 'ws://localhost', 
+          method: 'POST', 
+          headers: new Headers() 
         } as any)
-        return response
-      } catch (error) {
-        onFetchResponse({
-          clone: () => ({ json: async () => ({ error }) })
-        } as any)
-        throw error
-      }
-    }) as any
+        
+        try {
+          const response = await originalRequest(requestArgs)
+          onFetchResponse({
+            clone: () => ({ json: async () => response })
+          } as any)
+          return response
+        } catch (error) {
+          onFetchResponse({
+            clone: () => ({ json: async () => ({ error }) })
+          } as any)
+          throw error
+        }
+      }) as any
+      
+      return transport
+    }
 
-    this.setOutputData(0, transport) 
+    this.setOutputData(0, wrappedTransport) 
   }
 
   onPropertyChanged(name: string, value: any) {
