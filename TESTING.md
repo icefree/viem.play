@@ -133,15 +133,84 @@ Playwright offers multiple running modes suitable for different scenarios:
 
 ## 6. Node Test Coverage 📊
 
-| Category           | Node Name                  | Unit Test | E2E Test | Notes                   |
-| ------------------ | -------------------------- | :-------: | :------: | ----------------------- |
-| **Public Actions** | `GetBlock`                 |    ✅     |          |                         |
-|                    | `GetBlockNumber`           |    ✅     |    ✅    | Tested in `app.spec.ts` |
-|                    | `GetBlockTransactionCount` |    ✅     |          |                         |
-|                    | `WatchBlockNumber`         |    ✅     |          |                         |
-|                    | `WatchBlocks`              |    ✅     |          |                         |
-| **Clients**        | `PublicClient`             |           |    ✅    | Tested via E2E workflow |
-| **Transports**     | `HttpTransport`            |           |    ✅    | Tested via E2E workflow |
-| **Chains**         | `Chain`                    |           |    ✅    | Tested via E2E workflow |
+**Legend**: ✅ = Covered, ⬜️ = Pending, 🚧 = WIP
+
+### 6.1 Public Actions
+
+| Node Name                  | Unit Test | E2E Test | Notes                      |
+| -------------------------- | :-------: | :------: | -------------------------- |
+| `GetBlock`                 |    ✅     |          |                            |
+| `GetBlockNumber`           |    ✅     |    ✅    | Core workflow verification |
+| `GetBlockTransactionCount` |    ✅     |          |                            |
+| `WatchBlockNumber`         |    ✅     |          |                            |
+| `WatchBlocks`              |    ✅     |          |                            |
+| `GetBalance`               |    ⬜️     |          |                            |
+| `GetGasPrice`              |    ⬜️     |          |                            |
+| `GetTransactionCount`      |    ⬜️     |          |                            |
+
+### 6.2 Clients & Transports
+
+| Node Name            | Unit Test | E2E Test | Notes |
+| -------------------- | :-------: | :------: | ----- |
+| `PublicClient`       |           |    ✅    |       |
+| `WalletClient`       |    ⬜️     |          |       |
+| `TestClient`         |    ⬜️     |          |       |
+| `HttpTransport`      |           |    ✅    |       |
+| `WebSocketTransport` |    ⬜️     |          |       |
+| `IpcTransport`       |    ⬜️     |          |       |
+
+### 6.3 Chains
+
+| Node Name   | Unit Test | E2E Test | Notes            |
+| ----------- | :-------: | :------: | ---------------- |
+| `Chain`     |           |    ✅    | Mainnet verified |
+| `ChainId`   |    ⬜️     |          |                  |
+| `ChainInfo` |    ⬜️     |          |                  |
+
+### 6.4 Wallet Actions
+
+| Node Name         | Unit Test | E2E Test | Notes |
+| ----------------- | :-------: | :------: | ----- |
+| `SendTransaction` |    ⬜️     |          |       |
+| `SignMessage`     |    ⬜️     |          |       |
+| `SignTypedData`   |    ⬜️     |          |       |
+| `GetAddresses`    |    ⬜️     |          |       |
+| `SwitchChain`     |    ⬜️     |          |       |
+
+### 6.5 Accounts
+
+| Node Name             | Unit Test | E2E Test | Notes |
+| --------------------- | :-------: | :------: | ----- |
+| `GeneratePrivateKey`  |    ⬜️     |          |       |
+| `GenerateMnemonic`    |    ⬜️     |          |       |
+| `PrivateKeyToAccount` |    ⬜️     |          |       |
+| `MnemonicToAccount`   |    ⬜️     |          |       |
+| `ToAccount`           |    ⬜️     |          |       |
+
+### 6.6 Test Actions
+
+| Node Name               | Unit Test | E2E Test | Notes |
+| ----------------------- | :-------: | :------: | ----- |
+| `Mine`                  |    ⬜️     |          |       |
+| `SetBalance`            |    ⬜️     |          |       |
+| `ImpersonateAccount`    |    ⬜️     |          |       |
+| `Snapshot`              |    ⬜️     |          |       |
+| `Revert`                |    ⬜️     |          |       |
+| `SetNextBlockTimestamp` |    ⬜️     |          |       |
+
+### 6.7 Utilities & Others
+
+| Node Name      | Unit Test | E2E Test | Notes |
+| -------------- | :-------: | :------: | ----- |
+| `Display`      |    ⬜️     |          |       |
+| `ConsoleLog`   |    ⬜️     |          |       |
+| `Timer`        |    ⬜️     |          |       |
+| `Button`       |    ⬜️     |          |       |
+| `FormatEther`  |    ⬜️     |          |       |
+| `ParseEther`   |    ⬜️     |          |       |
+| `Keccak256`    |    ⬜️     |          |       |
+| `AddressInput` |    ⬜️     |          |       |
+| `ToBigInt`     |    ⬜️     |          |       |
+| `Trigger`      |    ⬜️     |          |       |
 
 > **Dev Guide**: It is recommended to write `.test.ts` files synchronously when developing new nodes. Using TDD (Test Driven Development) pattern can significantly reduce repetitive manual node connection debugging in the browser.

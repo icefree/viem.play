@@ -131,16 +131,85 @@ Playwright 提供了多种运行模式，适用于不同的场景：
 
 ## 6. 节点测试覆盖率追踪 (Node Test Coverage) 📊
 
-| 类别 (Category)    | 节点名称 (Node Name)       | 单元测试 (Unit) | E2E 测试 (E2E) | 备注 (Notes)            |
-| ------------------ | -------------------------- | :-------------: | :------------: | ----------------------- |
-| **Public Actions** | `GetBlock`                 |       ✅        |                |                         |
-|                    | `GetBlockNumber`           |       ✅        |       ✅       | 在 `app.spec.ts` 中测试 |
-|                    | `GetBlockTransactionCount` |       ✅        |                |                         |
-|                    | `WatchBlockNumber`         |       ✅        |                |                         |
-|                    | `WatchBlocks`              |       ✅        |                |                         |
-| **Clients**        | `PublicClient`             |                 |       ✅       | 通过 E2E 工作流测试     |
-| **Transports**     | `HttpTransport`            |                 |       ✅       | 通过 E2E 工作流测试     |
-| **Chains**         | `Chain`                    |                 |       ✅       | 通过 E2E 工作流测试     |
+**图例**: ✅ = 已覆盖 (Covered), ⬜️ = 待开发 (Pending), 🚧 = 开发中 (WIP)
+
+### 6.1 Public Actions (公共操作)
+
+| 节点名称                   | 单元测试 | E2E 测试 | 备注         |
+| -------------------------- | :------: | :------: | ------------ |
+| `GetBlock`                 |    ✅    |          |              |
+| `GetBlockNumber`           |    ✅    |    ✅    | 核心链路验证 |
+| `GetBlockTransactionCount` |    ✅    |          |              |
+| `WatchBlockNumber`         |    ✅    |          |              |
+| `WatchBlocks`              |    ✅    |          |              |
+| `GetBalance`               |    ⬜️    |          |              |
+| `GetGasPrice`              |    ⬜️    |          |              |
+| `GetTransactionCount`      |    ⬜️    |          |              |
+
+### 6.2 Clients & Transports (客户端与传输)
+
+| 节点名称             | 单元测试 | E2E 测试 | 备注 |
+| -------------------- | :------: | :------: | ---- |
+| `PublicClient`       |          |    ✅    |      |
+| `WalletClient`       |    ⬜️    |          |      |
+| `TestClient`         |    ⬜️    |          |      |
+| `HttpTransport`      |          |    ✅    |      |
+| `WebSocketTransport` |    ⬜️    |          |      |
+| `IpcTransport`       |    ⬜️    |          |      |
+
+### 6.3 Chains (链)
+
+| 节点名称    | 单元测试 | E2E 测试 | 备注         |
+| ----------- | :------: | :------: | ------------ |
+| `Chain`     |          |    ✅    | Mainnet 验证 |
+| `ChainId`   |    ⬜️    |          |              |
+| `ChainInfo` |    ⬜️    |          |              |
+
+### 6.4 Wallet Actions (钱包操作)
+
+| 节点名称          | 单元测试 | E2E 测试 | 备注 |
+| ----------------- | :------: | :------: | ---- |
+| `SendTransaction` |    ⬜️    |          |      |
+| `SignMessage`     |    ⬜️    |          |      |
+| `SignTypedData`   |    ⬜️    |          |      |
+| `GetAddresses`    |    ⬜️    |          |      |
+| `SwitchChain`     |    ⬜️    |          |      |
+
+### 6.5 Accounts (账户)
+
+| 节点名称              | 单元测试 | E2E 测试 | 备注 |
+| --------------------- | :------: | :------: | ---- |
+| `GeneratePrivateKey`  |    ⬜️    |          |      |
+| `GenerateMnemonic`    |    ⬜️    |          |      |
+| `PrivateKeyToAccount` |    ⬜️    |          |      |
+| `MnemonicToAccount`   |    ⬜️    |          |      |
+| `ToAccount`           |    ⬜️    |          |      |
+
+### 6.6 Test Actions (测试操作)
+
+| 节点名称                | 单元测试 | E2E 测试 | 备注 |
+| ----------------------- | :------: | :------: | ---- |
+| `Mine`                  |    ⬜️    |          |      |
+| `SetBalance`            |    ⬜️    |          |      |
+| `ImpersonateAccount`    |    ⬜️    |          |      |
+| `Snapshot`              |    ⬜️    |          |      |
+| `Revert`                |    ⬜️    |          |      |
+| `SetNextBlockTimestamp` |    ⬜️    |          |      |
+
+### 6.7 Utilities & Others (工具与其它)
+
+| 节点名称       | 单元测试 | E2E 测试 | 备注 |
+| -------------- | :------: | :------: | ---- |
+| `Display`      |    ⬜️    |          |      |
+| `ConsoleLog`   |    ⬜️    |          |      |
+| `Timer`        |    ⬜️    |          |      |
+| `Button`       |    ⬜️    |          |      |
+| `FormatEther`  |    ⬜️    |          |      |
+| `ParseEther`   |    ⬜️    |          |      |
+| `Keccak256`    |    ⬜️    |          |      |
+| `AddressInput` |    ⬜️    |          |      |
+| `ToBigInt`     |    ⬜️    |          |      |
+| `Trigger`      |    ⬜️    |          |      |
 
 ---
 
