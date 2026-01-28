@@ -15,11 +15,24 @@ export class ConsoleLogNode extends LGraphNode {
     this.title = 'Console'
     this.addInput('value', '')
     this.addInput('trigger', -1)
-    this.size = [140, 50]
+    this.addProperty('message', '', 'string')
+    
+    // 添加文本输入框，当 value 端口未连接时使用
+    this.addWidget('text', 'Msg', '', (v: string) => {
+      this.properties.message = v
+    })
+
+    this.size = [160, 80]
   }
 
-  onAction(_action: string) {
+  onAction() {
     const value = this.getInputData(0)
-    console.log('[ViemPlay Action]', value)
+    
+    // 如果有输入连接，打印输入值；否则打印属性中的消息
+    if (value !== undefined) {
+      console.log('[ViemPlay Action]', value)
+    } else {
+      console.log('[ViemPlay Action]', this.properties.message)
+    }
   }
 }
