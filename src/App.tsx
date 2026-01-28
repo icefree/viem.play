@@ -148,7 +148,6 @@ function App() {
         try {
           // Give a small delay to ensure LiteGraph is ready and any local auto-load is done
           setTimeout(() => {
-            graph.clear()
             graph.configure(sharedData)
             graph.start()
             console.log('[ViemPlay] Shared graph loaded')
