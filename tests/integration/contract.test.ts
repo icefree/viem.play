@@ -235,17 +235,21 @@ describe('Contract WebSocket 集成测试 (Anvil)', () => {
     }, 15000)
 
     it('应该能够多次写入合约', async () => {
-      if (!contractAddress) {
-        console.warn('跳过: 合约地址不可用')
-        return
-      }
+      // 部署一个新的合约实例用于此测试
+      const deployHash = await walletClient.deployContract({
+        abi: SIMPLE_STORAGE_ABI,
+        bytecode: SIMPLE_STORAGE_BYTECODE,
+      })
+      const deployReceipt = await httpClient.waitForTransactionReceipt({ hash: deployHash })
+      expect(deployReceipt.status).toBe('success')
+      const testContractAddress = deployReceipt.contractAddress!
 
       const testValues = [100n, 200n, 300n]
 
       for (const testValue of testValues) {
         // 写入
         const hash = await walletClient.writeContract({
-          address: contractAddress,
+          address: testContractAddress,
           abi: SIMPLE_STORAGE_ABI,
           functionName: 'setValue',
           args: [testValue],
@@ -257,7 +261,7 @@ describe('Contract WebSocket 集成测试 (Anvil)', () => {
 
         // 读取验证
         const value = await httpClient.readContract({
-          address: contractAddress,
+          address: testContractAddress,
           abi: SIMPLE_STORAGE_ABI,
           functionName: 'value',
         })
