@@ -83,6 +83,7 @@ function App() {
         const data = JSON.parse(content)
         graph.clear() // Clear existing graph before configuring
         graph.configure(data)
+        graph.start()
         
         // Also save to localStorage for persistence
         localStorage.setItem('viemplay-graph', content)
@@ -149,6 +150,7 @@ function App() {
           setTimeout(() => {
             graph.clear()
             graph.configure(sharedData)
+            graph.start()
             console.log('[ViemPlay] Shared graph loaded')
             
             // Clean up the URL only if we want to "consume" the share, 

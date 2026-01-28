@@ -136,6 +136,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     historyIndexRef.current = index - 1
     const state = JSON.parse(history[historyIndexRef.current])
     graphRef.current.configure(state)
+    graphRef.current.start()
     canvasInstanceRef.current?.setDirty(true, true)
     isUndoRedoRef.current = false
   }
@@ -152,6 +153,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
     historyIndexRef.current = index + 1
     const state = JSON.parse(history[historyIndexRef.current])
     graphRef.current.configure(state)
+    graphRef.current.start()
     canvasInstanceRef.current?.setDirty(true, true)
     isUndoRedoRef.current = false
   }
@@ -310,10 +312,19 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
 
   // Auto-load saved graph on mount
   useEffect(() => {
+    // Check if there is a shared link in the URL - if so, skip localStorage to avoid conflicts
+    const hasSharedLink = window.location.hash.startsWith('#share=')
+    if (hasSharedLink) {
+      console.log('[ViemPlay] Share link detected, skipping localStorage load')
+      return
+    }
+
     const data = localStorage.getItem('viemplay-graph')
     if (data && graphRef.current) {
       try {
         graphRef.current.configure(JSON.parse(data))
+        // Ensure graph is running after configuration
+        graphRef.current.start()
       } catch (e) {
         console.error('Failed to auto-load graph:', e)
       }
