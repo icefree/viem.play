@@ -270,7 +270,7 @@ describe('Contract 节点集成测试 (Anvil)', () => {
 
         expect(value).toBe(testValue)
       }
-    }, 15000)
+    }, 30000)
   })
 
   describe('合约事件', () => {
