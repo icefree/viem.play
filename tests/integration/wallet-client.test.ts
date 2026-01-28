@@ -43,24 +43,24 @@ describe('WalletClient 集成测试 (Anvil)', () => {
 
   describe('账户管理', () => {
     it('应该返回账户地址', () => {
-      const addresses = walletClient.getAddresses()
+      // WalletClient 使用 account.address 而不是 getAddresses()
+      const address = walletClient.account?.address
 
-      expect(addresses).toBeDefined()
-      expect(addresses.length).toBe(1)
-      expect(addresses[0]).toBe(TEST_ACCOUNTS.deployer.address)
+      expect(address).toBeDefined()
+      expect(address).toBe(TEST_ACCOUNTS.deployer.address)
     })
 
     it('应该返回账户的 chainId', async () => {
       const chainId = await walletClient.getChainId()
 
-      expect(chainId).toBe(31337n) // Anvil chainId
+      expect(chainId).toBe(31337) // Anvil chainId (number type)
     })
 
     it('应该能够切换 chain', async () => {
       // 这个测试验证客户端能够处理不同的链
       // 注意: 实际切换链可能需要重新创建客户端
       const currentChainId = await walletClient.getChainId()
-      expect(currentChainId).toBe(31337n)
+      expect(currentChainId).toBe(31337)
     })
   })
 

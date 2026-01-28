@@ -261,7 +261,8 @@ describe('Utilities 节点集成测试', () => {
       const ether = formatUnits(gwei, 9)
       const wei = parseUnits(ether, 18)
 
-      expect(wei).toBe(1000000000n)
+      // 1 gwei = 10^9 wei, formatUnits 后变为 1, parseUnits 后变回 10^18 wei
+      expect(wei).toBe(1000000000000000000n)
     })
   })
 
@@ -277,7 +278,8 @@ describe('Utilities 节点集成测试', () => {
       const ether = '1000000000000000000'
       const wei = parseEther(ether)
 
-      expect(wei).toBe(1000000000000000000000000000000000000000n)
+      // parseEther 乘以 10^18,所以 10^18 * 10^18 = 10^36
+      expect(wei).toBe(1000000000000000000000000000000000000n)
     })
 
     it('keccak256 应该处理空输入', () => {
