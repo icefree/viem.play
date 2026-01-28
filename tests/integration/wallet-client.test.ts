@@ -20,7 +20,7 @@ describe('WalletClient 集成测试 (Anvil)', () => {
 
   beforeAll(async () => {
     // 创建 Wallet Client
-    const account = privateKeyToAccount(TEST_ACCOUNTS.deployer.privateKey)
+    const account = privateKeyToAccount(TEST_ACCOUNTS.account1.privateKey)
     walletClient = createWalletClient({
       account,
       chain: anvil,
@@ -47,7 +47,7 @@ describe('WalletClient 集成测试 (Anvil)', () => {
       const address = walletClient.account?.address
 
       expect(address).toBeDefined()
-      expect(address).toBe(TEST_ACCOUNTS.deployer.address)
+      expect(address).toBe(TEST_ACCOUNTS.account1.address)
     })
 
     it('应该返回账户的 chainId', async () => {
@@ -103,7 +103,7 @@ describe('WalletClient 集成测试 (Anvil)', () => {
           name: 'TestApp',
           version: '1',
           chainId: 31337,
-          verifyingContract: TEST_ACCOUNTS.deployer.address,
+          verifyingContract: TEST_ACCOUNTS.account1.address,
         },
         types: {
           Person: [
@@ -165,6 +165,7 @@ describe('WalletClient 集成测试 (Anvil)', () => {
       // 获取当前 nonce，避免并行测试冲突
       const nonce = await publicClient.getTransactionCount({
         address: walletClient.account!.address,
+        blockTag: 'pending',
       })
 
       // 发送交易
@@ -185,10 +186,16 @@ describe('WalletClient 集成测试 (Anvil)', () => {
     it('应该能够发送带有 gasLimit 的交易', async () => {
       const address = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' as const
 
+      const nonce = await publicClient.getTransactionCount({
+        address: walletClient.account!.address,
+        blockTag: 'pending',
+      })
+
       const hash = await walletClient.sendTransaction({
         to: address,
         value: parseEther('0.01'),
         gas: 21000n,
+        nonce,
       })
 
       expect(hash).toBeDefined()
@@ -239,10 +246,16 @@ describe('WalletClient 集成测试 (Anvil)', () => {
     it('发送交易后余额应该减少', async () => {
       const address = '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC' as const
 
+      const nonce = await publicClient.getTransactionCount({
+        address: walletClient.account!.address,
+        blockTag: 'pending',
+      })
+
       // 发送交易并验证不抛出错误
       const hash = await walletClient.sendTransaction({
         to: address,
         value: parseEther('0.01'),
+        nonce,
       })
 
       expect(hash).toBeDefined()
@@ -258,7 +271,7 @@ describe('WalletClient 集成测试 (Anvil)', () => {
     it('应该返回正确的账户地址', () => {
       const address = walletClient.account!.address
 
-      expect(address).toBe(TEST_ACCOUNTS.deployer.address)
+      expect(address).toBe(TEST_ACCOUNTS.account1.address)
       expect(address).toMatch(/^0x[a-fA-F0-9]{40}$/)
     })
 
