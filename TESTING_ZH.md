@@ -142,7 +142,7 @@ Playwright 提供了多种运行模式，适用于不同的场景：
 | `GetBlockTransactionCount` |    ✅    |        ⬜️        |          |              |
 | `WatchBlockNumber`         |    ✅    |        ⬜️        |          |              |
 | `WatchBlocks`              |    ✅    |        ⬜️        |          |              |
-| `GetBalance`               |    ⬜️    |        ⬜️        |          |              |
+| `GetBalance`               |    ✅    |        ✅        |    ✅    | 完整测试覆盖 |
 | `GetGasPrice`              |    ⬜️    |        ⬜️        |          |              |
 | `GetTransactionCount`      |    ⬜️    |        ⬜️        |          |              |
 
