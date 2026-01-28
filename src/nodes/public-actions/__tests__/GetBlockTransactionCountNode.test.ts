@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { GetBlockTransactionCountNode } from '../GetBlockTransactionCountNode'
-import { createMockPublicClient } from '../../../../tests/utils/helpers'
+import { createMockPublicClient } from '@test-utils/helpers'
 import type { PublicClient } from 'viem'
 
 describe('GetBlockTransactionCountNode', () => {

@@ -1,6 +1,6 @@
 import { LGraphNode } from 'litegraph.js'
 import { generatePrivateKey } from 'viem/accounts'
-import { logger } from '../../stores/useLogStore'
+import { logger } from '@/stores/useLogStore'
 
 /**
  * generatePrivateKey 节点 - 生成新私钥

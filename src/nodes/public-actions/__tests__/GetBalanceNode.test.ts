@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { GetBalanceNode } from '../GetBalanceNode'
-import { createMockPublicClient } from '../../../../tests/utils/helpers'
-import { logger } from '../../../stores/useLogStore'
+import { createMockPublicClient } from '@test-utils/helpers'
+import { logger } from '@/stores/useLogStore'
 import type { PublicClient } from 'viem'
 
 describe('GetBalanceNode', () => {

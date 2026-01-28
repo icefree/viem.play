@@ -1,8 +1,8 @@
 import { LGraphNode } from 'litegraph.js'
 import { createTestClient, http, type TestClient, type Chain } from 'viem'
-import { logger } from '../../stores/useLogStore'
-import { wrapClientWithLogger } from '../../utils/clientProxy'
-import { createViemLogger } from '../../utils/viemLogger'
+import { logger } from '@/stores/useLogStore'
+import { wrapClientWithLogger } from '@/utils/clientProxy'
+import { createViemLogger } from '@/utils/viemLogger'
 
 /**
  * TestClient 节点 - 创建 viem 的 TestClient

@@ -1,8 +1,8 @@
 import { LGraphNode } from 'litegraph.js'
 import { createWalletClient, http, type WalletClient, type Chain, type CustomTransport } from 'viem'
-import { logger } from '../../stores/useLogStore'
-import { wrapClientWithLogger } from '../../utils/clientProxy'
-import { createViemLogger } from '../../utils/viemLogger'
+import { logger } from '@/stores/useLogStore'
+import { wrapClientWithLogger } from '@/utils/clientProxy'
+import { createViemLogger } from '@/utils/viemLogger'
 
 /**
  * WalletClient 节点 - 创建 viem 的 WalletClient

@@ -1,6 +1,6 @@
 import { LGraphNode } from 'litegraph.js'
 import { generateMnemonic, english } from 'viem/accounts'
-import { logger } from '../../stores/useLogStore'
+import { logger } from '@/stores/useLogStore'
 
 /**
  * generateMnemonic 节点 - 生成新助记词

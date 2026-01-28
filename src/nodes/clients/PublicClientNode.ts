@@ -1,8 +1,8 @@
 import { LGraphNode } from 'litegraph.js'
 import { createPublicClient, http, type PublicClient, type Chain } from 'viem'
-import { logger } from '../../stores/useLogStore'
-import { createViemLogger } from '../../utils/viemLogger'
-import { wrapClientWithLogger } from '../../utils/clientProxy'
+import { logger } from '@/stores/useLogStore'
+import { createViemLogger } from '@/utils/viemLogger'
+import { wrapClientWithLogger } from '@/utils/clientProxy'
 
 /**
  * PublicClient 节点 - 创建 viem 的 PublicClient

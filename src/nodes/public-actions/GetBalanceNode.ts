@@ -1,6 +1,6 @@
 import { LGraphNode } from 'litegraph.js'
 import { type PublicClient, type Address, formatEther } from 'viem'
-import { logger } from '../../stores/useLogStore'
+import { logger } from '@/stores/useLogStore'
 
 /**
  * GetBalance 节点 - 获取地址余额
