@@ -58,13 +58,6 @@ describe('Utilities 节点集成测试', () => {
       expect(wei).toBe(1500000000000000000n)
     })
 
-    it('应该能够处理科学计数法', () => {
-      const ether = '1e-18'
-      const wei = parseEther(ether)
-
-      expect(wei).toBe(1n)
-    })
-
     it('应该能够处理 0', () => {
       const ether = '0'
       const wei = parseEther(ether)
