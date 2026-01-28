@@ -23,8 +23,8 @@ describe('GetBlockTransactionCount 集成测试 (Anvil)', () => {
     it('应该返回最新区块的交易数量', async () => {
       const count = await client.getBlockTransactionCount()
 
-      expect(typeof count).toBe('bigint')
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(typeof count).toBe('number')
+      expect(count).toBeGreaterThanOrEqual(0)
     })
 
     it('通过区块号获取交易数量', async () => {
@@ -33,8 +33,8 @@ describe('GetBlockTransactionCount 集成测试 (Anvil)', () => {
         blockNumber,
       })
 
-      expect(typeof count).toBe('bigint')
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(typeof count).toBe('number')
+      expect(count).toBeGreaterThanOrEqual(0)
     })
 
     it('通过区块哈希获取交易数量', async () => {
@@ -43,8 +43,8 @@ describe('GetBlockTransactionCount 集成测试 (Anvil)', () => {
         blockHash: block.hash,
       })
 
-      expect(typeof count).toBe('bigint')
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(typeof count).toBe('number')
+      expect(count).toBeGreaterThanOrEqual(0)
     })
 
     it('创世区块可能没有交易', async () => {
@@ -52,9 +52,9 @@ describe('GetBlockTransactionCount 集成测试 (Anvil)', () => {
         blockNumber: 0n,
       })
 
-      expect(typeof count).toBe('bigint')
+      expect(typeof count).toBe('number')
       // 创世区块通常没有交易
-      expect(count).toBe(0n)
+      expect(count).toBe(0)
     })
 
     it('交易数量应该与 getBlock 返回的交易列表长度一致', async () => {
@@ -67,7 +67,7 @@ describe('GetBlockTransactionCount 集成测试 (Anvil)', () => {
         includeTransactions: true,
       })
 
-      expect(count).toBe(BigInt(block.transactions.length))
+      expect(count).toBe(block.transactions.length)
     })
   })
 
@@ -77,8 +77,8 @@ describe('GetBlockTransactionCount 集成测试 (Anvil)', () => {
         blockTag: 'latest',
       })
 
-      expect(typeof count).toBe('bigint')
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(typeof count).toBe('number')
+      expect(count).toBeGreaterThanOrEqual(0)
     })
 
     it('应该支持 earliest 标签', async () => {
@@ -86,9 +86,9 @@ describe('GetBlockTransactionCount 集成测试 (Anvil)', () => {
         blockTag: 'earliest',
       })
 
-      expect(typeof count).toBe('bigint')
+      expect(typeof count).toBe('number')
       // 创世区块通常没有交易
-      expect(count).toBe(0n)
+      expect(count).toBe(0)
     })
 
     it('应该支持 pending 标签', async () => {
@@ -96,8 +96,8 @@ describe('GetBlockTransactionCount 集成测试 (Anvil)', () => {
         blockTag: 'pending',
       })
 
-      expect(typeof count).toBe('bigint')
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(typeof count).toBe('number')
+      expect(count).toBeGreaterThanOrEqual(0)
     })
 
     it('应该支持 safe 标签', async () => {
@@ -105,8 +105,8 @@ describe('GetBlockTransactionCount 集成测试 (Anvil)', () => {
         blockTag: 'safe',
       })
 
-      expect(typeof count).toBe('bigint')
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(typeof count).toBe('number')
+      expect(count).toBeGreaterThanOrEqual(0)
     })
 
     it('应该支持 finalized 标签', async () => {
@@ -114,8 +114,8 @@ describe('GetBlockTransactionCount 集成测试 (Anvil)', () => {
         blockTag: 'finalized',
       })
 
-      expect(typeof count).toBe('bigint')
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(typeof count).toBe('number')
+      expect(count).toBeGreaterThanOrEqual(0)
     })
   })
 

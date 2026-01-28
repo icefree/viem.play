@@ -24,7 +24,7 @@ describe('GetBlock 集成测试 (Anvil)', () => {
       const block = await client.getBlock()
 
       expect(block).toBeDefined()
-      expect(block.number).toBeGreaterThanOrEqual(0n)
+      expect(block.number).toBeGreaterThanOrEqual(0)
       expect(block.hash).toBeDefined()
       expect(block.timestamp).toBeGreaterThan(0n)
     })
@@ -114,14 +114,14 @@ describe('GetBlock 集成测试 (Anvil)', () => {
       const block = await client.getBlock({ blockTag: 'safe' })
 
       expect(block).toBeDefined()
-      expect(block.number).toBeGreaterThanOrEqual(0n)
+      expect(block.number).toBeGreaterThanOrEqual(0)
     })
 
     it('应该支持 finalized 标签', async () => {
       const block = await client.getBlock({ blockTag: 'finalized' })
 
       expect(block).toBeDefined()
-      expect(block.number).toBeGreaterThanOrEqual(0n)
+      expect(block.number).toBeGreaterThanOrEqual(0)
     })
 
     it('应该支持 pending 标签', async () => {
@@ -139,9 +139,9 @@ describe('GetBlock 集成测试 (Anvil)', () => {
       })
 
       expect(transactionCount).toBeDefined()
-      expect(typeof transactionCount).toBe('bigint')
+      expect(typeof transactionCount).toBe('number')
       // 创世区块可能有0笔交易
-      expect(transactionCount).toBeGreaterThanOrEqual(0n)
+      expect(transactionCount).toBeGreaterThanOrEqual(0)
     })
   })
 })

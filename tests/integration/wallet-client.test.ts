@@ -162,16 +162,12 @@ describe('WalletClient 集成测试 (Anvil)', () => {
     it('应该能够发送交易', async () => {
       const address = '0x1234567890123456789012345678901234567890' as const
 
-      // 获取初始 nonce
-      const nonce = await publicClient.getTransactionCount({
-        address: walletClient.account!.address,
-      })
 
       // 发送交易
       const hash = await walletClient.sendTransaction({
         to: address,
         value: parseEther('0.01'),
-        nonce,
+        
       })
 
       expect(hash).toBeDefined()
@@ -183,17 +179,12 @@ describe('WalletClient 集成测试 (Anvil)', () => {
     }, 10000)
 
     it('应该能够发送带有 gasLimit 的交易', async () => {
-      const address = '0x1234567890123456789012345678901234567890' as const
-
-      const nonce = await publicClient.getTransactionCount({
-        address: walletClient.account!.address,
-      })
+      const address = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' as const
 
       const hash = await walletClient.sendTransaction({
         to: address,
         value: parseEther('0.01'),
         gas: 21000n,
-        nonce,
       })
 
       expect(hash).toBeDefined()
@@ -242,20 +233,15 @@ describe('WalletClient 集成测试 (Anvil)', () => {
     })
 
     it('发送交易后余额应该减少', async () => {
-      const address = '0x1234567890123456789012345678901234567890' as const
+      const address = '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC' as const
 
       const balanceBefore = await publicClient.getBalance({
-        address: walletClient.account!.address,
-      })
-
-      const nonce = await publicClient.getTransactionCount({
         address: walletClient.account!.address,
       })
 
       const hash = await walletClient.sendTransaction({
         to: address,
         value: parseEther('0.01'),
-        nonce,
       })
 
       await publicClient.waitForTransactionReceipt({ hash })

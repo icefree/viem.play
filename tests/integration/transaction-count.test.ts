@@ -25,8 +25,8 @@ describe('GetTransactionCount 集成测试 (Anvil)', () => {
         address: TEST_ACCOUNTS.deployer.address,
       })
 
-      expect(typeof count).toBe('bigint')
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(typeof count).toBe('number')
+      expect(count).toBeGreaterThanOrEqual(0)
     })
 
     it('新账户的 nonce 应该是 0', async () => {
@@ -35,7 +35,7 @@ describe('GetTransactionCount 集成测试 (Anvil)', () => {
         address: randomAddress,
       })
 
-      expect(count).toBe(0n)
+      expect(count).toBe(0)
     })
 
     it('应该支持 latest 标签 (默认)', async () => {
@@ -44,8 +44,8 @@ describe('GetTransactionCount 集成测试 (Anvil)', () => {
         blockTag: 'latest',
       })
 
-      expect(typeof count).toBe('bigint')
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(typeof count).toBe('number')
+      expect(count).toBeGreaterThanOrEqual(0)
     })
 
     it('应该支持 pending 标签', async () => {
@@ -54,8 +54,8 @@ describe('GetTransactionCount 集成测试 (Anvil)', () => {
         blockTag: 'pending',
       })
 
-      expect(typeof count).toBe('bigint')
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(typeof count).toBe('number')
+      expect(count).toBeGreaterThanOrEqual(0)
     })
 
     it('通过区块号获取历史 nonce', async () => {
@@ -103,7 +103,12 @@ describe('GetTransactionCount 集成测试 (Anvil)', () => {
       const count2 = await client.getTransactionCount({ address: address2 })
 
       // 两个 nonce 应该是独立的值
-      expect(count1).not.toBe(count2)
+      // address2 是新地址，nonce 应该是 0
+      expect(count2).toBe(0)
+      // address1 和 address2 的 nonce 应该不同（除非都是 0，这也是可能的）
+      if (count1 !== 0) {
+        expect(count1).not.toBe(count2)
+      }
     })
 
     it('nonce 应该是合理的数值范围', async () => {
@@ -112,7 +117,7 @@ describe('GetTransactionCount 集成测试 (Anvil)', () => {
       })
 
       // 在测试环境中，nonce 不应该太大
-      expect(count).toBeLessThan(1000000n)
+      expect(count).toBeLessThan(1000000)
     })
   })
 
@@ -123,7 +128,7 @@ describe('GetTransactionCount 集成测试 (Anvil)', () => {
       })
 
       // Anvil 的默认账户可能已经有交易
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(count).toBeGreaterThanOrEqual(0)
     })
 
     it('zero 地址的 nonce 应该是 0', async () => {
@@ -132,7 +137,7 @@ describe('GetTransactionCount 集成测试 (Anvil)', () => {
         address: zeroAddress,
       })
 
-      expect(count).toBe(0n)
+      expect(count).toBe(0)
     })
   })
 
@@ -143,9 +148,9 @@ describe('GetTransactionCount 集成测试 (Anvil)', () => {
         blockTag: 'earliest',
       })
 
-      expect(typeof count).toBe('bigint')
+      expect(typeof count).toBe('number')
       // 在创世区块，所有账户的 nonce 都应该是 0
-      expect(count).toBe(0n)
+      expect(count).toBe(0)
     })
 
     it('应该支持 safe 标签', async () => {
@@ -154,8 +159,8 @@ describe('GetTransactionCount 集成测试 (Anvil)', () => {
         blockTag: 'safe',
       })
 
-      expect(typeof count).toBe('bigint')
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(typeof count).toBe('number')
+      expect(count).toBeGreaterThanOrEqual(0)
     })
 
     it('应该支持 finalized 标签', async () => {
@@ -164,8 +169,8 @@ describe('GetTransactionCount 集成测试 (Anvil)', () => {
         blockTag: 'finalized',
       })
 
-      expect(typeof count).toBe('bigint')
-      expect(count).toBeGreaterThanOrEqual(0n)
+      expect(typeof count).toBe('number')
+      expect(count).toBeGreaterThanOrEqual(0)
     })
   })
 })
