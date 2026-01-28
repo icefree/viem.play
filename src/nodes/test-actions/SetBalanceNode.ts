@@ -17,13 +17,13 @@ export class SetBalanceNode extends LGraphNode {
     this.addInput('client', 'testClient')
     this.addInput('address', 'address')
     this.addInput('value', 'bigint')
-    this.addInput('set', -1)
+    this.addInput('trigger', -1)
     this.addOutput('success', 'boolean')
     this.size = [180, 100]
   }
 
   async onAction(action: string) {
-    if (action === 'set') {
+    if (action === 'trigger') {
       const client = this.getInputData(0) as TestClient | undefined
       const address = this.getInputData(1) as Address | undefined
       const value = this.getInputData(2) as bigint | undefined

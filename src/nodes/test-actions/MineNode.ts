@@ -16,13 +16,13 @@ export class MineNode extends LGraphNode {
     this.title = 'mine'
     this.addInput('client', 'testClient')
     this.addInput('blocks', 'number')
-    this.addInput('mine', -1)
+    this.addInput('trigger', -1)
     this.addOutput('success', 'boolean')
     this.size = [160, 80]
   }
 
   async onAction(action: string) {
-    if (action === 'mine') {
+    if (action === 'trigger') {
       const client = this.getInputData(0) as TestClient | undefined
       const blocks = this.getInputData(1) as number | 1
 

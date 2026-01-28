@@ -16,13 +16,13 @@ export class ImpersonateAccountNode extends LGraphNode {
     this.title = 'impersonateAccount'
     this.addInput('client', 'testClient')
     this.addInput('address', 'address')
-    this.addInput('start', -1)
+    this.addInput('trigger', -1)
     this.addOutput('success', 'boolean')
     this.size = [180, 80]
   }
 
   async onAction(action: string) {
-    if (action === 'start') {
+    if (action === 'trigger') {
       const client = this.getInputData(0) as TestClient | undefined
       const address = this.getInputData(1) as Address | undefined
 

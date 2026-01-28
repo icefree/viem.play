@@ -16,13 +16,13 @@ export class SetNextBlockTimestampNode extends LGraphNode {
     this.title = 'setNextBlockTimestamp'
     this.addInput('client', 'testClient')
     this.addInput('timestamp', 'bigint,number')
-    this.addInput('set', -1)
+    this.addInput('trigger', -1)
     this.addOutput('success', 'boolean')
     this.size = [200, 80]
   }
 
   async onAction(action: string) {
-    if (action === 'set') {
+    if (action === 'trigger') {
       const client = this.getInputData(0) as TestClient | undefined
       const timestamp = this.getInputData(1) as any
 

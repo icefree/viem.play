@@ -16,13 +16,13 @@ export class RevertNode extends LGraphNode {
     this.title = 'revert'
     this.addInput('client', 'testClient')
     this.addInput('id', 'string')
-    this.addInput('revert', -1)
+    this.addInput('trigger', -1)
     this.addOutput('success', 'boolean')
     this.size = [160, 80]
   }
 
   async onAction(action: string) {
-    if (action === 'revert') {
+    if (action === 'trigger') {
       const client = this.getInputData(0) as TestClient | undefined
       const id = this.getInputData(1) as any
 

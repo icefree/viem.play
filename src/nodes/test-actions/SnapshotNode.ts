@@ -17,13 +17,13 @@ export class SnapshotNode extends LGraphNode {
     super()
     this.title = 'snapshot'
     this.addInput('client', 'testClient')
-    this.addInput('take', -1)
+    this.addInput('trigger', -1)
     this.addOutput('id', 'string')
     this.size = [160, 60]
   }
 
   async onAction(action: string) {
-    if (action === 'take') {
+    if (action === 'trigger') {
       const client = this.getInputData(0) as TestClient | undefined
       if (!client) return
 
