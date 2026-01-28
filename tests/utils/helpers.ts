@@ -2,7 +2,7 @@
  * 测试工具函数
  */
 import { vi } from 'vitest'
-import type { PublicClient, Block } from 'viem'
+import type { PublicClient, TestClient, Block } from 'viem'
 
 /**
  * 创建模拟的 PublicClient
@@ -75,4 +75,20 @@ export function mockNodeInputs<T extends { getInputData: (index: number) => unkn
     }
     return originalGetInputData(index)
   })
+}
+
+/**
+ * 创建模拟的 TestClient
+ */
+export function createMockTestClient(overrides: Partial<TestClient> = {}): TestClient {
+  return {
+    mine: vi.fn().mockResolvedValue(undefined),
+    setBalance: vi.fn().mockResolvedValue(undefined),
+    impersonateAccount: vi.fn().mockResolvedValue(undefined),
+    snapshot: vi.fn().mockResolvedValue('0x1'),
+    revert: vi.fn().mockResolvedValue(undefined),
+    setNextBlockTimestamp: vi.fn().mockResolvedValue(undefined),
+    stopImpersonatingAccount: vi.fn().mockResolvedValue(undefined),
+    ...overrides,
+  } as unknown as TestClient
 }
