@@ -17,6 +17,7 @@ export class GetBlockNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'getBlock'
+    this.addInput('trigger', -1)
     this.addInput('client', 'publicClient')
     this.addInput('blockNumber', 'bigint')
     this.addOutput('block', 'object')
@@ -25,9 +26,15 @@ export class GetBlockNode extends LGraphNode {
     this.size = [180, 90]
   }
 
-  async onExecute() {
-    const client = this.getInputData(0) as PublicClient | undefined
-    const blockNumber = this.getInputData(1) as bigint | undefined
+  async onAction(action: string) {
+    if (action === 'trigger') {
+      await this.fetchBlock()
+    }
+  }
+
+  async fetchBlock() {
+    const client = this.getInputData(1) as PublicClient | undefined
+    const blockNumber = this.getInputData(2) as bigint | undefined
 
     if (!client) {
       this.setOutputData(0, null)
@@ -49,6 +56,12 @@ export class GetBlockNode extends LGraphNode {
       } finally {
         this.isLoading = false
       }
+    }
+  }
+
+  onExecute() {
+    if (this.block !== null) {
+      this.setOutputData(0, this.block)
     }
   }
 }

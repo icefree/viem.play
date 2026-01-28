@@ -13,19 +13,25 @@ export class GetGasPriceNode extends LGraphNode {
 
   private gasPrice: bigint | null = null
   private isLoading = false
-  private lastFetch = 0
 
   constructor() {
     super()
     this.title = 'getGasPrice'
+    this.addInput('trigger', -1)
     this.addInput('client', 'publicClient')
     this.addOutput('gasPrice', 'bigint')
     this.addOutput('gwei', 'string')
     this.size = [180, 60]
   }
 
-  async onExecute() {
-    const client = this.getInputData(0) as PublicClient | undefined
+  async onAction(action: string) {
+    if (action === 'trigger') {
+      await this.fetchGasPrice()
+    }
+  }
+
+  async fetchGasPrice() {
+    const client = this.getInputData(1) as PublicClient | undefined
 
     if (!client) {
       this.setOutputData(0, null)
@@ -33,10 +39,8 @@ export class GetGasPriceNode extends LGraphNode {
       return
     }
 
-    const now = Date.now()
-    if (now - this.lastFetch > 5000 && !this.isLoading) {
+    if (!this.isLoading) {
       this.isLoading = true
-      this.lastFetch = now
 
       try {
         this.gasPrice = await client.getGasPrice()
@@ -46,7 +50,9 @@ export class GetGasPriceNode extends LGraphNode {
         this.isLoading = false
       }
     }
+  }
 
+  onExecute() {
     if (this.gasPrice !== null) {
       this.setOutputData(0, this.gasPrice)
       this.setOutputData(1, formatGwei(this.gasPrice))

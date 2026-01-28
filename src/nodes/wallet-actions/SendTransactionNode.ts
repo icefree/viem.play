@@ -22,13 +22,13 @@ export class SendTransactionNode extends LGraphNode {
     this.addInput('to', 'address')
     this.addInput('value', 'bigint')
     this.addInput('data', 'bytes')
-    this.addInput('send', -1) // Trigger input
+    this.addInput('trigger', -1) // Trigger input
     this.addOutput('hash', 'string')
     this.size = [180, 110]
   }
 
   async onAction(action: string) {
-    if (action === 'send') {
+    if (action === 'trigger') {
       await this.sendTransaction()
     }
   }

@@ -17,13 +17,13 @@ export class GetAddressesNode extends LGraphNode {
     super()
     this.title = 'getAddresses'
     this.addInput('client', 'walletClient')
-    this.addInput('fetch', -1)
+    this.addInput('trigger', -1)
     this.addOutput('addresses', 'array')
     this.size = [160, 60]
   }
 
   async onAction(action: string) {
-    if (action === 'fetch') {
+    if (action === 'trigger') {
       const client = this.getInputData(0) as WalletClient | undefined
       if (!client) return
 

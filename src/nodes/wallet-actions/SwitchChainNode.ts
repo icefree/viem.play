@@ -16,13 +16,13 @@ export class SwitchChainNode extends LGraphNode {
     this.title = 'switchChain'
     this.addInput('client', 'walletClient')
     this.addInput('chainId', 'number')
-    this.addInput('switch', -1)
+    this.addInput('trigger', -1)
     this.addOutput('success', 'boolean')
     this.size = [160, 80]
   }
 
   async onAction(action: string) {
-    if (action === 'switch') {
+    if (action === 'trigger') {
       const client = this.getInputData(0) as WalletClient | undefined
       const chainId = this.getInputData(1) as number | undefined
 

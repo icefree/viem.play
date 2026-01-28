@@ -18,15 +18,22 @@ export class GetTransactionCountNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'getTransactionCount'
+    this.addInput('trigger', -1)
     this.addInput('client', 'publicClient')
     this.addInput('address', 'address')
     this.addOutput('count', 'number')
     this.size = [200, 60]
   }
 
-  async onExecute() {
-    const client = this.getInputData(0) as PublicClient | undefined
-    const address = this.getInputData(1) as Address | undefined
+  async onAction(action: string) {
+    if (action === 'trigger') {
+      await this.fetchTransactionCount()
+    }
+  }
+
+  async fetchTransactionCount() {
+    const client = this.getInputData(1) as PublicClient | undefined
+    const address = this.getInputData(2) as Address | undefined
 
     if (!client || !address) {
       this.setOutputData(0, null)
@@ -46,6 +53,12 @@ export class GetTransactionCountNode extends LGraphNode {
         this.isLoading = false
       }
     } else if (this.count !== null) {
+      this.setOutputData(0, this.count)
+    }
+  }
+
+  onExecute() {
+    if (this.count !== null) {
       this.setOutputData(0, this.count)
     }
   }

@@ -13,34 +13,32 @@ export class GetBlockNumberNode extends LGraphNode {
 
   private blockNumber: bigint | null = null
   private isLoading = false
-  private pendingFetch = false
 
   constructor() {
     super()
     this.title = 'getBlockNumber'
-    this.addInput('client', 'publicClient')
     this.addInput('trigger', -1)
+    this.addInput('client', 'publicClient')
     this.addOutput('blockNumber', 'bigint')
     this.size = [180, 80]
   }
 
-  onAction() {
-    // 当收到 action 时，标记需要刷新
-    this.pendingFetch = true
+  async onAction(action: string) {
+    if (action === 'trigger') {
+      await this.fetchBlockNumber()
+    }
   }
 
-  async onExecute() {
-    const client = this.getInputData(0) as PublicClient | undefined
+  async fetchBlockNumber() {
+    const client = this.getInputData(1) as PublicClient | undefined
 
     if (!client) {
       this.setOutputData(0, null)
       return
     }
 
-    // 只在收到 action 触发时才请求
-    if (this.pendingFetch && !this.isLoading) {
+    if (!this.isLoading) {
       this.isLoading = true
-      this.pendingFetch = false
 
       try {
         this.blockNumber = await client.getBlockNumber()
@@ -50,7 +48,9 @@ export class GetBlockNumberNode extends LGraphNode {
         this.isLoading = false
       }
     }
+  }
 
+  onExecute() {
     this.setOutputData(0, this.blockNumber)
   }
 

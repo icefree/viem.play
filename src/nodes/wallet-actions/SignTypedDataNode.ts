@@ -16,13 +16,13 @@ export class SignTypedDataNode extends LGraphNode {
     this.title = 'signTypedData'
     this.addInput('client', 'walletClient')
     this.addInput('typedData', 'object')
-    this.addInput('sign', -1)
+    this.addInput('trigger', -1)
     this.addOutput('signature', 'string')
     this.size = [180, 80]
   }
 
   async onAction(action: string) {
-    if (action === 'sign') {
+    if (action === 'trigger') {
       const client = this.getInputData(0) as WalletClient | undefined
       const typedData = this.getInputData(1)
 
