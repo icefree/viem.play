@@ -10,7 +10,6 @@ export class ButtonNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'Button'
-    this.addInput('timer', 'timer')
     this.addOutput('trigger', -1)
     this.size = [120, 60]
 
@@ -18,24 +17,21 @@ export class ButtonNode extends LGraphNode {
     this.addProperty('count', 0, 'number')
 
     this.addWidget('button', 'CLICK ME', '', () => {
-      this.fire()
+      this.properties.count++
+      this.triggerSlot(0, null)
     })
   }
 
-  fire() {
+  onAction(_action: string) {
     this.properties.count++
-    this.triggerSlot(0, 'trigger')
-  }
-
-  onAction() {
-    this.fire()
+    this.triggerSlot(0, null)
   }
 
   onExecute() {
     // 渲染时更新 label
-    const widgets = (this as unknown as { widgets?: Array<{ name: string }> }).widgets
+    const widgets = (this as any).widgets
     if (widgets && widgets[0]) {
-      widgets[0].name = this.properties.label as string
+      widgets[0].name = this.properties.label
     }
   }
 }
