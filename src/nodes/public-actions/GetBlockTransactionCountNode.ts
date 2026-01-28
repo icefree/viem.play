@@ -17,10 +17,10 @@ export class GetBlockTransactionCountNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'getBlockTransactionCount'
-    this.addInput('trigger', -1)
     this.addInput('client', 'publicClient')
     this.addInput('blockNumber', 'bigint')
     this.addInput('blockHash', 'string')
+    this.addInput('trigger', -1)
     this.addOutput('count', 'number')
     this.size = [200, 90]
   }
@@ -32,9 +32,9 @@ export class GetBlockTransactionCountNode extends LGraphNode {
   }
 
   async fetchCount() {
-    const client = this.getInputData(1) as PublicClient | undefined
-    const blockNumber = this.getInputData(2) as bigint | undefined
-    const blockHash = this.getInputData(3) as `0x${string}` | undefined
+    const client = this.getInputData(0) as PublicClient | undefined
+    const blockNumber = this.getInputData(1) as bigint | undefined
+    const blockHash = this.getInputData(2) as `0x${string}` | undefined
 
     if (!client) {
       this.setOutputData(0, null)

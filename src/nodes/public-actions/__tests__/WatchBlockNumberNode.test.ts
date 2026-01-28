@@ -28,8 +28,8 @@ describe('WatchBlockNumberNode', () => {
     })
 
     it('应该有正确的输入配置', () => {
-      expect(node.inputs?.[0].name).toBe('trigger')
-      expect(node.inputs?.[1].name).toBe('client')
+      expect(node.inputs?.[0].name).toBe('client')
+      expect(node.inputs?.[1].name).toBe('trigger')
     })
 
     it('应该有正确的输出配置', () => {
@@ -49,7 +49,7 @@ describe('WatchBlockNumberNode', () => {
     })
 
     it('应该成功开始监听', () => {
-      node.getInputData = vi.fn((idx) => (idx === 1 ? mockClient : undefined)) as typeof node.getInputData
+      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
 
       node.startWatching()
 
@@ -58,7 +58,7 @@ describe('WatchBlockNumberNode', () => {
     })
 
     it('已经在监听时不应该重复开始', () => {
-      node.getInputData = vi.fn((idx) => (idx === 1 ? mockClient : undefined)) as typeof node.getInputData
+      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
 
       node.startWatching()
       node.startWatching()
@@ -72,7 +72,7 @@ describe('WatchBlockNumberNode', () => {
         capturedCallback = options.onBlockNumber
         return mockUnwatch
       })
-      node.getInputData = vi.fn((idx) => (idx === 1 ? mockClient : undefined)) as typeof node.getInputData
+      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
       const triggerSlotSpy = vi.spyOn(node, 'triggerSlot')
 
       node.startWatching()
@@ -85,7 +85,7 @@ describe('WatchBlockNumberNode', () => {
 
   describe('stopWatching', () => {
     it('应该停止监听并调用 unwatch', () => {
-      node.getInputData = vi.fn((idx) => (idx === 1 ? mockClient : undefined)) as typeof node.getInputData
+      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
 
       node.startWatching()
       node.stopWatching()
@@ -97,7 +97,7 @@ describe('WatchBlockNumberNode', () => {
 
   describe('onAction', () => {
     it('触发 trigger 时应该切换监听状态', async () => {
-      node.getInputData = vi.fn((idx) => (idx === 1 ? mockClient : undefined)) as typeof node.getInputData
+      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
 
       // 第一次触发：开始监听
       await node.onAction('trigger')
@@ -111,7 +111,7 @@ describe('WatchBlockNumberNode', () => {
 
   describe('onRemoved', () => {
     it('节点被移除时应该停止监听', () => {
-      node.getInputData = vi.fn((idx) => (idx === 1 ? mockClient : undefined)) as typeof node.getInputData
+      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
 
       node.startWatching()
       node.onRemoved()
@@ -129,7 +129,7 @@ describe('WatchBlockNumberNode', () => {
         fillText: vi.fn(),
       } as unknown as CanvasRenderingContext2D
 
-      node.getInputData = vi.fn((idx) => (idx === 1 ? mockClient : undefined)) as typeof node.getInputData
+      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined)) as typeof node.getInputData
       node.startWatching()
 
       node.onDrawForeground(ctx)

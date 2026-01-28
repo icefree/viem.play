@@ -20,9 +20,9 @@ export class GetBalanceNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'getBalance'
-    this.addInput('trigger', -1)
     this.addInput('client', 'publicClient')
     this.addInput('address', 'address')
+    this.addInput('trigger', -1)
     this.addOutput('balance', 'bigint')
     this.addOutput('formatted', 'string')
     this.size = [200, 80]
@@ -35,8 +35,8 @@ export class GetBalanceNode extends LGraphNode {
   }
 
   async fetchBalance() {
-    const client = this.getInputData(1) as PublicClient | undefined
-    const address = this.getInputData(2) as Address | undefined
+    const client = this.getInputData(0) as PublicClient | undefined
+    const address = this.getInputData(1) as Address | undefined
 
     if (!client || !address) {
       this.balance = null

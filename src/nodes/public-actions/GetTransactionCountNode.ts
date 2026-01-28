@@ -18,9 +18,9 @@ export class GetTransactionCountNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'getTransactionCount'
-    this.addInput('trigger', -1)
     this.addInput('client', 'publicClient')
     this.addInput('address', 'address')
+    this.addInput('trigger', -1)
     this.addOutput('count', 'number')
     this.size = [200, 60]
   }
@@ -32,8 +32,8 @@ export class GetTransactionCountNode extends LGraphNode {
   }
 
   async fetchTransactionCount() {
-    const client = this.getInputData(1) as PublicClient | undefined
-    const address = this.getInputData(2) as Address | undefined
+    const client = this.getInputData(0) as PublicClient | undefined
+    const address = this.getInputData(1) as Address | undefined
 
     if (!client || !address) {
       this.setOutputData(0, null)

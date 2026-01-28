@@ -18,8 +18,8 @@ export class WatchBlockNumberNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'watchBlockNumber'
-    this.addInput('trigger', -1)
     this.addInput('client', 'publicClient')
+    this.addInput('trigger', -1)
     this.addOutput('blockNumber', 'bigint')
     this.addOutput('onBlockNumber', -1)
     this.size = [180, 80]
@@ -36,7 +36,7 @@ export class WatchBlockNumberNode extends LGraphNode {
   }
 
   startWatching() {
-    const client = this.getInputData(1) as PublicClient | undefined
+    const client = this.getInputData(0) as PublicClient | undefined
 
     if (!client || this.isWatching) {
       return

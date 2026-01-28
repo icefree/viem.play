@@ -17,8 +17,8 @@ export class GetGasPriceNode extends LGraphNode {
   constructor() {
     super()
     this.title = 'getGasPrice'
-    this.addInput('trigger', -1)
     this.addInput('client', 'publicClient')
+    this.addInput('trigger', -1)
     this.addOutput('gasPrice', 'bigint')
     this.addOutput('gwei', 'string')
     this.size = [180, 60]
@@ -31,7 +31,7 @@ export class GetGasPriceNode extends LGraphNode {
   }
 
   async fetchGasPrice() {
-    const client = this.getInputData(1) as PublicClient | undefined
+    const client = this.getInputData(0) as PublicClient | undefined
 
     if (!client) {
       this.setOutputData(0, null)

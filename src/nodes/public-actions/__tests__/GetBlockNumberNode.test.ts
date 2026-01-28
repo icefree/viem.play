@@ -20,8 +20,8 @@ describe('GetBlockNumberNode', () => {
     })
 
     it('应该有正确的输入配置', () => {
-      expect(node.inputs?.[0].name).toBe('trigger')
-      expect(node.inputs?.[1].name).toBe('client')
+      expect(node.inputs?.[0].name).toBe('client')
+      expect(node.inputs?.[1].name).toBe('trigger')
     })
 
     it('应该有正确的输出配置', () => {
@@ -42,7 +42,7 @@ describe('GetBlockNumberNode', () => {
     it('应该成功获取区块号', async () => {
       const expectedBlockNumber = 12345678n
       mockClient.getBlockNumber = vi.fn().mockResolvedValue(expectedBlockNumber)
-      node.getInputData = vi.fn((idx) => (idx === 1 ? mockClient : undefined))
+      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined))
 
       await node.fetchBlockNumber()
       node.onExecute()
@@ -54,7 +54,7 @@ describe('GetBlockNumberNode', () => {
     it('应该处理 API 错误', async () => {
       const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
       mockClient.getBlockNumber = vi.fn().mockRejectedValue(new Error('Network Error'))
-      node.getInputData = vi.fn((idx) => (idx === 1 ? mockClient : undefined))
+      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined))
 
       await node.fetchBlockNumber()
 
@@ -66,7 +66,7 @@ describe('GetBlockNumberNode', () => {
       mockClient.getBlockNumber = vi.fn().mockImplementation(
         () => new Promise((resolve) => setTimeout(() => resolve(12345n), 100))
       )
-      node.getInputData = vi.fn((idx) => (idx === 1 ? mockClient : undefined))
+      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined))
 
       const promise1 = node.fetchBlockNumber()
       const promise2 = node.fetchBlockNumber()
@@ -99,7 +99,7 @@ describe('GetBlockNumberNode', () => {
     it('应该设置输出数据', async () => {
       const blockNumber = 99999n
       mockClient.getBlockNumber = vi.fn().mockResolvedValue(blockNumber)
-      node.getInputData = vi.fn((idx) => (idx === 1 ? mockClient : undefined))
+      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined))
 
       await node.fetchBlockNumber()
       node.onExecute()
@@ -122,7 +122,7 @@ describe('GetBlockNumberNode', () => {
       } as unknown as CanvasRenderingContext2D
 
       mockClient.getBlockNumber = vi.fn().mockResolvedValue(12345678n)
-      node.getInputData = vi.fn((idx) => (idx === 1 ? mockClient : undefined))
+      node.getInputData = vi.fn((idx) => (idx === 0 ? mockClient : undefined))
       await node.fetchBlockNumber()
 
       node.onDrawForeground(ctx)
