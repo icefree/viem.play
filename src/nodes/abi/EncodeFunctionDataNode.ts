@@ -1,4 +1,5 @@
 import { LGraphNode } from 'litegraph.js'
+import { encodeFunctionData, type Abi } from 'viem'
 
 /**
  * encodeFunctionData 节点 - 编码函数调用数据
@@ -20,7 +21,24 @@ export class EncodeFunctionDataNode extends LGraphNode {
     this.size = [200, 90]
   }
 
-  async onExecute() {
-    this.setOutputData(0, null)
+  onExecute() {
+    const abi = this.getInputData(0) as Abi
+    const functionName = this.getInputData(1) as string
+    const args = this.getInputData(2) as any[]
+
+    if (abi && functionName) {
+      try {
+        const data = encodeFunctionData({
+            abi,
+            functionName,
+            args: args || []
+        })
+        this.setOutputData(0, data)
+      } catch (e) {
+        this.setOutputData(0, null)
+      }
+    } else {
+        this.setOutputData(0, null)
+    }
   }
 }

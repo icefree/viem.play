@@ -7,6 +7,7 @@ import { GetTransactionCountNode } from './GetTransactionCountNode'
 import { GetBlockTransactionCountNode } from './GetBlockTransactionCountNode'
 import { WatchBlockNumberNode } from './WatchBlockNumberNode'
 import { WatchBlocksNode } from './WatchBlocksNode'
+import { WaitForTransactionReceiptNode } from './WaitForTransactionReceiptNode'
 import { PublicActionPlaceholderNode } from './PublicActionPlaceholderNode'
 
 export function registerPublicActionNodes() {
@@ -27,7 +28,7 @@ export function registerPublicActionNodes() {
   // --- Transaction ---
   LiteGraph.registerNodeType('Public Actions/Transaction/getTransaction', class extends PublicActionPlaceholderNode { constructor() { super('getTransaction', 'Get transaction information') } })
   LiteGraph.registerNodeType('Public Actions/Transaction/getTransactionReceipt', class extends PublicActionPlaceholderNode { constructor() { super('getTransactionReceipt', 'Get transaction receipt') } })
-  LiteGraph.registerNodeType('Public Actions/Transaction/waitForTransactionReceipt', class extends PublicActionPlaceholderNode { constructor() { super('waitForTransactionReceipt', 'Wait for transaction receipt') } })
+  LiteGraph.registerNodeType('Public Actions/Transaction/waitForTransactionReceipt', WaitForTransactionReceiptNode)
   LiteGraph.registerNodeType('Public Actions/Transaction/watchPendingTransactions', class extends PublicActionPlaceholderNode { constructor() { super('watchPendingTransactions', 'Watch for pending transactions') } })
   LiteGraph.registerNodeType('Public Actions/Transaction/call', class extends PublicActionPlaceholderNode { constructor() { super('call', 'Executes a new message call') } })
   LiteGraph.registerNodeType('Public Actions/Transaction/estimateGas', class extends PublicActionPlaceholderNode { constructor() { super('estimateGas', 'Estimate gas for a transaction') } })
@@ -59,5 +60,6 @@ export {
   GetBlockTransactionCountNode,
   WatchBlockNumberNode,
   WatchBlocksNode,
+  WaitForTransactionReceiptNode,
   PublicActionPlaceholderNode
 }

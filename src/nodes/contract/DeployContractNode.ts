@@ -18,7 +18,7 @@ export class DeployContractNode extends LGraphNode {
     this.title = 'deployContract'
     this.addInput('client', 'walletClient')
     this.addInput('abi', 'abi')
-    this.addInput('bytecode', 'bytes')
+    this.addInput('bytecode', 'string') // Was 'bytes', changed to 'string' to allow Text node connection
     this.addInput('args', 'array')
     this.addInput('trigger', -1)
     this.addOutput('hash', 'string')
@@ -32,14 +32,18 @@ export class DeployContractNode extends LGraphNode {
       const bytecode = this.getInputData(2) as `0x${string}` | undefined
       const args = this.getInputData(3) as any[] | undefined
 
-      if (!client || !abi || !bytecode) return
+      if (!client || !abi || !bytecode) {
+          console.log('DeployContractNode Missing Inputs:', { client: !!client, abi: !!abi, bytecode: !!bytecode })
+          return
+      }
 
       try {
         // @ts-expect-error - bypass complex viem client/account typing
         this.hash = await client.deployContract({
           abi,
           bytecode,
-          args
+          args,
+          gas: 1000000n
         })
       } catch (err) {
         console.error(err)

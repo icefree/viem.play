@@ -28,7 +28,7 @@ export function wrapClientWithLogger<T extends object>(client: T, clientType: st
                 return result.then(res => {
                   logger.debug(`[Viem:${clientType}] ${prop} Success`, 'ViemAction', {
                     method: prop,
-                    result: JSON.parse(JSON.stringify(res, (_, v) => typeof v === 'bigint' ? v.toString() : v))
+                    result: res === undefined ? undefined : JSON.parse(JSON.stringify(res, (_, v) => typeof v === 'bigint' ? v.toString() : v))
                   })
                   return res
                 }).catch(err => {

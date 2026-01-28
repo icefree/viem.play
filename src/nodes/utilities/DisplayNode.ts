@@ -10,7 +10,7 @@ export class DisplayNode extends LGraphNode {
   color = '#4a5568'
   bgcolor = '#2d3748'
 
-  private displayValue: string = ''
+  public displayValue: string = ''
 
   constructor() {
     super()
@@ -27,7 +27,7 @@ export class DisplayNode extends LGraphNode {
       this.displayValue = value.toString()
     } else if (typeof value === 'object') {
       try {
-        this.displayValue = JSON.stringify(value, null, 2)
+        this.displayValue = JSON.stringify(value, (_, v) => typeof v === 'bigint' ? v.toString() + 'n' : v, 2)
       } catch {
         this.displayValue = String(value)
       }

@@ -19,7 +19,8 @@ export class SendTransactionNode extends LGraphNode {
     super()
     this.title = 'sendTransaction'
     this.addInput('client', 'walletClient')
-    this.addInput('to', 'address')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.addInput('to', 0 as any) // Allow any for flexibility (e.g. from TextInput)
     this.addInput('value', 'bigint')
     this.addInput('data', 'bytes')
     this.addInput('trigger', -1) // Trigger input
@@ -39,24 +40,26 @@ export class SendTransactionNode extends LGraphNode {
     const value = this.getInputData(2) as bigint | undefined
     const data = this.getInputData(3) as `0x${string}` | undefined
 
-    if (!client || !to) return
+      if (!client || !to) {
+          return
+      }
 
-    this.isLoading = true
-    this.error = null
-    this.hash = null
+      this.isLoading = true
+      this.error = null
+      this.hash = null
 
-    try {
-      // @ts-expect-error - bypass complex viem client/account typing
-      this.hash = await client.sendTransaction({
-        to,
-        value: value || 0n,
-        data: data || undefined
-      })
-    } catch (e: any) {
-      this.error = e.message
-    } finally {
-      this.isLoading = false
-    }
+      try {
+        // @ts-expect-error - bypass complex viem client/account typing
+        this.hash = await client.sendTransaction({
+          to,
+          value: value || 0n,
+          data: data || undefined
+        })
+      } catch (e: any) {
+        this.error = e.message
+      } finally {
+        this.isLoading = false
+      }
   }
 
   onExecute() {

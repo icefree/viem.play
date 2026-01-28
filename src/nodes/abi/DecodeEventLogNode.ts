@@ -1,4 +1,5 @@
 import { LGraphNode } from 'litegraph.js'
+import { decodeEventLog, type Abi } from 'viem'
 
 /**
  * decodeEventLog 节点 - 解码事件日志
@@ -20,7 +21,25 @@ export class DecodeEventLogNode extends LGraphNode {
     this.size = [180, 90]
   }
 
-  async onExecute() {
-    this.setOutputData(0, null)
+  onExecute() {
+    const abi = this.getInputData(0) as Abi
+    const topics = this.getInputData(1) as [string, ...string[]] | []
+    const data = this.getInputData(2) as `0x${string}`
+
+    if (abi && topics && data) {
+         try {
+             // topics might need casting from generic array
+             const decoded = decodeEventLog({
+                 abi,
+                 data,
+                 topics: topics as any
+             })
+             this.setOutputData(0, decoded)
+         } catch (e) {
+             this.setOutputData(0, null)
+         }
+    } else {
+         this.setOutputData(0, null)
+    }
   }
 }

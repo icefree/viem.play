@@ -5,6 +5,7 @@ import { ImpersonateAccountNode } from './ImpersonateAccountNode'
 import { SetNextBlockTimestampNode } from './SetNextBlockTimestampNode'
 import { SnapshotNode } from './SnapshotNode'
 import { RevertNode } from './RevertNode'
+import { SetCodeNode } from './SetCodeNode'
 import { TestActionPlaceholderNode } from './TestActionPlaceholderNode'
 
 export function registerTestActionNodes() {
@@ -12,7 +13,7 @@ export function registerTestActionNodes() {
   LiteGraph.registerNodeType('Test Actions/Account/setBalance', SetBalanceNode)
   LiteGraph.registerNodeType('Test Actions/Account/impersonateAccount', ImpersonateAccountNode)
   LiteGraph.registerNodeType('Test Actions/Account/stopImpersonatingAccount', class extends TestActionPlaceholderNode { constructor() { super('stopImpersonatingAccount', 'Stop impersonating an account') } })
-  LiteGraph.registerNodeType('Test Actions/Account/setCode', class extends TestActionPlaceholderNode { constructor() { super('setCode', 'Set bytecode of a contract') } })
+  LiteGraph.registerNodeType('Test Actions/Account/setCode', SetCodeNode)
   LiteGraph.registerNodeType('Test Actions/Account/setStorageAt', class extends TestActionPlaceholderNode { constructor() { super('setStorageAt', 'Set storage at an address') } })
 
   // --- Block ---
@@ -41,5 +42,6 @@ export {
   SetNextBlockTimestampNode,
   SnapshotNode,
   RevertNode,
+  SetCodeNode,
   TestActionPlaceholderNode
 }

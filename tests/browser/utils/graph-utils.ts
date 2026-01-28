@@ -88,13 +88,22 @@ export class GraphController {
   /**
    * Set a property value on a node directly
    */
-  async setNodeProperty(nodeId: number, property: string, value: unknown) {
+  async setNodeProperty(nodeId: number, property: string, value: any) {
     await this.page.evaluate(
       ({ nodeId, property, value }) => {
         const node = window.graph.getNodeById(nodeId)
-        if (!node) throw new Error(`Node ${nodeId} not found`)
-        node.properties[property] = value
-        node.setDirtyCanvas(true, true)
+        if (node) {
+          node.properties[property] = value
+          // Force update widgets if property is linked
+          if (node.widgets) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const widget = node.widgets.find((w: any) => w.name === property || w.label === property)
+            if (widget) {
+              widget.value = value
+              if (widget.callback) widget.callback(value)
+            }
+          }
+        }
       },
       { nodeId, property, value }
     )
@@ -163,6 +172,16 @@ export class GraphController {
    */
   async wait(ms: number) {
     await this.page.waitForTimeout(ms)
+  }
+
+  /**
+   * Trigger a node's action (e.g., for a button-like action)
+   */
+  async triggerNodeAction(nodeId: number, action: string = 'trigger') {
+    await this.page.evaluate(({ nodeId, action }) => {
+      const node = window.graph.getNodeById(nodeId)
+      if (node && node.onAction) node.onAction(action)
+    }, { nodeId, action })
   }
 
   /**
