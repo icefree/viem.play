@@ -8,15 +8,34 @@ import { GetBlockTransactionCountNode } from './GetBlockTransactionCountNode'
 import { WatchBlockNumberNode } from './WatchBlockNumberNode'
 import { WatchBlocksNode } from './WatchBlocksNode'
 import { WaitForTransactionReceiptNode } from './WaitForTransactionReceiptNode'
-import { PublicActionPlaceholderNode } from './PublicActionPlaceholderNode'
+import { GetBytecodeNode } from './GetBytecodeNode'
+import { GetStorageAtNode } from './GetStorageAtNode'
+import { GetProofNode } from './GetProofNode'
+import { GetTransactionNode } from './GetTransactionNode'
+import { GetTransactionReceiptNode } from './GetTransactionReceiptNode'
+import { WatchPendingTransactionsNode } from './WatchPendingTransactionsNode'
+import { CallNode } from './CallNode'
+import { EstimateGasNode } from './EstimateGasNode'
+import { CreatePendingTransactionFilterNode } from './CreatePendingTransactionFilterNode'
+import { GetLogsNode } from './GetLogsNode'
+import { WatchEventNode } from './WatchEventNode'
+import { CreateEventFilterNode } from './CreateEventFilterNode'
+import { GetFilterChangesNode } from './GetFilterChangesNode'
+import { GetFilterLogsNode } from './GetFilterLogsNode'
+import { UninstallFilterNode } from './UninstallFilterNode'
+import { GetChainIdNode } from './GetChainIdNode'
+import { GetFeeHistoryNode } from './GetFeeHistoryNode'
+import { EstimateMaxPriorityFeePerGasNode } from './EstimateMaxPriorityFeePerGasNode'
+import { EstimateFeesPerGasNode } from './EstimateFeesPerGasNode'
+import { PrepareTransactionRequestNode } from './PrepareTransactionRequestNode'
 
 export function registerPublicActionNodes() {
   // --- Account ---
   LiteGraph.registerNodeType('Public Actions/Account/getBalance', GetBalanceNode)
   LiteGraph.registerNodeType('Public Actions/Account/getTransactionCount', GetTransactionCountNode)
-  LiteGraph.registerNodeType('Public Actions/Account/getBytecode', class extends PublicActionPlaceholderNode { constructor() { super('getBytecode', 'Get bytecode of a contract') } })
-  LiteGraph.registerNodeType('Public Actions/Account/getStorageAt', class extends PublicActionPlaceholderNode { constructor() { super('getStorageAt', 'Get storage selection at a contract address') } })
-  LiteGraph.registerNodeType('Public Actions/Account/getProof', class extends PublicActionPlaceholderNode { constructor() { super('getProof', 'Get account and storage proof') } })
+  LiteGraph.registerNodeType('Public Actions/Account/getBytecode', GetBytecodeNode)
+  LiteGraph.registerNodeType('Public Actions/Account/getStorageAt', GetStorageAtNode)
+  LiteGraph.registerNodeType('Public Actions/Account/getProof', GetProofNode)
 
   // --- Block ---
   LiteGraph.registerNodeType('Public Actions/Block/getBlock', GetBlockNode)
@@ -26,29 +45,29 @@ export function registerPublicActionNodes() {
   LiteGraph.registerNodeType('Public Actions/Block/watchBlockNumber', WatchBlockNumberNode)
 
   // --- Transaction ---
-  LiteGraph.registerNodeType('Public Actions/Transaction/getTransaction', class extends PublicActionPlaceholderNode { constructor() { super('getTransaction', 'Get transaction information') } })
-  LiteGraph.registerNodeType('Public Actions/Transaction/getTransactionReceipt', class extends PublicActionPlaceholderNode { constructor() { super('getTransactionReceipt', 'Get transaction receipt') } })
+  LiteGraph.registerNodeType('Public Actions/Transaction/getTransaction', GetTransactionNode)
+  LiteGraph.registerNodeType('Public Actions/Transaction/getTransactionReceipt', GetTransactionReceiptNode)
   LiteGraph.registerNodeType('Public Actions/Transaction/waitForTransactionReceipt', WaitForTransactionReceiptNode)
-  LiteGraph.registerNodeType('Public Actions/Transaction/watchPendingTransactions', class extends PublicActionPlaceholderNode { constructor() { super('watchPendingTransactions', 'Watch for pending transactions') } })
-  LiteGraph.registerNodeType('Public Actions/Transaction/call', class extends PublicActionPlaceholderNode { constructor() { super('call', 'Executes a new message call') } })
-  LiteGraph.registerNodeType('Public Actions/Transaction/estimateGas', class extends PublicActionPlaceholderNode { constructor() { super('estimateGas', 'Estimate gas for a transaction') } })
-  LiteGraph.registerNodeType('Public Actions/Transaction/createPendingTransactionFilter', class extends PublicActionPlaceholderNode { constructor() { super('createPendingTransactionFilter', 'Create filter for pending transactions') } })
+  LiteGraph.registerNodeType('Public Actions/Transaction/watchPendingTransactions', WatchPendingTransactionsNode)
+  LiteGraph.registerNodeType('Public Actions/Transaction/call', CallNode)
+  LiteGraph.registerNodeType('Public Actions/Transaction/estimateGas', EstimateGasNode)
+  LiteGraph.registerNodeType('Public Actions/Transaction/createPendingTransactionFilter', CreatePendingTransactionFilterNode)
 
   // --- Event ---
-  LiteGraph.registerNodeType('Public Actions/Event/getLogs', class extends PublicActionPlaceholderNode { constructor() { super('getLogs', 'Get historical logs') } })
-  LiteGraph.registerNodeType('Public Actions/Event/watchEvent', class extends PublicActionPlaceholderNode { constructor() { super('watchEvent', 'Watch for events') } })
-  LiteGraph.registerNodeType('Public Actions/Event/createEventFilter', class extends PublicActionPlaceholderNode { constructor() { super('createEventFilter', 'Create filter for events') } })
-  LiteGraph.registerNodeType('Public Actions/Event/getFilterChanges', class extends PublicActionPlaceholderNode { constructor() { super('getFilterChanges', 'Get changes since last poll') } })
-  LiteGraph.registerNodeType('Public Actions/Event/getFilterLogs', class extends PublicActionPlaceholderNode { constructor() { super('getFilterLogs', 'Get logs matching a filter') } })
-  LiteGraph.registerNodeType('Public Actions/Event/uninstallFilter', class extends PublicActionPlaceholderNode { constructor() { super('uninstallFilter', 'Uninstall a filter') } })
+  LiteGraph.registerNodeType('Public Actions/Event/getLogs', GetLogsNode)
+  LiteGraph.registerNodeType('Public Actions/Event/watchEvent', WatchEventNode)
+  LiteGraph.registerNodeType('Public Actions/Event/createEventFilter', CreateEventFilterNode)
+  LiteGraph.registerNodeType('Public Actions/Event/getFilterChanges', GetFilterChangesNode)
+  LiteGraph.registerNodeType('Public Actions/Event/getFilterLogs', GetFilterLogsNode)
+  LiteGraph.registerNodeType('Public Actions/Event/uninstallFilter', UninstallFilterNode)
 
   // --- Other ---
   LiteGraph.registerNodeType('Public Actions/Other/getGasPrice', GetGasPriceNode)
-  LiteGraph.registerNodeType('Public Actions/Other/getChainId', class extends PublicActionPlaceholderNode { constructor() { super('getChainId', 'Get chain ID') } })
-  LiteGraph.registerNodeType('Public Actions/Other/getFeeHistory', class extends PublicActionPlaceholderNode { constructor() { super('getFeeHistory', 'Get fee history') } })
-  LiteGraph.registerNodeType('Public Actions/Other/estimateMaxPriorityFeePerGas', class extends PublicActionPlaceholderNode { constructor() { super('estimateMaxPriorityFeePerGas', 'Estimate max priority fee per gas') } })
-  LiteGraph.registerNodeType('Public Actions/Other/estimateFeesPerGas', class extends PublicActionPlaceholderNode { constructor() { super('estimateFeesPerGas', 'Estimate fees per gas') } })
-  LiteGraph.registerNodeType('Public Actions/Other/prepareTransactionRequest', class extends PublicActionPlaceholderNode { constructor() { super('prepareTransactionRequest', 'Prepare transaction request') } })
+  LiteGraph.registerNodeType('Public Actions/Other/getChainId', GetChainIdNode)
+  LiteGraph.registerNodeType('Public Actions/Other/getFeeHistory', GetFeeHistoryNode)
+  LiteGraph.registerNodeType('Public Actions/Other/estimateMaxPriorityFeePerGas', EstimateMaxPriorityFeePerGasNode)
+  LiteGraph.registerNodeType('Public Actions/Other/estimateFeesPerGas', EstimateFeesPerGasNode)
+  LiteGraph.registerNodeType('Public Actions/Other/prepareTransactionRequest', PrepareTransactionRequestNode)
 }
 
 export { 
@@ -61,5 +80,24 @@ export {
   WatchBlockNumberNode,
   WatchBlocksNode,
   WaitForTransactionReceiptNode,
-  PublicActionPlaceholderNode
+  GetBytecodeNode,
+  GetStorageAtNode,
+  GetProofNode,
+  GetTransactionNode,
+  GetTransactionReceiptNode,
+  WatchPendingTransactionsNode,
+  CallNode,
+  EstimateGasNode,
+  CreatePendingTransactionFilterNode,
+  GetLogsNode,
+  WatchEventNode,
+  CreateEventFilterNode,
+  GetFilterChangesNode,
+  GetFilterLogsNode,
+  UninstallFilterNode,
+  GetChainIdNode,
+  GetFeeHistoryNode,
+  EstimateMaxPriorityFeePerGasNode,
+  EstimateFeesPerGasNode,
+  PrepareTransactionRequestNode
 }

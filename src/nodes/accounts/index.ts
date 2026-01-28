@@ -4,7 +4,9 @@ import { PrivateKeyToAccountNode } from './PrivateKeyToAccountNode'
 import { MnemonicToAccountNode } from './MnemonicToAccountNode'
 import { GeneratePrivateKeyNode } from './GeneratePrivateKeyNode'
 import { GenerateMnemonicNode } from './GenerateMnemonicNode'
-import { AccountPlaceholderNode } from './AccountPlaceholderNode'
+import { HdKeyToAccountNode } from './HdKeyToAccountNode'
+import { LocalToAccountNode } from './LocalToAccountNode'
+import { ParseAccountNode } from './ParseAccountNode'
 
 export function registerAccountNodes() {
   // --- JSON-RPC Account ---
@@ -13,13 +15,13 @@ export function registerAccountNodes() {
   // --- Local Account ---
   LiteGraph.registerNodeType('Accounts/Local/privateKeyToAccount', PrivateKeyToAccountNode)
   LiteGraph.registerNodeType('Accounts/Local/mnemonicToAccount', MnemonicToAccountNode)
-  LiteGraph.registerNodeType('Accounts/Local/hdKeyToAccount', class extends AccountPlaceholderNode { constructor() { super('hdKeyToAccount', 'Create account from HD Key') } })
-  LiteGraph.registerNodeType('Accounts/Local/toAccount', class extends AccountPlaceholderNode { constructor() { super('toAccount', 'Create a custom Local Account') } })
+  LiteGraph.registerNodeType('Accounts/Local/hdKeyToAccount', HdKeyToAccountNode)
+  LiteGraph.registerNodeType('Accounts/Local/toAccount', LocalToAccountNode)
 
   // --- Utils ---
   LiteGraph.registerNodeType('Accounts/Utils/generatePrivateKey', GeneratePrivateKeyNode)
   LiteGraph.registerNodeType('Accounts/Utils/generateMnemonic', GenerateMnemonicNode)
-  LiteGraph.registerNodeType('Accounts/Utils/parseAccount', class extends AccountPlaceholderNode { constructor() { super('parseAccount', 'Parse an account') } })
+  LiteGraph.registerNodeType('Accounts/Utils/parseAccount', ParseAccountNode)
 }
 
 export {
@@ -28,5 +30,7 @@ export {
   GeneratePrivateKeyNode,
   GenerateMnemonicNode,
   ToAccountNode,
-  AccountPlaceholderNode
+  HdKeyToAccountNode,
+  LocalToAccountNode,
+  ParseAccountNode
 }

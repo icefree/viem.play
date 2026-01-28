@@ -5,25 +5,29 @@ import { DecodeAbiParametersNode } from './DecodeAbiParametersNode'
 import { EncodeFunctionDataNode } from './EncodeFunctionDataNode'
 import { DecodeFunctionResultNode } from './DecodeFunctionResultNode'
 import { DecodeEventLogNode } from './DecodeEventLogNode'
-import { AbiPlaceholderNode } from './AbiPlaceholderNode'
+import { ParseAbiItemNode } from './ParseAbiItemNode'
+import { ParseAbiParameterNode } from './ParseAbiParameterNode'
+import { EncodeEventTopicsNode } from './EncodeEventTopicsNode'
+import { EncodeFunctionResultAbiNode } from './EncodeFunctionResultAbiNode'
+import { DecodeFunctionDataAbiNode } from './DecodeFunctionDataAbiNode'
 
 export function registerAbiNodes() {
   // --- Parsing ---
   LiteGraph.registerNodeType('ABI/Parsing/parseAbi', ParseAbiNode)
-  LiteGraph.registerNodeType('ABI/Parsing/parseAbiItem', class extends AbiPlaceholderNode { constructor() { super('parseAbiItem', 'Parse a single ABI item') } })
-  LiteGraph.registerNodeType('ABI/Parsing/parseAbiParameter', class extends AbiPlaceholderNode { constructor() { super('parseAbiParameter', 'Parse a single ABI parameter') } })
+  LiteGraph.registerNodeType('ABI/Parsing/parseAbiItem', ParseAbiItemNode)
+  LiteGraph.registerNodeType('ABI/Parsing/parseAbiParameter', ParseAbiParameterNode)
 
   // --- Encoding ---
   LiteGraph.registerNodeType('ABI/Encoding/encodeAbiParameters', EncodeAbiParametersNode)
   LiteGraph.registerNodeType('ABI/Encoding/encodeFunctionData', EncodeFunctionDataNode)
-  LiteGraph.registerNodeType('ABI/Encoding/encodeEventTopics', class extends AbiPlaceholderNode { constructor() { super('encodeEventTopics', 'Encode event topics') } })
-  LiteGraph.registerNodeType('ABI/Encoding/encodeFunctionResult', class extends AbiPlaceholderNode { constructor() { super('encodeFunctionResult', 'Encode function result') } })
+  LiteGraph.registerNodeType('ABI/Encoding/encodeEventTopics', EncodeEventTopicsNode)
+  LiteGraph.registerNodeType('ABI/Encoding/encodeFunctionResult', EncodeFunctionResultAbiNode)
 
   // --- Decoding ---
   LiteGraph.registerNodeType('ABI/Decoding/decodeAbiParameters', DecodeAbiParametersNode)
   LiteGraph.registerNodeType('ABI/Decoding/decodeFunctionResult', DecodeFunctionResultNode)
   LiteGraph.registerNodeType('ABI/Decoding/decodeEventLog', DecodeEventLogNode)
-  LiteGraph.registerNodeType('ABI/Decoding/decodeFunctionData', class extends AbiPlaceholderNode { constructor() { super('decodeFunctionData', 'Decode function data') } })
+  LiteGraph.registerNodeType('ABI/Decoding/decodeFunctionData', DecodeFunctionDataAbiNode)
 }
 
 export {
@@ -33,5 +37,9 @@ export {
   EncodeFunctionDataNode,
   DecodeFunctionResultNode,
   DecodeEventLogNode,
-  AbiPlaceholderNode
+  ParseAbiItemNode,
+  ParseAbiParameterNode,
+  EncodeEventTopicsNode,
+  EncodeFunctionResultAbiNode,
+  DecodeFunctionDataAbiNode
 }
