@@ -54,6 +54,8 @@ pnpm add -D vitest @vitest/ui happy-dom @testing-library/react @testing-library/
 {
   "scripts": {
     "test": "vitest",
+    "test:unit": "vitest src",
+    "test:integration": "vitest tests/e2e",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
@@ -62,7 +64,22 @@ pnpm add -D vitest @vitest/ui happy-dom @testing-library/react @testing-library/
 }
 ```
 
-### 3.3 运行 E2E 测试
+### 3.3 运行单元与集成测试
+
+- **运行所有测试**:
+  ```bash
+  npm run test
+  ```
+- **仅运行单元测试** (src/\*\*):
+  ```bash
+  npm run test:unit
+  ```
+- **仅运行集成测试** (tests/e2e/\*\*):
+  ```bash
+  npm run test:integration
+  ```
+
+### 3.4 运行 E2E 测试
 
 Playwright 提供了多种运行模式，适用于不同的场景：
 
