@@ -162,12 +162,16 @@ describe('WalletClient 集成测试 (Anvil)', () => {
     it('应该能够发送交易', async () => {
       const address = '0x1234567890123456789012345678901234567890' as const
 
+      // 获取当前 nonce，避免并行测试冲突
+      const nonce = await publicClient.getTransactionCount({
+        address: walletClient.account!.address,
+      })
 
       // 发送交易
       const hash = await walletClient.sendTransaction({
         to: address,
         value: parseEther('0.01'),
-        
+        nonce,
       })
 
       expect(hash).toBeDefined()
