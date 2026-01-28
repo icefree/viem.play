@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { TEST_ACCOUNTS, ANVIL_RPC_URL } from '../../../setup'
+import { TEST_ACCOUNTS, ANVIL_RPC_URL } from '../../../test-network'
 
 test.describe('GetBalance 节点工作流', () => {
   
