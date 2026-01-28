@@ -193,7 +193,6 @@ body {
   flex: 1;
   position: relative;
   overflow: hidden;
-  padding-top: 45px;  /* Space for fixed NodeToolbar */
 }
 
 .canvas-container {

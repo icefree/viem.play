@@ -261,6 +261,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
   }, [onGraphReady, onScaleChange, saveHistory])
 
   // Handle window resize
+  // Handle window resize & container resize
   useEffect(() => {
     const handleResize = () => {
       if (!canvasRef.current || !canvasInstanceRef.current) return
@@ -268,13 +269,38 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ onGraphReady, onS
       if (!parent) return
       const { clientWidth, clientHeight } = parent
       if (!clientWidth || !clientHeight) return
-      canvasInstanceRef.current.resize(clientWidth, clientHeight)
+      
+      // 只有尺寸真正改变时才 resize，避免闪烁
+      if (canvasRef.current.width !== clientWidth || canvasRef.current.height !== clientHeight) {
+        canvasInstanceRef.current.resize(clientWidth, clientHeight)
+        canvasInstanceRef.current.setDirty(true, true)
+      }
     }
 
-    window.addEventListener('resize', handleResize)
+    // 初始调整
     handleResize()
 
-    return () => window.removeEventListener('resize', handleResize)
+    // 监听父容器大小变化
+    let resizeObserver: ResizeObserver | null = null
+    const parent = canvasRef.current?.parentElement
+    
+    if (parent) {
+      resizeObserver = new ResizeObserver(() => {
+        // 使用 requestAnimationFrame 避免 "ResizeObserver loop limit exceeded"
+        requestAnimationFrame(handleResize)
+      })
+      resizeObserver.observe(parent)
+    }
+
+    // 同时监听窗口变化作为后备
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      if (resizeObserver) {
+        resizeObserver.disconnect()
+      }
+    }
   }, [])
 
   // Handle keyboard shortcuts (Backspace/Delete for node deletion)

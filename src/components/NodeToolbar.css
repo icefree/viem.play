@@ -1,12 +1,9 @@
 /* Node Toolbar Styles */
 .node-toolbar {
-  position: fixed;
-  top: 49px; /* Below header */
-  left: 0;
-  right: 0;
+  position: relative;
   background: #1a1a2e;
   border-bottom: 1px solid #30363d;
-  z-index: 90;
+  z-index: 10;
 }
 
 .node-toolbar-categories {
