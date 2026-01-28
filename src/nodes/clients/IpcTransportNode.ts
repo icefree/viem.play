@@ -1,7 +1,8 @@
 import { LGraphNode } from 'litegraph.js'
+import { createViemLogger } from '../../utils/viemLogger'
 
 /**
- * IpcTransport 节点 - 用于通过 IPC 连接到区块链节点
+ * IpcTransport 节点 - 用于通过 IPC 连接到区块链 node
  * 注意：此 Transport 通常仅在 Node.js 环境下有效
  */
 export class IpcTransportNode extends LGraphNode {
@@ -32,7 +33,32 @@ export class IpcTransportNode extends LGraphNode {
       // @ts-ignore - viem/node might not be available in browser bundle
       const { ipc } = await import('viem/node')
       
-      this.setOutputData(0, ipc(path))
+      const transport = ipc(path)
+      const { onFetchRequest, onFetchResponse } = createViemLogger('IPC')
+      const originalRequest = transport.request
+
+      transport.request = (async (args: any) => {
+        onFetchRequest({ 
+          url: `ipc://${path}`, 
+          method: 'POST', 
+          headers: new Headers() 
+        } as any)
+        
+        try {
+          const response = await originalRequest(args)
+          onFetchResponse({
+            clone: () => ({ json: async () => response })
+          } as any)
+          return response
+        } catch (error) {
+          onFetchResponse({
+            clone: () => ({ json: async () => ({ error }) })
+          } as any)
+          throw error
+        }
+      }) as any
+
+      this.setOutputData(0, transport)
     } catch (e) {
       // 在浏览器环境中，这通常会失败
       if (!this.properties._warned) {
