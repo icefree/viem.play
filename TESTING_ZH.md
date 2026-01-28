@@ -35,7 +35,7 @@
 
 **目标**: 验证节点间的连接与数据流。
 
-- **位置**: `tests/e2e/*.spec.ts`
+- **位置**: `tests/integration/*.spec.ts`
 - **重点**:
   - 拖拽连接：模拟用户拖拽线缆连接节点。
   - 核心链路：例如 `Chain -> Client -> getBalance -> Display` 的完整闭环。
@@ -55,7 +55,7 @@ pnpm add -D vitest @vitest/ui happy-dom @testing-library/react @testing-library/
   "scripts": {
     "test": "vitest",
     "test:unit": "vitest src",
-    "test:integration": "vitest tests/e2e",
+    "test:integration": "vitest tests/integration",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
@@ -74,7 +74,7 @@ pnpm add -D vitest @vitest/ui happy-dom @testing-library/react @testing-library/
   ```bash
   npm run test:unit
   ```
-- **仅运行集成测试** (tests/e2e/\*\*):
+- **仅运行集成测试** (tests/integration/\*\*):
   ```bash
   npm run test:integration
   ```

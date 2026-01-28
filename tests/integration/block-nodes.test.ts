@@ -144,13 +144,69 @@ describe('Block 节点集成测试 (Anvil)', () => {
     })
   })
 
+  // GetBalance 测试
+  describe('getBalance', () => {
+    it('应该获取地址余额 (bigint)', async () => {
+      const balance = await client.getBalance({
+        address: TEST_ACCOUNTS.deployer.address,
+      })
+
+      expect(typeof balance).toBe('bigint')
+      expect(balance).toBeGreaterThanOrEqual(0n)
+    })
+
+    it('应该返回正确的测试账户余额', async () => {
+      const balance = await client.getBalance({
+        address: TEST_ACCOUNTS.deployer.address,
+      })
+
+      expect(balance).toBe(EXPECTED.deployerBalance)
+    })
+
+    it('不同地址的余额应该不同', async () => {
+      const balance1 = await client.getBalance({
+        address: TEST_ACCOUNTS.deployer.address,
+      })
+
+      const otherAddress = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' as const
+      const balance2 = await client.getBalance({
+        address: otherAddress,
+      })
+
+      expect(balance1).toBeDefined()
+      expect(balance2).toBeDefined()
+      // 两个账户都应该有余额（Anvil 默认给所有测试账户分配了 ETH）
+      expect(balance1).toBeGreaterThan(0n)
+      expect(balance2).toBeGreaterThan(0n)
+    })
+
+    it('无效地址应该返回 0 余额', async () => {
+      const unusedAddress = '0x0000000000000000000000000000000000000001' as const
+      const balance = await client.getBalance({
+        address: unusedAddress,
+      })
+
+      expect(balance).toBe(0n)
+    })
+
+    it('应该在指定区块获取余额', async () => {
+      const blockNumber = await client.getBlockNumber()
+      const balance = await client.getBalance({
+        address: TEST_ACCOUNTS.deployer.address,
+        blockNumber,
+      })
+
+      expect(balance).toBe(EXPECTED.deployerBalance)
+    })
+  })
+
   // 测试账户验证
   describe('测试账户验证', () => {
     it('测试账户应有预期余额', async () => {
       const balance = await client.getBalance({
         address: TEST_ACCOUNTS.deployer.address,
       })
-      
+
       expect(balance).toBe(EXPECTED.deployerBalance)
     })
   })

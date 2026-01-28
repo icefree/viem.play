@@ -20,6 +20,7 @@ export function createMockPublicClient(overrides: Partial<PublicClient> = {}): P
       baseFeePerGas: 1000000000n,
     } as unknown as Block),
     getBlockTransactionCount: vi.fn().mockResolvedValue(100),
+    getBalance: vi.fn().mockResolvedValue(1000000000000000000n),
     watchBlockNumber: vi.fn().mockReturnValue(() => {}),
     watchBlocks: vi.fn().mockReturnValue(() => {}),
     ...overrides,

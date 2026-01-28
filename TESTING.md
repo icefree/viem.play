@@ -35,12 +35,12 @@ Based on the project's **Vite + React 19 + Viem** characteristics, the following
 
 **Goal**: Verify node connections and data flow.
 
-- **Location**: `tests/e2e/*.spec.ts`
+- **Location**: `tests/integration/*.spec.ts`
 - **Focus**:
-  - Drag-and-connect: Simulate user dragging cables to connect nodes.
-  - Core workflows: E.g., `Chain -> Client -> getBalance -> Display` complete loop.
+  - Drag and drop: Simulating user dragging cables to connect nodes.
+  - Core workflows: E.g., `Chain -> Client -> getBalance -> Display`.
 
-## 3. Installation and Configuration
+## 3. Setup and Configuration
 
 ### 3.1 Install Dependencies
 
@@ -55,7 +55,7 @@ pnpm add -D vitest @vitest/ui happy-dom @testing-library/react @testing-library/
   "scripts": {
     "test": "vitest",
     "test:unit": "vitest src",
-    "test:integration": "vitest tests/e2e",
+    "test:integration": "vitest tests/integration",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",

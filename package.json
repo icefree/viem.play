@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:unit": "vitest src",
-    "test:integration": "vitest tests/e2e",
+    "test:integration": "vitest tests/integration",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
