@@ -78,21 +78,23 @@ export class InjectedProviderNode extends LGraphNode {
     this.isConnected = true
   }
 
-  async onAction() {
-    console.log('[InjectedProvider] onAction triggered')
-    this.detectProvider()
-    
-    // 尝试请求账户访问权限
-    if (this.provider) {
-      try {
-        console.log('[InjectedProvider] Requesting accounts...')
-        const accounts = await this.provider.request({ method: 'eth_requestAccounts' })
-        console.log('[InjectedProvider] Got accounts:', accounts)
-      } catch (err) {
-        console.error('[InjectedProvider] Failed to request accounts:', err)
+  async onAction(action: string) {
+    if (action === 'trigger') {
+      console.log('[InjectedProvider] onAction triggered')
+      this.detectProvider()
+      
+      // 尝试请求账户访问权限
+      if (this.provider) {
+        try {
+          console.log('[InjectedProvider] Requesting accounts...')
+          const accounts = await this.provider.request({ method: 'eth_requestAccounts' })
+          console.log('[InjectedProvider] Got accounts:', accounts)
+        } catch (err) {
+          console.error('[InjectedProvider] Failed to request accounts:', err)
+        }
+      } else {
+        console.warn('[InjectedProvider] No provider found')
       }
-    } else {
-      console.warn('[InjectedProvider] No provider found')
     }
   }
 

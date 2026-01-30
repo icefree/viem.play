@@ -27,8 +27,10 @@ export class ButtonNode extends LGraphNode {
     this.triggerSlot(0, 'trigger')
   }
 
-  onAction() {
-    this.fire()
+  onAction(action: string) {
+    if (action === 'timer') {
+      this.fire()
+    }
   }
 
   onExecute() {

@@ -25,14 +25,16 @@ export class ConsoleLogNode extends LGraphNode {
     this.size = [160, 80]
   }
 
-  onAction() {
-    const value = this.getInputData(0)
-    
-    // 如果有输入连接，打印输入值；否则打印属性中的消息
-    if (value !== undefined) {
-      console.log('[ViemPlay Action]', value)
-    } else {
-      console.log('[ViemPlay Action]', this.properties.message)
+  onAction(action: string) {
+    if (action === 'trigger') {
+      const value = this.getInputData(0)
+      
+      // 如果有输入连接，打印输入值；否则打印属性中的消息
+      if (value !== undefined) {
+        console.log('[ViemPlay Action]', value)
+      } else {
+        console.log('[ViemPlay Action]', this.properties.message)
+      }
     }
   }
 }

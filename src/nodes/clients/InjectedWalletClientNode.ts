@@ -41,9 +41,11 @@ export class InjectedWalletClientNode extends LGraphNode {
     this.size = [180, 110]
   }
 
-  async onAction() {
-    console.log('[InjectedWallet] onAction triggered')
-    await this.connectWallet()
+  async onAction(action: string) {
+    if (action === 'trigger') {
+      console.log('[InjectedWallet] onAction triggered')
+      await this.connectWallet()
+    }
   }
 
   async connectWallet() {
