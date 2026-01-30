@@ -2,6 +2,8 @@
 
 A visual node-based Web3 API builder and debugging tool. Inspired by [eth.build](https://github.com/austintgriffith/eth.build) and powered by [Viem](https://viem.sh/).
 
+**Live Demo: [https://icefree.github.io/viem.play/](https://icefree.github.io/viem.play/)**
+
 [English](./README.md) | [简体中文](./README_ZH.md)
 
 ![Viem Playground Preview](./public/snapshot.png)

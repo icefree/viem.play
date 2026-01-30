@@ -2,6 +2,8 @@
 
 一个基于节点的可视化 Web3 接口构建与调试工具。受 [eth.build](https://github.com/austintgriffith/eth.build) 启发，基于 [Viem](https://viem.sh/) 实现。
 
+**在线演示：[https://icefree.github.io/viem.play/](https://icefree.github.io/viem.play/)**
+
 [English](./README.md) | [简体中文](./README_ZH.md)
 
 ![Viem Playground Preview](./public/snapshot.png)
