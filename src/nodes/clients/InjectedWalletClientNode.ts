@@ -1,5 +1,5 @@
 import { LGraphNode, LiteGraph } from 'litegraph.js'
-import { createWalletClient, custom, type WalletClient, type Chain, type Address, type EIP1193Provider } from 'viem'
+import { createWalletClient, createPublicClient, custom, type WalletClient, type PublicClient, type Chain, type Address, type EIP1193Provider } from 'viem'
 import { mainnet, sepolia, polygon, arbitrum, optimism, base } from 'viem/chains'
 
 // 链 ID 到链配置的映射
@@ -94,7 +94,6 @@ export class InjectedWalletClientNode extends LGraphNode {
       })
       
       // 创建 PublicClient
-      const { createPublicClient } = await import('viem')
       this.publicClient = createPublicClient({
         chain,
         transport: custom(ethereum)
@@ -108,7 +107,7 @@ export class InjectedWalletClientNode extends LGraphNode {
       this.error = null
 
       // 触发 connected 输出
-      this.triggerSlot(6)
+      this.triggerSlot(6, null)
 
       // 监听账户和链变化
       this.setupListeners(ethereum)
