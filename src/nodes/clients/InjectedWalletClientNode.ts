@@ -31,6 +31,7 @@ export class InjectedWalletClientNode extends LGraphNode {
   private walletName: string = 'Not connected'
   private error: string | null = null
   private transport: any = null
+  private hasListeners: boolean = false
 
   constructor() {
     super()
@@ -122,8 +123,12 @@ export class InjectedWalletClientNode extends LGraphNode {
   }
 
   setupListeners(ethereum: EIP1193Provider) {
+    if (this.hasListeners) return
+    this.hasListeners = true
+
     // 监听账户变化
     const handleAccountsChanged = async (accounts: string[]) => {
+      console.log('[InjectedWallet] accountsChanged:', accounts)
       if (accounts.length === 0) {
         this.account = null
         this.walletClient = null
@@ -131,19 +136,24 @@ export class InjectedWalletClientNode extends LGraphNode {
         this.transport = null
         this.walletName = 'Disconnected'
       } else {
-        this.account = accounts[0] as Address
-        await this.connectWallet() // 重新连接
+        // 更新账户信息，重新创建 client
+        await this.connectWallet()
       }
     }
 
     // 监听链变化
-    const handleChainChanged = async () => {
-      await this.connectWallet() // 重新连接
+    const handleChainChanged = async (chainIdHex: unknown) => {
+      console.log('[InjectedWallet] chainChanged:', chainIdHex)
+      await this.connectWallet() // 重新连接以获取正确的链配置
     }
 
-    const eth = ethereum as unknown as { on?: (event: string, handler: (...args: unknown[]) => void) => void }
+    const eth = ethereum as unknown as { 
+      on?: (event: string, handler: (...args: unknown[]) => void) => void 
+      removeListener?: (event: string, handler: (...args: unknown[]) => void) => void
+    }
+    
     eth.on?.('accountsChanged', handleAccountsChanged as (...args: unknown[]) => void)
-    eth.on?.('chainChanged', handleChainChanged)
+    eth.on?.('chainChanged', handleChainChanged as (...args: unknown[]) => void)
   }
 
   onExecute() {
