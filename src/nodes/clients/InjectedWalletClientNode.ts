@@ -24,21 +24,26 @@ export class InjectedWalletClientNode extends LGraphNode {
   color = '#f6ad55'
   bgcolor = '#c05621'
 
-  private client: WalletClient | null = null
+  private walletClient: WalletClient | null = null
+  private publicClient: PublicClient | null = null
   private account: Address | null = null
   private chainId: number | null = null
   private walletName: string = 'Not connected'
   private error: string | null = null
+  private transport: any = null
 
   constructor() {
     super()
     this.title = 'Injected Wallet'
     this.addInput('trigger', -1)
-    this.addOutput('client', 'walletClient')
+    this.addOutput('walletClient', 'walletClient')
+    this.addOutput('publicClient', 'publicClient')
+    this.addOutput('transport', 'transport')
     this.addOutput('account', 'address')
     this.addOutput('chainId', 'number')
     this.addOutput('error', 'string')
-    this.size = [180, 110]
+    this.addOutput('connected', -1)
+    this.size = [200, 140]
   }
 
   async onAction(action: string) {
@@ -81,24 +86,38 @@ export class InjectedWalletClientNode extends LGraphNode {
       const chain = chainIdToChain[this.chainId] || mainnet
 
       // 创建 WalletClient
-      this.client = createWalletClient({
+      this.walletClient = createWalletClient({
         chain,
         transport: custom(ethereum),
         account: accounts[0],
       })
-      console.log('[InjectedWallet] WalletClient created:', this.client)
+      
+      // 创建 PublicClient
+      const { createPublicClient } = await import('viem')
+      this.publicClient = createPublicClient({
+        chain,
+        transport: custom(ethereum)
+      })
+
+      this.transport = custom(ethereum)
+      console.log('[InjectedWallet] Clients created:', { wallet: this.walletClient, public: this.publicClient })
 
       this.account = accounts[0]
       this.walletName = ethereum.isMetaMask ? 'MetaMask' : 'Wallet'
       this.error = null
+
+      // 触发 connected 输出
+      this.triggerSlot(6)
 
       // 监听账户和链变化
       this.setupListeners(ethereum)
     } catch (err) {
       console.error('[InjectedWallet] Connection error:', err)
       this.error = err instanceof Error ? err.message : String(err)
-      this.client = null
+      this.walletClient = null
+      this.publicClient = null
       this.account = null
+      this.transport = null
     }
   }
 
@@ -107,7 +126,9 @@ export class InjectedWalletClientNode extends LGraphNode {
     const handleAccountsChanged = async (accounts: string[]) => {
       if (accounts.length === 0) {
         this.account = null
-        this.client = null
+        this.walletClient = null
+        this.publicClient = null
+        this.transport = null
         this.walletName = 'Disconnected'
       } else {
         this.account = accounts[0] as Address
@@ -126,10 +147,12 @@ export class InjectedWalletClientNode extends LGraphNode {
   }
 
   onExecute() {
-    this.setOutputData(0, this.client)
-    this.setOutputData(1, this.account)
-    this.setOutputData(2, this.chainId)
-    this.setOutputData(3, this.error)
+    this.setOutputData(0, this.walletClient)
+    this.setOutputData(1, this.publicClient)
+    this.setOutputData(2, this.transport)
+    this.setOutputData(3, this.account)
+    this.setOutputData(4, this.chainId)
+    this.setOutputData(5, this.error)
   }
 
   onDrawForeground(ctx: CanvasRenderingContext2D) {
